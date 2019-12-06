@@ -1,0 +1,13 @@
+# Dev and lock files
+.idea/
+*.lock
+
+# Chart dependencies
+**/charts/*.tgz
+
+# Local .terraform directories
+**/.terraform/*
+
+# Terrform state files
+*.tfstate
+*.tfstate.*

@@ -1,0 +1,284 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: keycloak-postgres
+  name: keycloak-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-postgres
+  template:
+    metadata:
+      labels:
+        app: keycloak-postgres
+    spec:
+      containers:
+      - image: postgres:9.6
+        name: postgres
+        env:
+        - name: POSTGRES_USER
+          value: {{ .Values.user }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.passwd }}
+        - name: POSTGRES_DB
+          value: keycloak
+        ports:
+        - containerPort: 5432
+          name: postgresql
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:
+        - name: keycloak-postgres
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+      volumes:
+      - name: keycloak-postgres
+        persistentVolumeClaim:
+          claimName: keycloak-postgres-pvc
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-postgres
+  labels:
+    app: keycloak-postgres
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: keycloak-postgres
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloak-postgres-pvc
+  labels:
+    app: keycloak-postgres
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 32Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: keycloak
+  name: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - image: jboss/keycloak:7.0.0
+        name: keycloak
+        env:
+        - name: DB_VENDOR
+          value: "postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          value: {{ .Values.user }}
+        - name: DB_PASSWORD
+          value: {{ .Values.passwd }}
+        - name: DB_DATABASE
+          value: "keycloak"
+        - name: DB_ADDR
+          value: "keycloak-postgres"
+        - name: KEYCLOAK_USER
+          value: {{ .Values.user }}
+        - name: KEYCLOAK_PASSWORD
+          value: {{ .Values.passwd }}
+        - name: PROXY_ADDRESS_FORWARDING
+          value: "true"
+        - name: KEYCLOAK_LOGLEVEL
+          value: "DEBUG"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "250m"
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  type: ClusterIP
+  ports:
+  - name: keycloak
+    protocol: TCP
+    port: 8080
+  selector:
+    app: keycloak
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: keycloak-gatekeeper
+  name: keycloak-gatekeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-gatekeeper
+  template:
+    metadata:
+      labels:
+        app: keycloak-gatekeeper
+    spec:
+      containers:
+      {{- $root := . }}
+      {{- range .Values.components }}
+      - image: keycloak/keycloak-gatekeeper:7.0.0
+        name: gatekeeper-{{ .name }}
+        ports:
+        - containerPort: {{ .port }}
+          name: listen
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+        args:
+        - --listen=:{{ .port }}
+        - --discovery-url=https://{{ $root.Values.domain }}:8080/auth/realms/master
+        - --oauth-uri=/devtools-oath
+        - --upstream-url=http://{{ .name }}:{{ .port }}
+        - --verbose=true
+        - --resources=uri=/*|methods=GET
+        - --skip-openid-provider-tls-verify=true
+        - --encryption-key={{ $root.Values.encryptionKey }}
+        - --enable-refresh-tokens=true
+        - --enable-encrypted-token=false
+        # - --store-url=redis://keycloak-redis:6379
+        - --cookie-refresh-name=kc-refresh-token
+        - --enable-authorization-header=false
+        - --client-id={{ .name }}
+        - --client-secret={{ $root.Values.clientSecret }}
+        - --client-auth-method=secret-body
+        - --server-read-timeout=50s
+        - --server-write-timeout=50s
+      {{- end }}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-gatekeeper
+  labels:
+    app: keycloak-gatekeeper
+spec:
+  type: ClusterIP
+  ports:
+  {{- range .Values.components }}
+  - name: {{ .name }}
+    port: {{ .port }}
+  {{- end }}
+  selector:
+    app: keycloak-gatekeeper
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: keycloak-init
+  name: keycloak-init
+spec:
+  template:
+    metadata:
+      labels:
+        app: keycloak-init
+    spec:
+      containers:
+      - image: {{ .Values.docker.registry }}/keycloak-seeding:latest
+        name: keycloak-init
+        env:
+        - name: USERNAME
+          value: {{ .Values.user }}
+        - name: PASSWORD
+          value: {{ .Values.passwd }}
+        - name: SECRET
+          value: {{ .Values.clientSecret }}
+      restartPolicy: Never
+  backoffLimit: 64
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: keycloak-redis
+  name: keycloak-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-redis
+  template:
+    metadata:
+      labels:
+        app: keycloak-redis
+    spec:
+      containers:
+      - image: redis:5.0-buster
+        name: redis
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+        args: ["--loglevel debug"]
+        volumeMounts:
+        - name: keycloak-redis
+          mountPath: /data
+          subPath: data
+      volumes:
+      - name: keycloak-redis
+        persistentVolumeClaim:
+          claimName: keycloak-redis-pvc
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-redis
+  labels:
+    app: keycloak-redis
+spec:
+  type: ClusterIP
+  ports:
+  - name: keycloak-redis
+    protocol: TCP
+    port: 6379
+  selector:
+    app: keycloak-redis
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloak-redis-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi

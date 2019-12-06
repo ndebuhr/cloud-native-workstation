@@ -1,0 +1,49 @@
+FROM theiaide/theia-full:latest
+
+USER root
+ENV DEBIAN_FRONTEND noninteractive
+
+# Apt package installations
+RUN apt-get update -qqy && \
+    apt-get upgrade -qqy && \
+    apt-get install -qqy \
+        bash-completion \
+        jq \
+        lsb-release \
+        python3-pip \
+        software-properties-common
+
+# Install Docker using apt (Docker daemon runs in sidecar)
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+    apt-get update -qqy && \
+    apt-get install -qqy docker-ce && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN usermod -aG docker theia
+
+# Kubectl installation
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
+    install kubectl /usr/local/bin/
+
+# HUGO extended install
+RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
+    grep "browser_download_url" | grep "hugo_extended" | grep "Linux-64bit.tar.gz" | \
+    cut -d : -f 2,3 | tr -d \" | \
+    wget -qi - && \
+    tar xfvz hugo*.tar.gz hugo && \
+    install hugo /usr/local/bin/
+
+# Install terraform 0.12.16
+RUN wget https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_linux_amd64.zip && \
+    unzip terraform_0.12.16_linux_amd64.zip && \
+    install terraform /usr/local/bin/
+
+USER theia
+
+# Google CLI/SDK installation (can be installed under theia user with sudo)
+RUN curl https://sdk.cloud.google.com | bash
+
+# Helm installation (can be installed under theia user with sudo)
+RUN curl -L https://git.io/get_helm.sh | bash

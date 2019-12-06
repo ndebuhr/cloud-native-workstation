@@ -1,0 +1,40 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: haproxy
+spec:
+  type: LoadBalancer
+  selector:
+    app: haproxy
+  ports:
+  {{- range .Values.components }}
+  - name: {{ .name }}
+    port: {{ .port }}
+  {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: haproxy
+  name: haproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: haproxy
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      containers:
+      - image: {{ .Values.docker.registry }}/haproxy:latest
+        name: haproxy
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+      restartPolicy: Always
+status: {}

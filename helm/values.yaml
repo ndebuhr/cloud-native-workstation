@@ -1,0 +1,41 @@
+user: workstation
+passwd: M@inz!
+docker:
+  registry: us.gcr.io/my-project/my-repo
+components:
+- name: keycloak
+  enabled: true
+  port: 8080
+- name: theia
+  enabled: true
+  port: 3000
+- name: hugo
+  enabled: true
+  port: 1313
+- name: tensorflow
+  enabled: true
+  port: 8888
+- name: tensorboard
+  enabled: true
+  port: 6006
+tensorflow-notebook:
+  jupyter:
+    image:
+      repository: tensorflow/tensorflow
+      tag: 1.6.0-devel
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: "1"
+        memory: "4Gi"
+  tensorboard:
+    image:
+      repository: tensorflow/tensorflow
+      tag: 1.6.0-devel
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: "1"
+        memory: "4Gi"
+  service:
+    type: ClusterIP

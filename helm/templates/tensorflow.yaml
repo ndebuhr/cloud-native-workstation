@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tensorflow-notebook
+  name: tensorflow
+spec:
+  type: ClusterIP
+  ports:
+  - name: tensorflow
+    port: 8888
+  selector:
+    app: tensorflow-notebook
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tensorflow-notebook
+  name: tensorboard
+spec:
+  type: ClusterIP
+  ports:
+  - name: tensorboard
+    port: 6006
+  selector:
+    app: tensorflow-notebook

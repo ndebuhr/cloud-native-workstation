@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: theia
+  name: theia
+spec:
+  type: ClusterIP
+  ports:
+  - name: theia
+    port: 3000
+  selector:
+    app: theia
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: theia
+  name: hugo
+spec:
+  type: ClusterIP
+  ports:
+  - name: hugo
+    port: 1313
+  selector:
+    app: theia
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: theia
+  name: theia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: theia
+  template:
+    metadata:
+      labels:
+        app: theia
+    spec:
+      initContainers:
+      - image: {{ .Values.docker.registry }}/theia:latest
+        name: projects-directory-permissions
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+              PROJECTS=$(find /home/project -mindepth 1 | wc -l)
+              if [ $PROJECTS -eq 0 ]; then
+                  mkdir -p /home/project/xebialabs-community
+                  chown -R theia:theia /home/project
+              fi
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: theia
+          mountPath: /home/project
+          subPath: project
+      - image: {{ .Values.docker.registry }}/theia:latest
+        name: clone-xl-community-plugins
+        workingDir: /home/project/xebialabs-community
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+              for i in {1..10}; do
+              curl -X GET "https://api.github.com/users/xebialabs-community/repos?page=$i&per_page=100" | \
+                  jq .[].html_url | sed "s/\\\"//g" | \
+                  xargs -i git clone {} || echo "Issue with git clone - code $?"
+              done
+        volumeMounts:
+        - name: theia
+          mountPath: /home/project
+          subPath: project
+      containers:
+      - image: {{ .Values.docker.registry }}/theia:latest
+        name: theia
+        ports:
+        - name: ide
+          containerPort: 3000
+        - name: hugo
+          containerPort: 1313
+        env:
+        - name: PATH
+          value: /tmp/yarn--1572489865962-0.9142525081366244:/home/theia/node_modules/.bin:/home/theia/.config/yarn/link/node_modules/.bin:/home/theia/node_modules/.bin:/home/theia/.config/yarn/link/node_modules/.bin:/home/theia/.yarn/bin:/usr/local/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin:/usr/local/go-packages/bin:/home/project/bin:/home/theia/google-cloud-sdk/bin
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1"
+        volumeMounts:
+        - name: theia
+          mountPath: /home/project
+          subPath: project
+      - name: dind-daemon
+        image: docker:1.12.6-dind
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 500m
+        securityContext:
+            privileged: true
+        volumeMounts:
+          - name: theia-dind-pv
+            mountPath: /var/lib/docker
+            subPath: var/lib/docker
+      volumes:
+      - name: theia
+        persistentVolumeClaim:
+          claimName: theia-pvc
+      - name: theia-dind-pv
+        persistentVolumeClaim:
+          claimName: theia-dind-pvc
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: theia-pvc
+  labels:
+    app: theia
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: theia-dind-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 32Gi
