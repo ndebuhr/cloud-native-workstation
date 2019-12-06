@@ -41,7 +41,8 @@ The provisioning and components in this repository are setup to run on Google Ku
     gcloud container clusters get-credentials YOUR_CLUSTER --zone YOUR_ZONE
     ```
 1. Helm install
-    (configure values.yaml in the helm directory)
+
+    (Configure values.yaml in the helm directory, then...)
     ```
     cd helm ..
     helm install . \
@@ -61,7 +62,12 @@ The provisioning and components in this repository are setup to run on Google Ku
 1. Create a DNS entry to point your domain to the Google Cloud Platform LoadBalancerIP (part of the helm installation).  The domain must resolve before the components will work (access by IP only is not possible).
 
 [https://docs.docker.com/engine/reference/commandline/build/](https://docs.docker.com/engine/reference/commandline/build/)
+
 [https://www.terraform.io/docs/commands/index.html](https://www.terraform.io/docs/commands/index.html)
+
+[https://cloud.google.com/sdk/gcloud/reference/](https://cloud.google.com/sdk/gcloud/reference/)
+
+[https://helm.sh/docs/intro/using_helm/](https://helm.sh/docs/intro/using_helm/)
 
 ## Usage
 
