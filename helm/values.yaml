@@ -1,25 +1,13 @@
 user: workstation
 passwd: M@inz!
+domain: example.com
+clientSecret: CHANGEME
+encryptionKey: CHANGEME
 docker:
   registry: us.gcr.io/my-project/my-repo
-components:
-- name: keycloak
-  enabled: true
-  port: 8080
-- name: theia
-  enabled: true
-  port: 3000
-- name: hugo
-  enabled: true
-  port: 1313
-- name: tensorflow
-  enabled: true
-  port: 8888
-- name: tensorboard
-  enabled: true
-  port: 6006
 tensorflow-notebook:
   jupyter:
+    password: M@inz!
     image:
       repository: tensorflow/tensorflow
       tag: 1.6.0-devel
@@ -39,3 +27,19 @@ tensorflow-notebook:
         memory: "4Gi"
   service:
     type: ClusterIP
+components:
+- name: keycloak
+  enabled: true
+  port: 8080
+- name: theia
+  enabled: true
+  port: 3000
+- name: hugo
+  enabled: true
+  port: 1313
+- name: tensorflow
+  enabled: true
+  port: 8888
+- name: tensorboard
+  enabled: true
+  port: 6006

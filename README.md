@@ -13,6 +13,7 @@ The components in this project are tailored towards my work - you'll need additi
 1. Provisioning infrastructure with Terraform
 1. Managing Google Cloud Platform workloads
 1. Handling Helm charts and Kubernetes resources
+
 The provisioning and components in this repository are setup to run on Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
 ## Install
@@ -27,12 +28,12 @@ The provisioning and components in this repository are setup to run on Google Ku
    ```
    (Repeat for all Dockerfiles)
 1. Terraform install
+
+   (Configure variables.tf in the terraform directory, then...)
    ```
    cd terraform
    terraform init
-   terraform apply . \
-        -var 'gcp_project=YOUR_PROJECT' \
-        -var 'gcp_service_account_key_filepath=PATH_TO_YOUR_GCP_JSON_KEY'
+   terraform apply .
    cd ...
    ```
 1. Configure the Google Cloud Platform cli and Google Kubernetes Engine kubeconfig
@@ -45,14 +46,7 @@ The provisioning and components in this repository are setup to run on Google Ku
     (Configure values.yaml in the helm directory, then...)
     ```
     cd helm ..
-    helm install . \
-        --generate-name \
-        --namespace YOUR_NAMESPACE \
-        --set domain=YOUR_DOMAIN \
-        --set clientSecret=YOUR_KEYCLOAK_CLIENT_SECRET \
-        --set encryptionKey=YOUR_KEYCLOAK_ENCRYPTION_KEY \
-        --set passwd=YOUR_DESIRED_PASSWORD \
-        --set tensorflow-notebook.jupyter.password=YOUR_DESIRED_PASSWORD
+    helm install . --generate-name --namespace YOUR_NAMESPACE
     ```
    1. You can use the following to generate the Helm values above for Keycloak client secret and encryption key
       ```
