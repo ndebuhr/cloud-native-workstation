@@ -96,7 +96,10 @@ spec:
           mountPath: /home/project
           subPath: project
       - name: dind-daemon
-        image: docker:1.12.6-dind
+        image: docker:19-dind
+        env:
+        - name: DOCKER_TLS_CERTDIR
+          value: ""
         resources:
           requests:
             memory: 1Gi
