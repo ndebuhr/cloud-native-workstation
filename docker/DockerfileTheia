@@ -23,6 +23,11 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 
 RUN usermod -aG docker theia
 
+# Update golang version
+RUN rm -rf /usr/local/go && \
+    wget https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz && \
+    tar xfz go1.13.5.linux-amd64.tar.gz -C /usr/local
+
 # Kubectl installation
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
     install kubectl /usr/local/bin/
