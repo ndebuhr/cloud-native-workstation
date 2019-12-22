@@ -27,6 +27,7 @@ RUN usermod -aG docker theia
 RUN rm -rf /usr/local/go && \
     wget https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz && \
     tar xfz go1.13.5.linux-amd64.tar.gz -C /usr/local
+ENV GO_VERSION=1.13.5
 
 # Kubectl installation
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
