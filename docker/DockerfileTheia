@@ -46,10 +46,12 @@ RUN wget https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_linu
     unzip terraform_0.12.16_linux_amd64.zip && \
     install terraform /usr/local/bin/
 
+# Helm installation
+RUN wget https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz && \
+    tar xfvz helm-v3.0.2-linux-amd64.tar.gz helm && \
+    install helm /usr/local/bin/
+
 USER theia
 
 # Google CLI/SDK installation (can be installed under theia user with sudo)
 RUN curl https://sdk.cloud.google.com | bash
-
-# Helm installation (can be installed under theia user with sudo)
-RUN curl -L https://git.io/get_helm.sh | bash
