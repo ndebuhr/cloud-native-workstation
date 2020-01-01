@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hackmd
+  name: hackmd
+spec:
+  type: ClusterIP
+  ports:
+  - name: hackmd
+    port: 3003
+    targetPort: 3000
+  selector:
+    app: hackmd

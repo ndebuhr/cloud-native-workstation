@@ -11,3 +11,6 @@
 # Terrform state files
 *.tfstate
 *.tfstate.*
+
+# SSL certs
+docker/ssl/

@@ -18,6 +18,7 @@ do
       /opt/component.sh hugo 1313
       /opt/component.sh tensorflow 8888
       /opt/component.sh tensorboard 6006
+      /opt/component.sh hackmd 3003
       break
     fi
   else

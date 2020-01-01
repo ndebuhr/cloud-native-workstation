@@ -43,10 +43,17 @@ The provisioning and components in this repository are setup to run on Google Ku
     ```
 1. Helm install
 
-    (Configure values.yaml in the helm directory, then...)
+    (Set your own values)
     ```
     cd helm ..
-    helm install . --generate-name --namespace YOUR_NAMESPACE
+    helm install . --generate-name --namespace YOUR_NAMESPACE \
+        --set user=workstation \
+        --set passwd=M@inz! \
+        --set domain=example.com \
+        --set clientSecret=CHANGEME \
+        --set encryptionKey=CHANGEME \
+        --set tensorflow-notebook.jupyter.password=M@inz! \
+        --set docker.registry=us.gcr.io/my-project/my-repo
     ```
    1. You can use the following to generate the Helm values above for Keycloak client secret and encryption key
       ```
