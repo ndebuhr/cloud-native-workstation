@@ -4,9 +4,8 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive
 
 # Apt package installations
-RUN apt-get update -qqy && \
-    apt-get upgrade -qqy && \
-    apt-get install -qqy \
+RUN apt-get update -qqy
+RUN apt-get install -qqy \
         bash-completion \
         jq \
         lsb-release \
@@ -48,8 +47,8 @@ RUN wget https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_linu
 
 # Helm installation
 RUN wget https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz && \
-    tar xfvz helm-v3.0.2-linux-amd64.tar.gz helm && \
-    install helm /usr/local/bin/
+    tar xfvz helm-v3.0.2-linux-amd64.tar.gz linux-amd64/helm && \
+    install linux-amd64/helm /usr/local/bin/
 
 USER theia
 
