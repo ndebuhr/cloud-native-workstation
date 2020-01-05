@@ -42,38 +42,6 @@ spec:
       labels:
         app: theia
     spec:
-      initContainers:
-      - image: {{ .Values.docker.registry }}/theia:latest
-        name: projects-directory-permissions
-        command: ["/bin/bash", "-c"]
-        args:
-          - |
-              PROJECTS=$(find /home/project -mindepth 1 | wc -l)
-              if [ $PROJECTS -eq 0 ]; then
-                  mkdir -p /home/project/xebialabs-community
-                  chown -R theia:theia /home/project
-              fi
-        securityContext:
-          runAsUser: 0
-        volumeMounts:
-        - name: theia
-          mountPath: /home/project
-          subPath: project
-      - image: {{ .Values.docker.registry }}/theia:latest
-        name: clone-xl-community-plugins
-        workingDir: /home/project/xebialabs-community
-        command: ["/bin/bash", "-c"]
-        args:
-          - |
-              for i in {1..10}; do
-              curl -X GET "https://api.github.com/users/xebialabs-community/repos?page=$i&per_page=100" | \
-                  jq .[].html_url | sed "s/\\\"//g" | \
-                  xargs -i git clone {} || echo "Issue with git clone - code $?"
-              done
-        volumeMounts:
-        - name: theia
-          mountPath: /home/project
-          subPath: project
       containers:
       - image: {{ .Values.docker.registry }}/theia:latest
         name: theia
