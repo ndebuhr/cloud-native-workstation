@@ -18,7 +18,7 @@ The provisioning and components in this repository are setup to run on Google Ku
 
 ## Install
 
-1. Create an "ssl" subdirectory within the "docker" directory, and put the ssl cert (.crt) and key (.key) there
+1. Put your ssl cert (e.g. mydomain.crt) and key (e.g. mydomain.key) in [docker/ssl](docker/ssl).  Remove example.crt and example.key.
 1. Build the docker images for components you are interested in.  For networking and security, the HAProxy and Keycloak images are always required.
    ```
    cd docker
