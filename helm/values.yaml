@@ -18,8 +18,6 @@ components:
   enabled: true
   port: 3003
 hackmd:
-  service:
-    port: 3000
   persistence:
     size: 64Gi
 tensorflow-notebook:
