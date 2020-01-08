@@ -10,7 +10,9 @@ RUN apt-get install -qqy \
         jq \
         lsb-release \
         python3-pip \
-        software-properties-common
+        software-properties-common \
+        texlive-latex-base \
+        texlive-xetex
 
 # Install Docker using apt (Docker daemon runs in sidecar)
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
