@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kdenlive
+  name: kdenlive-audio
+spec:
+  type: ClusterIP
+  ports:
+  - name: desktop-environment
+    port: 6901
+  - name: audio-stream
+    port: 8090
+  selector:
+    app: kdenlive
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kdenlive
+  name: kdenlive-desktop
+spec:
+  type: ClusterIP
+  ports:
+  - name: desktop-environment
+    port: 6901
+  selector:
+    app: kdenlive
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kdenlive
+  name: kdenlive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kdenlive
+  template:
+    metadata:
+      labels:
+        app: kdenlive
+    spec:
+      containers:
+      - image: {{ .Values.docker.registry }}/kdenlive:latest
+        name: kdenlive
+        ports:
+        - name: desktop
+          containerPort: 6901
+        - name: audio
+          containerPort: 8090
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "2"
+        volumeMounts:
+        - name: kdenlive
+          mountPath: /headless/Desktop
+          subPath: headless/Desktop
+      volumes:
+      - name: kdenlive
+        persistentVolumeClaim:
+          claimName: kdenlive-pvc
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kdenlive-pvc
+  labels:
+    app: kdenlive
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Gi

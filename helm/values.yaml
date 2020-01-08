@@ -17,6 +17,12 @@ components:
 - name: hackmd
   enabled: true
   port: 3003
+- name: kdenlive-desktop
+  enabled: true
+  port: 6901
+- name: kdenlive-audio
+  enabled: true
+  port: 8090
 hackmd:
   persistence:
     size: 64Gi

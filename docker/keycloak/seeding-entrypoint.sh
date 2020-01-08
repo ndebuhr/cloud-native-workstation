@@ -19,6 +19,8 @@ do
       /opt/component.sh tensorflow 8888
       /opt/component.sh tensorboard 6006
       /opt/component.sh hackmd 3003
+      /opt/component.sh kdenlive-desktop 6901
+      /opt/component.sh kdenlive-audio 8090
       break
     fi
   else

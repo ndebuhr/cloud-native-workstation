@@ -1,0 +1,18 @@
+FROM consol/ubuntu-xfce-vnc:1.4.0
+ENV REFRESHED_AT 2020-01-08
+ENV DEBIAN_FRONTEND noninteractive
+
+# Switch to root user to install additional software
+USER root
+
+COPY kdenlive/stream-audio.sh /headless/stream-audio.sh
+COPY kdenlive/ffserver.conf /etc/kdenlive-audio/ffserver.conf
+
+RUN apt-get update -qqy && \
+    apt-get install -qqy ffmpeg && \
+    apt-get install -qqy kdenlive && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+## Switch back to default user
+USER 1000
