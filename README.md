@@ -52,6 +52,7 @@ The provisioning and components in this repository are setup to run on Google Ku
         --set domain=example.com \
         --set clientSecret=CHANGEME \
         --set encryptionKey=CHANGEME \
+        --set hackmd.postgresql.postgresPassword=M@inz! \
         --set tensorflow-notebook.jupyter.password=M@inz! \
         --set docker.registry=us.gcr.io/my-project/my-repo
     ```
