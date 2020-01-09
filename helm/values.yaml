@@ -1,27 +1,28 @@
 components:
+  theia:
+    enabled: true
+  tensorflow:
+    enabled: false
+  hackmd:
+    enabled: true
+  kdenlive:
+    enabled: false
+access:
 - name: keycloak
-  enabled: true
   port: 8080
 - name: theia
-  enabled: true
   port: 3000
 - name: hugo
-  enabled: true
   port: 1313
 - name: tensorflow
-  enabled: true
   port: 8888
 - name: tensorboard
-  enabled: true
   port: 6006
 - name: hackmd
-  enabled: true
   port: 3003
 - name: kdenlive-desktop
-  enabled: true
   port: 6901
 - name: kdenlive-audio
-  enabled: true
   port: 8090
 hackmd:
   persistence:
@@ -35,7 +36,7 @@ tensorflow-notebook:
     resources:
       requests:
         cpu: "1"
-        memory: "4Gi"
+        memory: "2Gi"
   tensorboard:
     image:
       repository: tensorflow/tensorflow
@@ -44,6 +45,6 @@ tensorflow-notebook:
     resources:
       requests:
         cpu: "1"
-        memory: "4Gi"
+        memory: "2Gi"
   service:
     type: ClusterIP

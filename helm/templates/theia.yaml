@@ -1,3 +1,4 @@
+{{- if eq .Values.components.theia.enabled true }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -111,3 +112,4 @@ spec:
   resources:
     requests:
       storage: 32Gi
+{{- end }}

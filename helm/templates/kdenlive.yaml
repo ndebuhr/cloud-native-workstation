@@ -1,3 +1,4 @@
+{{- if eq .Values.components.kdenlive.enabled true }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -79,3 +80,4 @@ spec:
   resources:
     requests:
       storage: 64Gi
+{{- end }}

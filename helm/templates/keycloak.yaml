@@ -109,7 +109,7 @@ spec:
           value: "DEBUG"
         resources:
           requests:
-            memory: "1Gi"
+            memory: "512Mi"
             cpu: "250m"
       restartPolicy: Always
 status: {}
@@ -147,7 +147,7 @@ spec:
     spec:
       containers:
       {{- $root := . }}
-      {{- range .Values.components }}
+      {{- range .Values.access }}
       - image: keycloak/keycloak-gatekeeper:7.0.0
         name: gatekeeper-{{ .name }}
         ports:
@@ -155,8 +155,8 @@ spec:
           name: listen
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "250m"
+            memory: "256Mi"
+            cpu: "125m"
         args:
         - --listen=:{{ .port }}
         - --discovery-url=https://{{ $root.Values.domain }}:8080/auth/realms/master
@@ -189,7 +189,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  {{- range .Values.components }}
+  {{- range .Values.access }}
   - name: {{ .name }}
     port: {{ .port }}
   {{- end }}

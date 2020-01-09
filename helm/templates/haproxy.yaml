@@ -8,7 +8,7 @@ spec:
   selector:
     app: haproxy
   ports:
-  {{- range .Values.components }}
+  {{- range .Values.access }}
   - name: {{ .name }}
     port: {{ .port }}
   {{- end }}
