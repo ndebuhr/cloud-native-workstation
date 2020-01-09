@@ -30,8 +30,8 @@ spec:
           name: postgresql
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "512Mi"
+            cpu: "250m"
         volumeMounts:
         - name: keycloak-postgres
           mountPath: /var/lib/postgresql/data
@@ -155,8 +155,8 @@ spec:
           name: listen
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "125m"
+            memory: "128Mi"
+            cpu: "50m"
         args:
         - --listen=:{{ .port }}
         - --discovery-url=https://{{ $root.Values.domain }}:8080/auth/realms/master
@@ -168,7 +168,6 @@ spec:
         - --encryption-key={{ $root.Values.encryptionKey }}
         - --enable-refresh-tokens=true
         - --enable-encrypted-token=false
-        # - --store-url=redis://keycloak-redis:6379
         - --cookie-refresh-name=kc-refresh-token
         - --enable-authorization-header=false
         - --client-id={{ .name }}
@@ -221,64 +220,3 @@ spec:
       restartPolicy: Never
   backoffLimit: 64
 status: {}
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: keycloak-redis
-  name: keycloak-redis
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: keycloak-redis
-  template:
-    metadata:
-      labels:
-        app: keycloak-redis
-    spec:
-      containers:
-      - image: redis:5.0-buster
-        name: redis
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-        args: ["--loglevel debug"]
-        volumeMounts:
-        - name: keycloak-redis
-          mountPath: /data
-          subPath: data
-      volumes:
-      - name: keycloak-redis
-        persistentVolumeClaim:
-          claimName: keycloak-redis-pvc
-      restartPolicy: Always
-status: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: keycloak-redis
-  labels:
-    app: keycloak-redis
-spec:
-  type: ClusterIP
-  ports:
-  - name: keycloak-redis
-    protocol: TCP
-    port: 6379
-  selector:
-    app: keycloak-redis
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: keycloak-redis-pvc
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 8Gi
