@@ -1,5 +1,5 @@
 components:
-  theia:
+  code:
     enabled: true
   tensorflow:
     enabled: false
@@ -10,7 +10,7 @@ components:
 access:
 - name: keycloak
   port: 8080
-- name: theia
+- name: code
   port: 3000
 - name: hugo
   port: 1313

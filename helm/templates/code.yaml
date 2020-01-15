@@ -1,23 +1,24 @@
-{{- if eq .Values.components.theia.enabled true }}
+{{- if eq .Values.components.code.enabled true }}
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: theia
-  name: theia
+    app: code
+  name: code
 spec:
   type: ClusterIP
   ports:
-  - name: theia
+  - name: code
     port: 3000
+    targetPort: 8080
   selector:
-    app: theia
+    app: code
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: theia
+    app: code
   name: hugo
 spec:
   type: ClusterIP
@@ -25,29 +26,42 @@ spec:
   - name: hugo
     port: 1313
   selector:
-    app: theia
+    app: code
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: theia
-  name: theia
+    app: code
+  name: code
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: theia
+      app: code
   template:
     metadata:
       labels:
-        app: theia
+        app: code
     spec:
+      initContainers:
+      - image: {{ .Values.docker.registry }}/code:latest
+        name: permissions
+        securityContext:
+          runAsUser: 0
+        command: ["/bin/bash", "-c"]
+        args:
+        - "chown -R coder: /home/coder"
+        volumeMounts:
+        - name: coder
+          mountPath: /home/coder
+          subPath: home/coder
       containers:
-      - image: {{ .Values.docker.registry }}/theia:latest
-        name: theia
+      - image: {{ .Values.docker.registry }}/code:latest
+        name: code
+        args: ["--auth", "none"]
         ports:
         - name: ide
           containerPort: 3000
@@ -55,7 +69,7 @@ spec:
           containerPort: 1313
         env:
         - name: PATH
-          value: /tmp/yarn--1572489865962-0.9142525081366244:/home/theia/node_modules/.bin:/home/theia/.config/yarn/link/node_modules/.bin:/home/theia/node_modules/.bin:/home/theia/.config/yarn/link/node_modules/.bin:/home/theia/.yarn/bin:/usr/local/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin:/usr/local/go-packages/bin:/home/project/bin:/home/theia/google-cloud-sdk/bin
+          value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin:/home/coder/bin"
         - name: DOCKER_HOST
           value: tcp://localhost:2375
         resources:
@@ -63,9 +77,9 @@ spec:
             memory: "2Gi"
             cpu: "500m"
         volumeMounts:
-        - name: theia
-          mountPath: /home/project
-          subPath: project
+        - name: coder
+          mountPath: /home/coder
+          subPath: home/coder
       - name: dind-daemon
         image: docker:19-dind
         env:
@@ -78,25 +92,25 @@ spec:
         securityContext:
             privileged: true
         volumeMounts:
-          - name: theia-dind-pv
+          - name: code-dind-pv
             mountPath: /var/lib/docker
             subPath: var/lib/docker
       volumes:
-      - name: theia
+      - name: coder
         persistentVolumeClaim:
-          claimName: theia-pvc
-      - name: theia-dind-pv
+          claimName: coder-pvc
+      - name: code-dind-pv
         persistentVolumeClaim:
-          claimName: theia-dind-pvc
+          claimName: code-dind-pvc
       restartPolicy: Always
 status: {}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: theia-pvc
+  name: coder-pvc
   labels:
-    app: theia
+    app: code
 spec:
   accessModes:
     - ReadWriteOnce
@@ -107,7 +121,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: theia-dind-pvc
+  name: code-dind-pvc
 spec:
   accessModes:
     - ReadWriteOnce

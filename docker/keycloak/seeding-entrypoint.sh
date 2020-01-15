@@ -14,7 +14,7 @@ do
       echo "Website is up"
       sleep 10
       /opt/server.sh
-      /opt/component.sh theia 3000
+      /opt/component.sh code 3000
       /opt/component.sh hugo 1313
       /opt/component.sh tensorflow 8888
       /opt/component.sh tensorboard 6006

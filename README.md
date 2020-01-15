@@ -74,11 +74,11 @@ The provisioning and components in this repository are setup to run on Google Ku
 ## Usage
 
 If you included all default components in the Helm install, then you can access them (after authenticating with the Keycloak proxy) at:
-* YOUR_DOMAIN:3000 for Theia IDE
+* YOUR_DOMAIN:3000 for Code Server IDE
 * YOUR_DOMAIN:8080 for Keycloak administration
 * YOUR_DOMAIN:8888 for Jupyter notebooks
 * YOUR_DOMAIN:6006 for Tensorboard
-* YOUR_DOMAIN:1313 for Development web server (e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl YOUR_DOMAIN` in Theia)
+* YOUR_DOMAIN:1313 for Development web server (e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl YOUR_DOMAIN` in Code Server)
 * YOUR_DOMAIN:3003 for HackMD markup notes
 * YOUR_DOMAIN:6901 for Kdenlive video editor
 * YOUR_DOMAIN:8090 for Kdenlive audio stream
