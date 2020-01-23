@@ -69,7 +69,7 @@ spec:
           containerPort: 1313
         env:
         - name: PATH
-          value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin:/home/coder/bin"
+          value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin:/home/coder/bin:/home/coder/.local/bin"
         - name: DOCKER_HOST
           value: tcp://localhost:2375
         resources:
