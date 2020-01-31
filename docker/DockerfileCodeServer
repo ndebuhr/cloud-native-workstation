@@ -60,5 +60,10 @@ RUN gem install travis -v 1.8.10 --no-rdoc --no-ri
 
 USER coder
 
+# Kubernetes and helm bash completion
+RUN echo "source /etc/bash_completion" >> ~/.bashrc
+RUN echo "source <(kubectl completion bash)" >> ~/.bashrc
+RUN echo "source <(helm completion bash)" >> ~/.bashrc
+
 # Google CLI/SDK installation
 RUN curl https://sdk.cloud.google.com | bash
