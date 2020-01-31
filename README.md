@@ -9,12 +9,12 @@
 The components in this project are tailored towards my work - you'll need additions, revisions, and deletions to adapt the system to your needs.  The existing systems are geared towards:
 1. Prototyping cloud-native systems
 1. Developing simple microservices (golang) and landing pages (HUGO)
-1. Analyzing data - especially REST API extraction/loading and analysis/transformation with Python
-1. Provisioning infrastructure with Terraform
+1. Analyzing data - especially ETL processes with Python and REST APIs
+1. Provisioning cloud infrastructure with Terraform
 1. Managing Google Cloud Platform workloads
 1. Handling Helm charts and Kubernetes resources
 
-The provisioning and components in this repository are setup to run on Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
+My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
 ## Install
 
@@ -73,7 +73,7 @@ The provisioning and components in this repository are setup to run on Google Ku
 
 ## Usage
 
-If you included all default components in the Helm install, then you can access them (after authenticating with the Keycloak proxy) at:
+Access the components you've enabled in the Helm values (after authenticating with the Keycloak proxy):
 * YOUR_DOMAIN:3000 for Code Server IDE
 * YOUR_DOMAIN:8080 for Keycloak administration
 * YOUR_DOMAIN:8888 for Jupyter notebooks
