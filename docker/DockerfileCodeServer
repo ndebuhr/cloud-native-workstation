@@ -3,9 +3,10 @@ FROM codercom/code-server:v2
 USER root
 ENV DEBIAN_FRONTEND noninteractive
 
-# Apt package installations
+# install apt packages
 RUN apt-get update -qqy
 RUN apt-get install -qqy \
+        apt-transport-https \
         bash-completion \
         jq \
         lsb-release \
@@ -18,7 +19,7 @@ RUN apt-get install -qqy \
         texlive-latex-base \
         texlive-xetex
 
-# Install Docker using apt (Docker daemon runs in sidecar)
+# install Docker using apt (docker daemon runs in sidecar)
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
     apt-get update -qqy && \
@@ -28,16 +29,19 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 
 RUN usermod -aG docker coder
 
-# Install golang
+# install golang
 RUN wget https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz && \
     tar xfz go1.13.5.linux-amd64.tar.gz -C /usr/local
 ENV GO_VERSION=1.13.5
 
-# Kubectl installation
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
+# install kubectl, kubeadm, and kubelet
+RUN RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)" && \
+    curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl} && \
+    install kubeadm /usr/local/bin/ && \
+    install kubelet /usr/local/bin/ && \
     install kubectl /usr/local/bin/
 
-# HUGO extended install
+# install hugo extended
 RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     grep "browser_download_url" | grep "hugo_extended" | grep "Linux-64bit.tar.gz" | \
     cut -d : -f 2,3 | tr -d \" | \
@@ -45,25 +49,25 @@ RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     tar xfvz hugo*.tar.gz hugo && \
     install hugo /usr/local/bin/
 
-# Install terraform 0.12.16
+# install terraform
 RUN wget https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_linux_amd64.zip && \
     unzip terraform_0.12.16_linux_amd64.zip && \
     install terraform /usr/local/bin/
 
-# Helm installation
+# install helm
 RUN wget https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz && \
     tar xfvz helm-v3.0.2-linux-amd64.tar.gz linux-amd64/helm && \
     install linux-amd64/helm /usr/local/bin/
 
-# TravisCI CLI installation
+# install travis-ci cli
 RUN gem install travis -v 1.8.10 --no-rdoc --no-ri
 
 USER coder
 
-# Kubernetes and helm bash completion
+# bash completion - kubernetes and helm
 RUN echo "source /etc/bash_completion" >> ~/.bashrc
 RUN echo "source <(kubectl completion bash)" >> ~/.bashrc
 RUN echo "source <(helm completion bash)" >> ~/.bashrc
 
-# Google CLI/SDK installation
+# install google cli/sdk
 RUN curl https://sdk.cloud.google.com | bash
