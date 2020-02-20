@@ -41,6 +41,12 @@ RUN RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)" && \
     install kubelet /usr/local/bin/ && \
     install kubectl /usr/local/bin/
 
+# install goswagger
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
+    echo "deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main" | tee /etc/apt/sources.list.d/goswagger.list && \
+    apt-get update -qqy && \
+    apt-get install -qqy swagger
+
 # install hugo extended
 RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     grep "browser_download_url" | grep "hugo_extended" | grep "Linux-64bit.tar.gz" | \
