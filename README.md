@@ -18,34 +18,45 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
 
 ## Install
 
-1. Put your ssl cert (e.g. mydomain.crt) and key (e.g. mydomain.key) in [docker/ssl](docker/ssl).  Remove example.crt and example.key.
+1. Put your ssl cert (e.g. mydomain.crt) and key (e.g. mydomain.key) in [docker/ssl](docker/ssl).
 1. Build the docker images for components you are interested in.  For networking and security, the HAProxy and Keycloak images are always required.
    ```
+   # Set the REPO environment variable to the image repository
+   REPO=us.gcr.io/my-project/my-repo  # for example
+   ```
+   ```
+   # Build and push images
    cd docker
-   docker build --file DockerfileHaproxy --tag YOUR_REPO/haproxy:latest .
-   docker push YOUR_REPO/haproxy:latest
+   docker build --file DockerfileHaproxy --tag $REPO/haproxy:latest .
+   docker build --file DockerfileCodeServer --tag $REPO/code:latest .
+   docker build --file DockerfileKdenlive --tag $REPO/kdenlive:latest .
+   docker build --file DockerfileKeycloakSeeding --tag $REPO/keycloak-seeding:latest .
+   docker push $REPO/haproxy:latest
+   docker push $REPO/code:latest
+   docker push $REPO/kdenlive:latest
+   docker push $REPO/keycloak-seeding:latest
    cd ..
    ```
-   (Repeat for all Dockerfiles)
-1. Terraform install
+1. Provision with Terraform
 
-   (Configure variables.tf in the terraform directory, then...)
+   (Configure [variables.tf](terraform/variables.tf) in the terraform directory, then...)
    ```
    cd terraform
    terraform init
    terraform apply .
-   cd ...
+   cd ..
    ```
-1. Configure the Google Cloud Platform cli and Google Kubernetes Engine kubeconfig
+1. Configure the gcloud cli and kubeconfig
     ```
     gcloud init
     gcloud container clusters get-credentials YOUR_CLUSTER --zone YOUR_ZONE
     ```
-1. Helm install
+1. Install with Helm
 
     (Set your own values)
     ```
-    cd helm ..
+    cd helm
+    helm dependency update
     helm install . --generate-name --namespace YOUR_NAMESPACE \
         --set user=workstation \
         --set passwd=M@inz! \
@@ -54,7 +65,7 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
         --set encryptionKey=CHANGEME \
         --set hackmd.postgresql.postgresPassword=M@inz! \
         --set tensorflow-notebook.jupyter.password=M@inz! \
-        --set docker.registry=us.gcr.io/my-project/my-repo
+        --set docker.registry=$REPO
     ```
    1. You can use the following to generate the Helm values above for Keycloak client secret and encryption key
       ```
