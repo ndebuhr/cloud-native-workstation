@@ -48,6 +48,7 @@ spec:
     spec:
       initContainers:
       - image: {{ .Values.docker.registry }}/code:latest
+        imagePullPolicy: Always
         name: permissions
         securityContext:
           runAsUser: 0

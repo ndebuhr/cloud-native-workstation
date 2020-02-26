@@ -1,6 +1,6 @@
 apiVersion: v1
 name: cloud-native-workstation
-version: 0.4.0
+version: 0.5.0
 dependencies:
 - name: tensorflow-notebook
   version: 0.1.3
@@ -10,3 +10,7 @@ dependencies:
   version: 1.2.3
   repository: https://kubernetes-charts.storage.googleapis.com
   condition: components.hackmd.enabled
+- name: selenium
+  version: 1.0.10
+  repository: https://kubernetes-charts.storage.googleapis.com
+  condition: components.selenium.enabled

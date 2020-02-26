@@ -211,6 +211,7 @@ spec:
     spec:
       containers:
       - image: {{ .Values.docker.registry }}/keycloak-seeding:latest
+        imagePullPolicy: Always
         name: keycloak-init
         env:
         - name: USERNAME

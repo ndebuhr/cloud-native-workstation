@@ -1,3 +1,5 @@
+user: workstation
+passwd: M@inz!
 components:
   code:
     enabled: true
@@ -6,6 +8,8 @@ components:
   hackmd:
     enabled: true
   kdenlive:
+    enabled: false
+  selenium:
     enabled: false
 access:
 - name: keycloak
@@ -24,9 +28,15 @@ access:
   port: 6901
 - name: kdenlive-audio
   port: 8090
+- name: selenium
+  port: 4444
+- name: chrome
+  port: 6080
 hackmd:
   persistence:
     size: 64Gi
+  postgresql:
+    postgresPassword: M@inz!
 tensorflow-notebook:
   jupyter:
     image:
@@ -37,6 +47,7 @@ tensorflow-notebook:
       requests:
         cpu: "1"
         memory: "2Gi"
+    password: M@inz!
   tensorboard:
     image:
       repository: tensorflow/tensorflow
@@ -48,3 +59,20 @@ tensorflow-notebook:
         memory: "2Gi"
   service:
     type: ClusterIP
+selenium:
+  hub:
+    serviceType: ClusterIP
+    resources:
+      limits:
+        cpu: 1
+        memory: 1Gi
+    podAnnotations:
+      selenium: hub
+  chromeDebug:
+    enabled: true
+    resources:
+      limits:
+        cpu: 1
+        memory: 4Gi
+    podAnnotations:
+      selenium: chrome

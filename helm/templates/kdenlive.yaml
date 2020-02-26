@@ -47,6 +47,7 @@ spec:
     spec:
       containers:
       - image: {{ .Values.docker.registry }}/kdenlive:latest
+        imagePullPolicy: Always
         name: kdenlive
         ports:
         - name: desktop

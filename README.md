@@ -31,10 +31,12 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
    docker build --file DockerfileCodeServer --tag $REPO/code:latest .
    docker build --file DockerfileKdenlive --tag $REPO/kdenlive:latest .
    docker build --file DockerfileKeycloakSeeding --tag $REPO/keycloak-seeding:latest .
+   docker build --file DockerfileNovnc --tag $REPO/novnc:latest .
    docker push $REPO/haproxy:latest
    docker push $REPO/code:latest
    docker push $REPO/kdenlive:latest
    docker push $REPO/keycloak-seeding:latest
+   docker push $REPO/novnc:latest
    cd ..
    ```
 1. Provision with Terraform
@@ -52,27 +54,23 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
     gcloud container clusters get-credentials YOUR_CLUSTER --zone YOUR_ZONE
     ```
 1. Install with Helm
-
-    (Set your own values)
+    ```
+    # Generate a client secret and encryption key for keycloak (or provide your own)
+    WS_CLIENT_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c32)
+    WS_ENCRYPTION_KEY=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)
+    # Set the domain name for the workstation - this should match the SSL cert used in the HAProxy Docker image build
+    DOMAIN=example.com
+    ```
     ```
     cd helm
     helm dependency update
-    helm install . --generate-name --namespace YOUR_NAMESPACE \
-        --set user=workstation \
-        --set passwd=M@inz! \
-        --set domain=example.com \
-        --set clientSecret=CHANGEME \
-        --set encryptionKey=CHANGEME \
-        --set hackmd.postgresql.postgresPassword=M@inz! \
-        --set tensorflow-notebook.jupyter.password=M@inz! \
+    helm install . --generate-name \
+        --set domain=$DOMAIN  \
+        --set clientSecret=$WS_CLIENT_SECRET \
+        --set encryptionKey=$WS_ENCRYPTION_KEY \
         --set docker.registry=$REPO
     ```
-   1. You can use the following to generate the Helm values above for Keycloak client secret and encryption key
-      ```
-      WS_CLIENT_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c32)
-      WS_ENCRYPTION_KEY=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)
-      ```
-1. Create a DNS entry to point your domain to the Google Cloud Platform LoadBalancerIP (part of the helm installation).  The domain must resolve before the components will work (access by IP only is not possible).
+1. Create a DNS entry to point your domain to the Load Balancer created during the Helm installation.  The domain must resolve before the components will work (access by IP only is not possible).
 
 [https://docs.docker.com/engine/reference/commandline/build/](https://docs.docker.com/engine/reference/commandline/build/)
 
@@ -85,14 +83,18 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
 ## Usage
 
 Access the components you've enabled in the Helm values (after authenticating with the Keycloak proxy):
+
+* YOUR_DOMAIN:1313 for Development web server
+    * e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl YOUR_DOMAIN` in Code Server
 * YOUR_DOMAIN:3000 for Code Server IDE
-* YOUR_DOMAIN:8080 for Keycloak administration
-* YOUR_DOMAIN:8888 for Jupyter notebooks
-* YOUR_DOMAIN:6006 for Tensorboard
-* YOUR_DOMAIN:1313 for Development web server (e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl YOUR_DOMAIN` in Code Server)
 * YOUR_DOMAIN:3003 for HackMD markup notes
+* YOUR_DOMAIN:4444 for Selenium Grid hub
+* YOUR_DOMAIN:6006 for Tensorboard
+* YOUR_DOMAIN:6080 for Ubuntu+Chrome Selenium node
 * YOUR_DOMAIN:6901 for Kdenlive video editor
+* YOUR_DOMAIN:8080 for Keycloak administration
 * YOUR_DOMAIN:8090 for Kdenlive audio stream
+* YOUR_DOMAIN:8888 for Jupyter notebooks
 
 ## Contributing
 

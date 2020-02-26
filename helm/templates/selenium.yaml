@@ -1,0 +1,67 @@
+{{- if eq .Values.components.selenium.enabled true }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium
+spec:
+  type: ClusterIP
+  ports:
+  - name: selenium
+    port: 4444
+  selector:
+    app: {{ .Release.Name }}-selenium-hub
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chrome-vnc
+spec:
+  type: ClusterIP
+  ports:
+  - name: vnc
+    port: 5900
+  selector:
+    app: {{ .Release.Name }}-selenium-chrome-debug
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chrome
+spec:
+  type: ClusterIP
+  ports:
+  - name: novnc
+    port: 6080
+  selector:
+    app: novnc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: novnc
+  name: novnc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: novnc
+  template:
+    metadata:
+      labels:
+        app: novnc
+    spec:
+      containers:
+      - image: {{ .Values.docker.registry }}/novnc:latest
+        imagePullPolicy: Always
+        name: novnc
+        command: ["/bin/bash", "-c"]
+        args:
+        - "bash /opt/novnc/utils/launch.sh --vnc chrome-vnc:5900"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1"
+      restartPolicy: Always
+status: {}
+{{- end }}
