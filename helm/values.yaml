@@ -66,13 +66,12 @@ selenium:
       limits:
         cpu: 1
         memory: 1Gi
-    podAnnotations:
-      selenium: hub
   chromeDebug:
     enabled: true
     resources:
       limits:
         cpu: 1
         memory: 4Gi
-    podAnnotations:
-      selenium: chrome
+    extraEnvs:
+    - name: VNC_NO_PASSWORD
+      value: "1"
