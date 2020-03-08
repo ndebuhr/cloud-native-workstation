@@ -8,6 +8,7 @@ RUN apt-get update -qqy
 RUN apt-get install -qqy \
         apt-transport-https \
         bash-completion \
+        dnsutils \
         jq \
         lsb-release \
         openjdk-8-jdk \
