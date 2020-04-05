@@ -3,13 +3,13 @@ passwd: M@inz!
 components:
   code:
     enabled: true
-  tensorflow:
-    enabled: false
   hackmd:
-    enabled: true
+    enabled: false
   kdenlive:
     enabled: false
   selenium:
+    enabled: false
+  jupyter:
     enabled: false
 access:
 - name: keycloak
@@ -18,10 +18,6 @@ access:
   port: 3000
 - name: hugo
   port: 1313
-- name: tensorflow
-  port: 8888
-- name: tensorboard
-  port: 6006
 - name: hackmd
   port: 3003
 - name: kdenlive-desktop
@@ -32,33 +28,13 @@ access:
   port: 4444
 - name: chrome
   port: 6080
+- name: jupyter
+  port: 8888
 hackmd:
   persistence:
     size: 64Gi
   postgresql:
     postgresPassword: M@inz!
-tensorflow-notebook:
-  jupyter:
-    image:
-      repository: tensorflow/tensorflow
-      tag: 1.6.0-devel
-      pullPolicy: IfNotPresent
-    resources:
-      requests:
-        cpu: "1"
-        memory: "2Gi"
-    password: M@inz!
-  tensorboard:
-    image:
-      repository: tensorflow/tensorflow
-      tag: 1.6.0-devel
-      pullPolicy: IfNotPresent
-    resources:
-      requests:
-        cpu: "1"
-        memory: "2Gi"
-  service:
-    type: ClusterIP
 selenium:
   hub:
     serviceType: ClusterIP

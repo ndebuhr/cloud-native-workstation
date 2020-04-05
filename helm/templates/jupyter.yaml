@@ -1,0 +1,78 @@
+{{- if eq .Values.components.jupyter.enabled true }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter
+  labels:
+    app: jupyter
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: jupyter
+  template:
+    metadata:
+      labels:
+        app: jupyter
+    spec:
+      initContainers:
+      - image: jupyter/datascience-notebook:notebook-6.0.3
+        name: permissions
+        securityContext:
+          runAsUser: 0
+        command: ["/bin/bash", "-c"]
+        args:
+        - "chown -R jovyan:users /home/jovyan/work"
+        volumeMounts:
+        - name: jupyter
+          mountPath: /home/jovyan/work
+      containers:
+      - image: jupyter/datascience-notebook:notebook-6.0.3
+        name: jupyter
+        command: ["start.sh"]
+        args: ["jupyter", "lab", "--LabApp.token=''", "--LabApp.allow_origin='*'"]
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+        volumeMounts:
+        - name: jupyter
+          mountPath: /home/jovyan/work
+      volumes:
+      - name: jupyter
+        persistentVolumeClaim:
+          claimName: jupyter-pvc
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jupyter-pvc
+  labels:
+    app: jupyter
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 32Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyter
+  labels:
+    app: jupyter
+spec:
+  type: ClusterIP
+  selector:
+    app: jupyter
+  ports:
+  - name: jupyter
+    port: 8888
+---
+{{- end }}

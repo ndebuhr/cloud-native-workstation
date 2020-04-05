@@ -89,12 +89,11 @@ Access the components you've enabled in the Helm values (after authenticating wi
 * YOUR_DOMAIN:3000 for Code Server IDE
 * YOUR_DOMAIN:3003 for HackMD markup notes
 * YOUR_DOMAIN:4444 for Selenium Grid hub
-* YOUR_DOMAIN:6006 for Tensorboard
 * YOUR_DOMAIN:6080 for Ubuntu+Chrome Selenium node
 * YOUR_DOMAIN:6901 for Kdenlive video editor
 * YOUR_DOMAIN:8080 for Keycloak administration
 * YOUR_DOMAIN:8090 for Kdenlive audio stream
-* YOUR_DOMAIN:8888 for Jupyter notebooks
+* YOUR_DOMAIN:8888 for Jupyter data science notebook
 
 ## Contributing
 

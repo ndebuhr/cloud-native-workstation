@@ -16,13 +16,12 @@ do
       /opt/server.sh
       /opt/component.sh code 3000
       /opt/component.sh hugo 1313
-      /opt/component.sh tensorflow 8888
-      /opt/component.sh tensorboard 6006
       /opt/component.sh hackmd 3003
       /opt/component.sh kdenlive-desktop 6901
       /opt/component.sh kdenlive-audio 8090
       /opt/component.sh selenium 4444
       /opt/component.sh chrome 6080
+      /opt/component.sh jupyter 8888
       break
     fi
   else
