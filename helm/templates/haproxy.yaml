@@ -30,12 +30,72 @@ spec:
         app: haproxy
     spec:
       containers:
-      - image: {{ .Values.docker.registry }}/haproxy:latest
+      - name: haproxy
+        image: haproxytech/haproxy-debian:2.0
         imagePullPolicy: Always
-        name: haproxy
+        command: ["/usr/local/sbin/haproxy", "-f", "/etc/haproxy/haproxy.cfg"]
         resources:
           requests:
             memory: "256Mi"
             cpu: "100m"
+        volumeMounts:
+        - name: haproxy-cfg
+          mountPath: /etc/haproxy/haproxy.cfg
+          subPath: haproxy.cfg
+        - name: ssl-pem
+          mountPath: /etc/ssl/
+          readOnly: true
+      volumes:
+      - name: haproxy-cfg
+        configMap:
+          name: haproxy-cfg
+          defaultMode: 0644
+      - name: ssl-pem
+        secret:
+          secretName: ssl-pem
+          defaultMode: 0400
       restartPolicy: Always
 status: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-cfg
+data:
+  haproxy.cfg: |
+    defaults
+      mode http
+      timeout connect 5000ms
+      timeout client 50000ms
+      timeout server 50000ms
+
+    frontend components
+        mode http
+        bind *:20-8079 ssl crt /etc/ssl/ssl.pem
+        bind *:8081-10000 ssl crt /etc/ssl/ssl.pem
+        default_backend components
+
+    frontend keycloak
+        mode http
+        bind *:8080 ssl crt /etc/ssl/ssl.pem
+        default_backend keycloak
+
+    backend components
+        mode http
+        http-request add-header X-Forwarded-Proto https
+        http-request add-header X-Forwarded-Host %[req.hdr(Host)]
+        http-request add-header X-Forwarded-Port %[dst_port]
+        http-request add-header X-Forwarded-For %[src]
+        server keycloak-gatekeeper keycloak-gatekeeper
+
+    backend keycloak
+        mode http
+        http-request add-header X-Forwarded-Proto https
+        http-request add-header X-Forwarded-Host %[req.hdr(Host)]
+        http-request add-header X-Forwarded-Port %[dst_port]
+        http-request add-header X-Forwarded-For %[src]
+        http-response del-header Content-Security-Policy
+        http-response add-header Access-Control-Allow-Origin *
+        http-response add-header Access-Control-Allow-Headers *
+        http-response add-header Content-Security-Policy "frame-src *"
+        server keycloak keycloak

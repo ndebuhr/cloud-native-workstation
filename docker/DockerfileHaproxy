@@ -1,9 +1,0 @@
-FROM haproxytech/haproxy-debian:2.0
-
-# Setup the haproxy configuration and ssl
-COPY ./haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg
-COPY ./ssl/ /etc/ssl/
-RUN cat /etc/ssl/*.crt /etc/ssl/*.key > /etc/ssl/ssl.pem
-
-CMD []
-ENTRYPOINT ["/usr/local/sbin/haproxy", "-d", "-f", "/etc/haproxy/haproxy.cfg"]

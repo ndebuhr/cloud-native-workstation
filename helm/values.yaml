@@ -4,13 +4,15 @@ components:
   code:
     enabled: true
   hackmd:
-    enabled: false
+    enabled: true
   kdenlive:
     enabled: false
   selenium:
     enabled: false
   jupyter:
-    enabled: false
+    enabled: true
+  certbot:
+    enabled: true
 access:
 - name: keycloak
   port: 8080
