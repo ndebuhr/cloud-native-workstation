@@ -4,13 +4,13 @@ components:
   code:
     enabled: true
   hackmd:
-    enabled: true
+    enabled: false
   kdenlive:
     enabled: false
   selenium:
     enabled: false
   jupyter:
-    enabled: true
+    enabled: false
   certbot:
     enabled: true
 access:
