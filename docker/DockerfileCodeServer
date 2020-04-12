@@ -88,4 +88,3 @@ RUN curl https://sdk.cloud.google.com | bash
 
 # install code-server extensions
 RUN code-server --install-extension ms-vscode.go
-RUN code-server --install-extension streetsidesoftware.code-spell-checker
