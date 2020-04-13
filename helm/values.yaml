@@ -13,6 +13,8 @@ components:
     enabled: false
   certbot:
     enabled: true
+  landing:
+    enabled: false
 access:
 - name: keycloak
   port: 8080
@@ -32,6 +34,8 @@ access:
   port: 6080
 - name: jupyter
   port: 8888
+- name: landing
+  port: 443
 hackmd:
   persistence:
     size: 64Gi
@@ -53,3 +57,6 @@ selenium:
     extraEnvs:
     - name: VNC_NO_PASSWORD
       value: "1"
+landing:
+  image: gcr.io/google-samples/hello-app:2.0
+  targetPort: 8080

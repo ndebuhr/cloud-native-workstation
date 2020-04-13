@@ -1,0 +1,42 @@
+{{- if eq .Values.components.landing.enabled true }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: landing
+  name: landing
+spec:
+  type: ClusterIP
+  ports:
+  - name: landing
+    port: 443
+    targetPort: {{ .Values.landing.targetPort }}
+  selector:
+    app: landing
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: landing
+  name: landing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: landing
+  template:
+    metadata:
+      labels:
+        app: landing
+    spec:
+      containers:
+      - name: landing
+        image: {{ .Values.landing.image }}
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "125m"
+      restartPolicy: Always
+status: {}
+{{- end }}

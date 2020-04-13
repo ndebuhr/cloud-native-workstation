@@ -22,6 +22,7 @@ do
       /opt/component.sh selenium 4444
       /opt/component.sh chrome 6080
       /opt/component.sh jupyter 8888
+      /opt/component.sh landing 443
       break
     fi
   else
