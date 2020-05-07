@@ -23,6 +23,7 @@ do
       /opt/component.sh chrome 6080
       /opt/component.sh jupyter 8888
       /opt/component.sh landing 443
+      /opt/component.sh sonarqube 9000
       break
     fi
   else

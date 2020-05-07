@@ -10,3 +10,7 @@ dependencies:
   version: 1.0.10
   repository: https://kubernetes-charts.storage.googleapis.com
   condition: components.selenium.enabled
+- name: sonarqube
+  version: 6.0.1
+  repository: https://oteemo.github.io/charts/
+  condition: components.sonarqube.enabled

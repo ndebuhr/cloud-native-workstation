@@ -1,0 +1,14 @@
+{{- if eq .Values.components.sonarqube.enabled true }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 9000
+  selector:
+    app: sonarqube
+{{- end }}
