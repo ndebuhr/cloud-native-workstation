@@ -62,7 +62,6 @@ spec:
       containers:
       - image: {{ .Values.docker.registry }}/code:latest
         name: code
-        args: ["--auth", "none"]
         ports:
         - name: ide
           containerPort: 3000
@@ -73,6 +72,8 @@ spec:
           value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin:/home/coder/bin:/home/coder/.local/bin"
         - name: DOCKER_HOST
           value: tcp://localhost:2375
+        - name: PASSWORD
+          value: {{ .Values.passwd }}
         resources:
           requests:
             memory: "2Gi"
