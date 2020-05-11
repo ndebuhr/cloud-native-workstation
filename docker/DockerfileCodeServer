@@ -1,4 +1,4 @@
-FROM codercom/code-server:v2
+FROM codercom/code-server:3.2.0
 
 USER root
 ENV DEBIAN_FRONTEND noninteractive
@@ -11,20 +11,20 @@ RUN apt-get update -qqy && \
         dnsutils \
         jq \
         lsb-release \
-        openjdk-8-jdk \
         openjdk-11-jdk \
         python3 \
         python3-pip \
         ruby-dev \
         software-properties-common \
         texlive-latex-base \
-        texlive-xetex
+        texlive-xetex \
+        wget
 
 # install Docker using apt (docker daemon runs in sidecar)
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
     apt-get update -qqy && \
-    apt-get install -qqy docker-ce && \
+    apt-get install -qqy docker-ce docker-ce-cli containerd.io && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
