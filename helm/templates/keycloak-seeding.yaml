@@ -1,0 +1,436 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: master-keycloak-init
+  name: master-keycloak-init
+spec:
+  template:
+    metadata:
+      labels:
+        app: master-keycloak-init
+    spec:
+      containers:
+      - name: keycloak-init
+        image: {{ .Values.docker.registry }}/keycloak-seeding:latest
+        imagePullPolicy: Always
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          /opt/master.sh || exit $?
+        env:
+        - name: USERNAME
+          value: {{ .Values.user }}
+        - name: PASSWORD
+          value: {{ .Values.passwd }}
+        volumeMounts:
+        - name: master-sh
+          mountPath: /opt/master.sh
+          subPath: master.sh
+        - name: master-json
+          mountPath: /etc/master.json
+          subPath: master.json
+      volumes:
+      - name: master-sh
+        configMap:
+          name: master-sh
+          defaultMode: 0555
+      - name: master-json
+        configMap:
+          name: master-json
+          defaultMode: 0444
+      restartPolicy: Never
+  backoffLimit: 32
+status: {}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: client-scopes-keycloak-init
+  name: client-scopes-keycloak-init
+spec:
+  template:
+    metadata:
+      labels:
+        app: client-scopes-keycloak-init
+    spec:
+      containers:
+      - name: keycloak-init
+        image: {{ .Values.docker.registry }}/keycloak-seeding:latest
+        imagePullPolicy: Always
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          /opt/client-scopes.sh || exit $?
+        env:
+        - name: USERNAME
+          value: {{ .Values.user }}
+        - name: PASSWORD
+          value: {{ .Values.passwd }}
+        volumeMounts:
+        - name: client-scopes-sh
+          mountPath: /opt/client-scopes.sh
+          subPath: client-scopes.sh
+        - name: client-scopes-json
+          mountPath: /etc/client-scopes.json
+          subPath: client-scopes.json
+      volumes:
+      - name: client-scopes-sh
+        configMap:
+          name: client-scopes-sh
+          defaultMode: 0555
+      - name: client-scopes-json
+        configMap:
+          name: client-scopes-json
+          defaultMode: 0444
+      restartPolicy: Never
+  backoffLimit: 32
+status: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: master-sh
+data:
+  master.sh: |
+    ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
+      -d "username=$USERNAME&password=$PASSWORD&grant_type=password&client_id=admin-cli" | jq .access_token | sed 's/"//g')
+    curl -vv -f -X PUT "http://keycloak:8080/auth/admin/realms/master" \
+      -H "Accept: application/json" \
+      -H "Authorization: Bearer $ACCESSTOKEN" \
+      -H "Content-Type: application/json" \
+      -d @/etc/master.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-scopes-sh
+data:
+  client-scopes.sh: |
+    ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
+      -d "username=$USERNAME&password=$PASSWORD&grant_type=password&client_id=admin-cli" | jq .access_token | sed 's/"//g')
+    curl -vv -f -X POST "http://keycloak:8080/auth/admin/realms/master/client-scopes" \
+      -H "Accept: application/json" \
+      -H "Authorization: Bearer $ACCESSTOKEN" \
+      -H "Content-Type: application/json" \
+      -d @/etc/client-scopes.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: master-json
+data:
+  master.json: |
+    {
+        "id": "master",
+        "realm": "master",
+        "displayName": "Keycloak",
+        "displayNameHtml": "<div class=\"kc-logo-text\"><span>Keycloak</span></div>",
+        "notBefore": 0,
+        "revokeRefreshToken": false,
+        "refreshTokenMaxReuse": 0,
+        "accessTokenLifespan": 2592000,
+        "accessTokenLifespanForImplicitFlow": 2592000,
+        "ssoSessionIdleTimeout": 2592000,
+        "ssoSessionMaxLifespan": 2592000,
+        "ssoSessionIdleTimeoutRememberMe": 0,
+        "ssoSessionMaxLifespanRememberMe": 0,
+        "offlineSessionIdleTimeout": 2592000,
+        "offlineSessionMaxLifespanEnabled": false,
+        "offlineSessionMaxLifespan": 5184000,
+        "accessCodeLifespan": 2592000,
+        "accessCodeLifespanUserAction": 2592000,
+        "accessCodeLifespanLogin": 2592000,
+        "actionTokenGeneratedByAdminLifespan": 2592000,
+        "actionTokenGeneratedByUserLifespan": 2592000,
+        "enabled": true,
+        "sslRequired": "external",
+        "registrationAllowed": false,
+        "registrationEmailAsUsername": false,
+        "rememberMe": false,
+        "verifyEmail": false,
+        "loginWithEmailAllowed": true,
+        "duplicateEmailsAllowed": false,
+        "resetPasswordAllowed": false,
+        "editUsernameAllowed": false,
+        "bruteForceProtected": false,
+        "permanentLockout": false,
+        "maxFailureWaitSeconds": 900,
+        "minimumQuickLoginWaitSeconds": 60,
+        "waitIncrementSeconds": 60,
+        "quickLoginCheckMilliSeconds": 1000,
+        "maxDeltaTimeSeconds": 43200,
+        "failureFactor": 30,
+        "defaultRoles": [
+            "offline_access",
+            "uma_authorization"
+        ],
+        "requiredCredentials": [
+            "password"
+        ],
+        "otpPolicyType": "totp",
+        "otpPolicyAlgorithm": "HmacSHA1",
+        "otpPolicyInitialCounter": 0,
+        "otpPolicyDigits": 6,
+        "otpPolicyLookAheadWindow": 1,
+        "otpPolicyPeriod": 30,
+        "otpSupportedApplications": [
+            "FreeOTP",
+            "Google Authenticator"
+        ],
+        "browserSecurityHeaders": {
+            "contentSecurityPolicyReportOnly": "",
+            "xContentTypeOptions": "nosniff",
+            "xRobotsTag": "none",
+            "xFrameOptions": "SAMEORIGIN",
+            "xXSSProtection": "1; mode=block",
+            "contentSecurityPolicy": "frame-src self; frame-ancestors self; object-src none;",
+            "strictTransportSecurity": "max-age=31536000; includeSubDomains"
+        },
+        "smtpServer": {},
+        "eventsEnabled": false,
+        "eventsListeners": [
+            "jboss-logging"
+        ],
+        "enabledEventTypes": [],
+        "adminEventsEnabled": false,
+        "adminEventsDetailsEnabled": false,
+        "internationalizationEnabled": false,
+        "supportedLocales": [],
+        "browserFlow": "browser",
+        "registrationFlow": "registration",
+        "directGrantFlow": "direct grant",
+        "resetCredentialsFlow": "reset credentials",
+        "clientAuthenticationFlow": "clients",
+        "dockerAuthenticationFlow": "docker auth",
+        "attributes": {
+            "_browser_header.xXSSProtection": "1; mode=block",
+            "_browser_header.strictTransportSecurity": "max-age=31536000; includeSubDomains",
+            "_browser_header.xFrameOptions": "SAMEORIGIN",
+            "quickLoginCheckMilliSeconds": "1000",
+            "permanentLockout": "false",
+            "displayName": "Keycloak",
+            "_browser_header.xRobotsTag": "none",
+            "maxFailureWaitSeconds": "900",
+            "displayNameHtml": "<div class=\"kc-logo-text\"><span>Keycloak</span></div>",
+            "minimumQuickLoginWaitSeconds": "60",
+            "failureFactor": "30",
+            "actionTokenGeneratedByUserLifespan": "2592000",
+            "maxDeltaTimeSeconds": "43200",
+            "_browser_header.xContentTypeOptions": "nosniff",
+            "actionTokenGeneratedByAdminLifespan": "2592000",
+            "offlineSessionMaxLifespan": "5184000",
+            "_browser_header.contentSecurityPolicyReportOnly": "",
+            "bruteForceProtected": "false",
+            "_browser_header.contentSecurityPolicy": "frame-src self; frame-ancestors self; object-src none;",
+            "offlineSessionMaxLifespanEnabled": "false",
+            "waitIncrementSeconds": "60"
+        },
+        "userManagedAccessAllowed": false
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-scopes-json
+data:
+  client-scopes.json: |
+    {
+        "id": "all",
+        "name": "all",
+        "protocol": "openid-connect",
+        "attributes": {
+            "include.in.token.scope": "true",
+            "display.on.consent.screen": "true"
+        }
+    }
+---
+{{- $root := . }}
+{{- range .Values.access }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: {{ .name }}-keycloak-init
+  name: {{ .name }}-keycloak-init
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}-keycloak-init
+    spec:
+      containers:
+      - name: keycloak-init
+        image: {{ $root.Values.docker.registry }}/keycloak-seeding:latest
+        imagePullPolicy: Always
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          /opt/client.sh || exit $?
+          /opt/protocol-mapper.sh || exit $?
+          /opt/default-client-scopes.sh || exit $?
+        env:
+        - name: USERNAME
+          value: {{ $root.Values.user }}
+        - name: PASSWORD
+          value: {{ $root.Values.passwd }}
+        volumeMounts:
+        - name: {{ .name }}-client-sh
+          mountPath: /opt/client.sh
+          subPath: client.sh
+        - name: {{ .name }}-client-json
+          mountPath: /etc/client.json
+          subPath: client.json
+        - name: {{ .name }}-protocol-mapper-sh
+          mountPath: /opt/protocol-mapper.sh
+          subPath: protocol-mapper.sh
+        - name: {{ .name }}-protocol-mapper-json
+          mountPath: /etc/protocol-mapper.json
+          subPath: protocol-mapper.json
+        - name: {{ .name }}-default-client-scopes-sh
+          mountPath: /opt/default-client-scopes.sh
+          subPath: default-client-scopes.sh
+      volumes:
+      - name: {{ .name }}-client-sh
+        configMap:
+          name: {{ .name }}-client-sh
+          defaultMode: 0555
+      - name: {{ .name }}-client-json
+        configMap:
+          name: {{ .name }}-client-json
+          defaultMode: 0444
+      - name: {{ .name }}-protocol-mapper-sh
+        configMap:
+          name: {{ .name }}-protocol-mapper-sh
+          defaultMode: 0555
+      - name: {{ .name }}-protocol-mapper-json
+        configMap:
+          name: {{ .name }}-protocol-mapper-json
+          defaultMode: 0444
+      - name: {{ .name }}-default-client-scopes-sh
+        configMap:
+          name: {{ .name }}-default-client-scopes-sh
+          defaultMode: 0555
+      restartPolicy: Never
+  backoffLimit: 32
+status: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}-client-sh
+data:
+  client.sh: |
+    ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
+      -d "username=$USERNAME&password=$PASSWORD&grant_type=password&client_id=admin-cli" | jq .access_token | sed 's/"//g')
+    curl -vv -f -X POST "http://keycloak:8080/auth/admin/realms/master/clients" \
+      -H "Accept: application/json" \
+      -H "Authorization: Bearer $ACCESSTOKEN" \
+      -H "Content-Type: application/json" \
+      -d @/etc/client.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}-protocol-mapper-sh
+data:
+  protocol-mapper.sh: |
+    ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
+      -d "username=$USERNAME&password=$PASSWORD&grant_type=password&client_id=admin-cli" | jq .access_token | sed 's/"//g')
+    curl -vv -f -X POST "http://keycloak:8080/auth/admin/realms/master/client-scopes/all/protocol-mappers/models" \
+      -H "Accept: application/json" \
+      -H "Authorization: Bearer $ACCESSTOKEN" \
+      -H "Content-Type: application/json" \
+      -d @/etc/protocol-mapper.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}-default-client-scopes-sh
+data:
+  default-client-scopes.sh: |
+    ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
+      -d "username=$USERNAME&password=$PASSWORD&grant_type=password&client_id=admin-cli" | jq .access_token | sed 's/"//g')
+    curl -vv -f -X PUT "http://keycloak:8080/auth/admin/realms/master/clients/{{ .name }}/default-client-scopes/all" \
+      -H "Accept: application/json" \
+      -H "Authorization: Bearer $ACCESSTOKEN" \
+      -H "Content-Type: application/json"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}-client-json
+data:
+  client.json: |
+    {
+        "id": "{{ .name }}",
+        "clientId": "{{ .name }}",
+        "rootUrl": "http://{{ .name }}:{{ .port }}",
+        "adminUrl": "http://{{ .name }}:{{ .port }}",
+        "surrogateAuthRequired": false,
+        "enabled": true,
+        "clientAuthenticatorType": "client-secret",
+        "secret": "{{ $root.Values.clientSecret }}",
+        "redirectUris": [
+            "*"
+        ],
+        "webOrigins": [
+            "http://{{ .name }}:{{ .port }}"
+        ],
+        "notBefore": 0,
+        "bearerOnly": false,
+        "consentRequired": false,
+        "standardFlowEnabled": true,
+        "implicitFlowEnabled": false,
+        "directAccessGrantsEnabled": true,
+        "serviceAccountsEnabled": false,
+        "publicClient": false,
+        "frontchannelLogout": false,
+        "protocol": "openid-connect",
+        "attributes": {
+            "saml.assertion.signature": "false",
+            "saml.force.post.binding": "false",
+            "saml.multivalued.roles": "false",
+            "saml.encrypt": "false",
+            "saml.server.signature": "false",
+            "saml.server.signature.keyinfo.ext": "false",
+            "exclude.session.state.from.auth.response": "false",
+            "saml_force_name_id_format": "false",
+            "saml.client.signature": "false",
+            "tls.client.certificate.bound.access.tokens": "false",
+            "saml.authnstatement": "false",
+            "display.on.consent.screen": "false",
+            "saml.onetimeuse.condition": "false"
+        },
+        "authenticationFlowBindingOverrides": {},
+        "fullScopeAllowed": true,
+        "nodeReRegistrationTimeout": -1,
+        "access": {
+            "view": true,
+            "configure": true,
+            "manage": true
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}-protocol-mapper-json
+data:
+  protocol-mapper.json: |
+    {
+        "id": "{{ .name }}",
+        "name": "{{ .name }}",
+        "protocol": "openid-connect",
+        "protocolMapper": "oidc-audience-mapper",
+        "consentRequired": false,
+        "config": {
+            "included.client.audience": "{{ .name }}",
+            "id.token.claim": "true",
+            "access.token.claim": "true"
+        }
+    }
+{{- end }}

@@ -196,30 +196,3 @@ spec:
   {{- end }}
   selector:
     app: keycloak-gatekeeper
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  labels:
-    app: keycloak-init
-  name: keycloak-init
-spec:
-  template:
-    metadata:
-      labels:
-        app: keycloak-init
-    spec:
-      containers:
-      - image: {{ .Values.docker.registry }}/keycloak-seeding:latest
-        imagePullPolicy: Always
-        name: keycloak-init
-        env:
-        - name: USERNAME
-          value: {{ .Values.user }}
-        - name: PASSWORD
-          value: {{ .Values.passwd }}
-        - name: SECRET
-          value: {{ .Values.clientSecret }}
-      restartPolicy: Never
-  backoffLimit: 64
-status: {}

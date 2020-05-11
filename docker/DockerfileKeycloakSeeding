@@ -6,16 +6,6 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -qqy && \
     apt-get install -qqy \
         curl \
-        jq \
-        wget && \
+        jq && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-COPY ./keycloak/seeding-entrypoint.sh /opt/entrypoint.sh
-COPY ./keycloak/seeding-component.sh /opt/component.sh
-COPY ./keycloak/seeding-server.sh /opt/server.sh
-RUN chmod +x /opt/*.sh
-
-# TODO Clean this up
-ENTRYPOINT ["/bin/bash","-c"]
-CMD ["/opt/entrypoint.sh"]
