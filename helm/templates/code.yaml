@@ -77,7 +77,7 @@ spec:
         resources:
           requests:
             memory: "2Gi"
-            cpu: "500m"
+            cpu: "1"
         volumeMounts:
         - name: coder
           mountPath: /home/coder

@@ -161,6 +161,7 @@ spec:
             cpu: "50m"
         args:
         - --listen=:{{ .port }}
+        - --preserve-host=true
         - --discovery-url=https://{{ $root.Values.domain }}:8080/auth/realms/master
         - --oauth-uri=/devtools-oath
         - --upstream-url=http://{{ .name }}:{{ .port }}
