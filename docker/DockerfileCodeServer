@@ -28,6 +28,12 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Install gcloud cli
+RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
+    echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    apt-get update -qqy && apt-get install -qqy google-cloud-sdk
+
 RUN pip3 install black boto3
 
 RUN usermod -aG docker coder
@@ -82,9 +88,6 @@ USER coder
 RUN echo "source /etc/bash_completion" >> ~/.bashrc
 RUN echo "source <(kubectl completion bash)" >> ~/.bashrc
 RUN echo "source <(helm completion bash)" >> ~/.bashrc
-
-# install google cli/sdk
-RUN curl https://sdk.cloud.google.com | bash
 
 # install code-server extensions
 RUN code-server --install-extension ms-vscode.go
