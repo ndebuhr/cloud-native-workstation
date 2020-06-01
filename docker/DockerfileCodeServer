@@ -10,6 +10,7 @@ RUN apt-get update -qqy && \
         bash-completion \
         dnsutils \
         jq \
+        lldb \
         lsb-release \
         openjdk-11-jdk \
         python3 \
@@ -82,10 +83,11 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     unzip awscliv2.zip && \
     ./aws/install
 
-USER coder
-
 # install rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN cd /root/.cargo/bin && find . -type f | xargs -i install {} /usr/local/bin/
+
+USER coder
 
 # bash completion - kubernetes and helm
 RUN echo "source /etc/bash_completion" >> ~/.bashrc
