@@ -93,10 +93,10 @@ RUN cd /root/.cargo/bin && find . -type f | xargs -i install {} /usr/local/bin/
 RUN rustup toolchain install beta && rustup default beta
 RUN cargo install cargo-generate
 
-USER coder
-
 # install wasm-pack for rust+wasm
 RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+USER coder
 
 # bash completion - kubernetes and helm
 RUN echo "source /etc/bash_completion" >> ~/.bashrc
