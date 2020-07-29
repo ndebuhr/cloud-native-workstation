@@ -17,6 +17,8 @@ components:
     enabled: false
   sonarqube:
     enabled: false
+  guacamole:
+    enabled: false
 access:
 - name: keycloak
   port: 8080
@@ -40,6 +42,8 @@ access:
   port: 443
 - name: sonarqube
   port: 9000
+- name: guacamole
+  port: 8081
 hackmd:
   persistence:
     size: 64Gi

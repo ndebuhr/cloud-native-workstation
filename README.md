@@ -128,6 +128,7 @@ Access the components you've enabled in the Helm values (after authenticating wi
 * YOUR_DOMAIN:8090 for Kdenlive audio stream
 * YOUR_DOMAIN:8888 for Jupyter data science notebook
 * YOUR_DOMAIN:9000 for SonarQube
+* YOUR_DOMAIN:8081 for Apache Guacamole (default login guacadmin:guacadmin)
 
 ## Contributing
 
