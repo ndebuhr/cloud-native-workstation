@@ -96,6 +96,12 @@ RUN cargo install cargo-generate
 # install wasm-pack for rust+wasm
 RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
+# skopeo install
+RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
+    wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/Debian_10/Release.key -O- | apt-key add - && \
+    apt-get update -qq && \
+    apt-get -qqy install skopeo
+
 USER coder
 
 # bash completion - kubernetes and helm
