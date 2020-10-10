@@ -74,6 +74,8 @@ spec:
           value: tcp://localhost:2375
         - name: PASSWORD
           value: "{{ .Values.passwd }}"
+        securityContext:
+          privileged: true
         resources:
           requests:
             memory: "2Gi"
@@ -87,12 +89,12 @@ spec:
         env:
         - name: DOCKER_TLS_CERTDIR
           value: ""
+        securityContext:
+          privileged: true
         resources:
           requests:
             memory: 1Gi
             cpu: 500m
-        securityContext:
-            privileged: true
         volumeMounts:
           - name: code-dind-pv
             mountPath: /var/lib/docker
