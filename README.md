@@ -1,6 +1,7 @@
 # Cloud-Native Workstation _(cloud-native-workstation)_
 
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![Readme Standard](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=cloud-native-workstation&metric=alert_status)](https://sonarcloud.io/dashboard?id=cloud-native-workstation)
 
 > A set of development and prototyping tools that can be useful in some cloud-native-centric projects
 
