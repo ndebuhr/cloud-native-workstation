@@ -52,7 +52,7 @@ spec:
         app: novnc
     spec:
       containers:
-      - image: {{ .Values.docker.registry }}/cloud-native-workstation-novnc:latest
+      - image: {{ .Values.docker.registry }}/cloud-native-workstation-novnc:{{ .Values.docker.tag }}
         imagePullPolicy: Always
         name: novnc
         command: ["/bin/bash", "-c"]

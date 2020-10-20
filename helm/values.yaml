@@ -1,5 +1,7 @@
 # Public images on Docker Hub
-registry: ndebuhr
+docker:
+  registry: ndebuhr
+  tag: latest
 # Authentication for Code Server and Keycloak
 user: workstation
 passwd: M@inz!
