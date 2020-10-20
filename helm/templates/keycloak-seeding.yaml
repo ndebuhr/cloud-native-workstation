@@ -21,9 +21,9 @@ spec:
           /opt/master.sh || exit $?
         env:
         - name: USERNAME
-          value: {{ .Values.user }}
+          value: {{ .Values.authentication.username }}
         - name: PASSWORD
-          value: {{ .Values.passwd }}
+          value: {{ .Values.authentication.password }}
         volumeMounts:
         - name: master-sh
           mountPath: /opt/master.sh
@@ -66,9 +66,9 @@ spec:
           /opt/client-scopes.sh || exit $?
         env:
         - name: USERNAME
-          value: {{ .Values.user }}
+          value: {{ .Values.authentication.username }}
         - name: PASSWORD
-          value: {{ .Values.passwd }}
+          value: {{ .Values.authentication.password }}
         volumeMounts:
         - name: client-scopes-sh
           mountPath: /opt/client-scopes.sh
@@ -274,9 +274,9 @@ spec:
           /opt/default-client-scopes.sh || exit $?
         env:
         - name: USERNAME
-          value: {{ $root.Values.user }}
+          value: {{ $root.Values.authentication.username }}
         - name: PASSWORD
-          value: {{ $root.Values.passwd }}
+          value: {{ $root.Values.authentication.password }}
         volumeMounts:
         - name: {{ .name }}-client-sh
           mountPath: /opt/client.sh

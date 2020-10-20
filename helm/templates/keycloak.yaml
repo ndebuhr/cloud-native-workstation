@@ -22,9 +22,9 @@ spec:
         name: postgres
         env:
         - name: POSTGRES_USER
-          value: {{ .Values.user }}
+          value: {{ .Values.authentication.username }}
         - name: POSTGRES_PASSWORD
-          value: {{ .Values.passwd }}
+          value: {{ .Values.authentication.password }}
         - name: POSTGRES_DB
           value: keycloak
         ports:
@@ -94,17 +94,17 @@ spec:
         - name: DB_PORT
           value: "5432"
         - name: DB_USER
-          value: {{ .Values.user }}
+          value: {{ .Values.authentication.username }}
         - name: DB_PASSWORD
-          value: {{ .Values.passwd }}
+          value: {{ .Values.authentication.password }}
         - name: DB_DATABASE
           value: "keycloak"
         - name: DB_ADDR
           value: "keycloak-postgres"
         - name: KEYCLOAK_USER
-          value: {{ .Values.user }}
+          value: {{ .Values.authentication.username }}
         - name: KEYCLOAK_PASSWORD
-          value: {{ .Values.passwd }}
+          value: {{ .Values.authentication.password }}
         - name: PROXY_ADDRESS_FORWARDING
           value: "true"
         - name: KEYCLOAK_LOGLEVEL
@@ -162,7 +162,7 @@ spec:
         args:
         - --listen=:{{ .port }}
         - --preserve-host=true
-        - --discovery-url=https://{{ $root.Values.domain }}:8080/auth/realms/master
+        - --discovery-url=https://{{ $root.Values.certbot.domain }}:8080/auth/realms/master
         - --oauth-uri=/devtools-oath
         - --upstream-url=http://{{ .name }}:{{ .port }}
         - --verbose=true

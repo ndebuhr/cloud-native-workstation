@@ -89,40 +89,36 @@ docker push $REPO/cloud-native-workstation-novnc:latest
 cd ..
 ```
 
-## Install
-Configure [helm values](helm/values.yaml), then:
+## Configuration
+Configure [helm values](helm/values.yaml):
+
+### Docker Registry
+Configure the `docker.registry` and `docker.tag` values if you are not using the public Docker Hub images.
+
+### Keycloak
 ```
 # Generate a client secret and encryption key for keycloak (or provide your own)
-WS_CLIENT_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c32)
-WS_ENCRYPTION_KEY=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)
-# Set the domain name for the workstation - this should match the SSL certificate
-DOMAIN=example.com
-# Provide an email - this is only required if you are using the certbot option for SSL
-EMAIL=admin@example.com
+
+# To generate a value for the Keycloak client secret
+head /dev/urandom | tr -dc A-Za-z0-9 | head -c32
+# To generate a value for the Keycloak encryption key
+head /dev/urandom | tr -dc A-Za-z0-9 | head -c16
 ```
-If you are using the public Docker Hub images, install with:
-```
-cd helm
-helm dependency update
-helm install . --generate-name \
-    --set domain=$DOMAIN  \
-    --set clientSecret=$WS_CLIENT_SECRET \
-    --set encryptionKey=$WS_ENCRYPTION_KEY \
-    --set certbot.email=$EMAIL
-```
-If you have built your own images, install with:
+Use these for the `keycloak.clientSecret` and `keycloak.encryptionKey`, replacing the defaults for security.
+
+### Certbot
+The `certbot.domain` and `certbot.email` should be configured if you are using the Certbot option for TLS certificates.
+
+## Installation
+
+Install the workstation on the Kubernetes cluster with Helm:
 ```
 cd helm
 helm dependency update
-helm install . --generate-name \
-    --set domain=$DOMAIN  \
-    --set clientSecret=$WS_CLIENT_SECRET \
-    --set encryptionKey=$WS_ENCRYPTION_KEY \
-    --set docker.registry=$REPO \
-    --set certbot.email=$EMAIL
+helm install . --generate-name
 ```
 
-Create a DNS entry to point your domain to the Load Balancer created during the Helm installation.  To see the installed services, including this Load Balancer run:
+Create a DNS entry to point your domain to the Load Balancer created during the Helm installation.  To see the installed services, including this Load Balancer, run:
 ```
 kubectl get services
 ```

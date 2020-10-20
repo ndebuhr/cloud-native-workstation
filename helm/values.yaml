@@ -2,9 +2,21 @@
 docker:
   registry: ndebuhr
   tag: latest
+# Certbot details
+certbot:
+  domain: example.com
+  email: admin@example.com
+# Keycloak security
+keycloak:
+  # Change me!
+  clientSecret: OkSR7DMXAXzIrZIoWyN8yh0sFkiYrfJd
+  # Change me!
+  encryptionKey: 2u2iS0FH7pPjOUUn
 # Authentication for Code Server and Keycloak
-user: workstation
-passwd: M@inz!
+authentication:
+  username: workstation
+  # Change me!
+  password: M@inz!DE
 # Components included in the workstation
 components:
   code:

@@ -73,7 +73,7 @@ spec:
         - name: DOCKER_HOST
           value: tcp://localhost:2375
         - name: PASSWORD
-          value: "{{ .Values.passwd }}"
+          value: "{{ .Values.authentication.password }}"
         securityContext:
           privileged: true
         resources:
