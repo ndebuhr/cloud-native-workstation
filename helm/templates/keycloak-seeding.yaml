@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: keycloak-init
-        image: {{ .Values.docker.registry }}/keycloak-seeding:latest
+        image: {{ .Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:latest
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args:
@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
       - name: keycloak-init
-        image: {{ .Values.docker.registry }}/keycloak-seeding:latest
+        image: {{ .Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:latest
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args:
@@ -264,7 +264,7 @@ spec:
     spec:
       containers:
       - name: keycloak-init
-        image: {{ $root.Values.docker.registry }}/keycloak-seeding:latest
+        image: {{ $root.Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:latest
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args:

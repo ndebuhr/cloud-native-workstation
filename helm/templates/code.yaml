@@ -47,7 +47,7 @@ spec:
         app: code
     spec:
       initContainers:
-      - image: {{ .Values.docker.registry }}/code:latest
+      - image: {{ .Values.docker.registry }}/cloud-native-workstation-code-server:latest
         imagePullPolicy: Always
         name: permissions
         securityContext:
@@ -60,7 +60,7 @@ spec:
           mountPath: /home/coder
           subPath: home/coder
       containers:
-      - image: {{ .Values.docker.registry }}/code:latest
+      - image: {{ .Values.docker.registry }}/cloud-native-workstation-code-server:latest
         name: code
         ports:
         - name: ide

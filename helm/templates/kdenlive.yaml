@@ -46,7 +46,7 @@ spec:
         app: kdenlive
     spec:
       containers:
-      - image: {{ .Values.docker.registry }}/kdenlive:latest
+      - image: {{ .Values.docker.registry }}/cloud-native-workstation-kdenlive:latest
         imagePullPolicy: Always
         name: kdenlive
         ports:
