@@ -1,5 +1,9 @@
+# Public images on Docker Hub
+registry: ndebuhr
+# Authentication for Code Server and Keycloak
 user: workstation
 passwd: M@inz!
+# Components included in the workstation
 components:
   code:
     enabled: true
@@ -19,6 +23,7 @@ components:
     enabled: false
   guacamole:
     enabled: false
+# Ports for the component endpoints
 access:
 - name: keycloak
   port: 8080
@@ -44,6 +49,7 @@ access:
   port: 9000
 - name: guacamole
   port: 8081
+# Additional component-specific configuration
 hackmd:
   persistence:
     size: 64Gi

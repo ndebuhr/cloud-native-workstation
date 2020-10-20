@@ -7,9 +7,9 @@
 
 ## Background
 
-The components in this project are tailored towards my work - you'll need additions, revisions, and deletions to adapt the system to your needs.  The existing systems are geared towards:
+The components in this project are tailored towards cloud-native application development, delivery, and administration.  Specific use cases include:
 1. Prototyping cloud-native systems
-1. Developing simple microservices (golang) and landing pages (HUGO)
+1. Developing microservices and microsites
 1. Analyzing data - especially ETL processes with Python and REST APIs
 1. Provisioning cloud infrastructure with Terraform
 1. Managing Google Cloud Platform workloads
@@ -57,19 +57,19 @@ Generate a json key file for the service account and add it to Kubernetes as a s
 ```bash
 kubectl create secret generic google-json --from-file google.json
 ```
-Later, during the helm installation, be sure `certbot` is `enabled: true`
+Later, during the installation, be sure `certbot` is `enabled: true` in the Helm values
 
 ### Bring your own SSL certificate
 
-Create an `ssl.pem`, as a concatenation of the cert and private key files.  Load this up as a Kubernetes secret:
+Create an `ssl.pem`, as a concatenation of the cert and private key files.  Load this up as a generic Kubernetes secret:
 ```bash
 kubectl create secret generic ssl-pem --from-file ssl.pem
 ```
 Later, during the helm installation, be sure `certbot` is `enabled: false`
 
-## Build
+## Build (Optional)
 
-Build the docker images for components you are interested in.  For security, the Keycloak image is always required.
+If you do not want to use the public Docker Hub images, you need to build the docker images for components you are interested in.  For security, the Keycloak image is always required.
 
 ```
 # Set the REPO environment variable to the image repository
@@ -78,14 +78,14 @@ REPO=us.gcr.io/my-project/my-repo  # for example
 ```
 # Build and push images
 cd docker
-docker build --file DockerfileCodeServer --tag $REPO/code:latest .
-docker build --file DockerfileKdenlive --tag $REPO/kdenlive:latest .
-docker build --file DockerfileKeycloakSeeding --tag $REPO/keycloak-seeding:latest .
-docker build --file DockerfileNovnc --tag $REPO/novnc:latest .
-docker push $REPO/code:latest
-docker push $REPO/kdenlive:latest
-docker push $REPO/keycloak-seeding:latest
-docker push $REPO/novnc:latest
+docker build --file DockerfileCodeServer --tag $REPO/cloud-native-workstation-code:latest .
+docker build --file DockerfileKdenlive --tag $REPO/cloud-native-workstation-kdenlive:latest .
+docker build --file DockerfileKeycloakSeeding --tag $REPO/cloud-native-workstation-keycloak-seeding:latest .
+docker build --file DockerfileNovnc --tag $REPO/cloud-native-workstation-novnc:latest .
+docker push $REPO/cloud-native-workstation-code:latest
+docker push $REPO/cloud-native-workstation-kdenlive:latest
+docker push $REPO/cloud-native-workstation-keycloak-seeding:latest
+docker push $REPO/cloud-native-workstation-novnc:latest
 cd ..
 ```
 
@@ -100,6 +100,17 @@ DOMAIN=example.com
 # Provide an email - this is only required if you are using the certbot option for SSL
 EMAIL=admin@example.com
 ```
+If you are using the public Docker Hub images, install with:
+```
+cd helm
+helm dependency update
+helm install . --generate-name \
+    --set domain=$DOMAIN  \
+    --set clientSecret=$WS_CLIENT_SECRET \
+    --set encryptionKey=$WS_ENCRYPTION_KEY \
+    --set certbot.email=$EMAIL
+```
+If you have built your own images, install with:
 ```
 cd helm
 helm dependency update
@@ -110,13 +121,18 @@ helm install . --generate-name \
     --set docker.registry=$REPO \
     --set certbot.email=$EMAIL
 ```
-Create a DNS entry to point your domain to the Load Balancer created during the Helm installation.  The domain must resolve before the components will work (access by IP only is not possible).
+
+Create a DNS entry to point your domain to the Load Balancer created during the Helm installation.  To see the installed services, including this Load Balancer run:
+```
+kubectl get services
+```
+The domain must resolve before the components will work (access by IP only is not possible).
 
 Note that workstation creation can take a few minutes.  The DNS propagation is particularly time consuming.
 
 ## Usage
 
-Access the components you've enabled in the Helm values (after authenticating with the Keycloak proxy):
+Access the components that you've enabled in the Helm values (after authenticating with the Keycloak proxy):
 
 * YOUR_DOMAIN:1313 for Development web server
     * e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl YOUR_DOMAIN` in Code Server
