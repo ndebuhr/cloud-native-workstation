@@ -1,6 +1,6 @@
 # Cloud-Native Workstation _(cloud-native-workstation)_
 
-![Release Workflow](https://github.com/ndebuhr/cloud-native-workstation/workflows/release-workflow/badge.svg)
+![Release Workflow](https://github.com/ndebuhr/cloud-native-workstation/workflows/release%20workflow/badge.svg)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=cloud-native-workstation&metric=alert_status)](https://sonarcloud.io/dashboard?id=cloud-native-workstation)
 [![Readme Standard](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![MIT License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
