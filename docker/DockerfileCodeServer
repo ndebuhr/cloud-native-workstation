@@ -110,7 +110,6 @@ RUN echo "source <(kubectl completion bash)" >> ~/.bashrc
 RUN echo "source <(helm completion bash)" >> ~/.bashrc
 
 # install code-server extensions
-RUN code-server --install-extension ms-vscode.go
 RUN code-server --install-extension bungcip.better-toml
 RUN code-server --install-extension rust-lang.rust
 RUN code-server --install-extension james-yu.latex-workshop
