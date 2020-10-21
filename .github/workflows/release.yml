@@ -41,7 +41,6 @@ jobs:
       with:
         context: ./docker
         file: ./docker/DockerfileCodeServer
-        platforms: linux/amd64,linux/arm64,linux/386
         push: true
         tags: ndebuhr/cloud-native-workstation-code-server:latest
 
@@ -50,7 +49,6 @@ jobs:
       with:
         context: ./docker
         file: ./docker/DockerfileKdenlive
-        platforms: linux/amd64,linux/arm64,linux/386
         push: true
         tags: ndebuhr/cloud-native-workstation-kdenlive:latest
 
@@ -59,7 +57,6 @@ jobs:
       with:
         context: ./docker
         file: ./docker/DockerfileKeycloakSeeding
-        platforms: linux/amd64,linux/arm64,linux/386
         push: true
         tags: ndebuhr/cloud-native-workstation-keycloak-seeding:latest
 
@@ -68,6 +65,5 @@ jobs:
       with:
         context: ./docker
         file: ./docker/DockerfileNovnc
-        platforms: linux/amd64,linux/arm64,linux/386
         push: true
         tags: ndebuhr/cloud-native-workstation-novnc:latest
