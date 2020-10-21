@@ -12,12 +12,62 @@ jobs:
   sonarcloud:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: code checkout
+      uses: actions/checkout@v2
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
-    - name: SonarCloud Scan
+
+    - name: sonarcloud scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: setup up qemu
+      uses: docker/setup-qemu-action@v1
+
+    - name: setup docker buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: login to docker hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: build and push code server image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./docker
+        file: ./docker/DockerfileCodeServer
+        platforms: linux/amd64,linux/arm64,linux/386
+        push: true
+        tags: ndebuhr/cloud-native-workstation-code-server:latest
+
+    - name: build and push kdenlive image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./docker
+        file: ./docker/DockerfileKdenlive
+        platforms: linux/amd64,linux/arm64,linux/386
+        push: true
+        tags: ndebuhr/cloud-native-workstation-kdenlive:latest
+
+    - name: build and push keycloak seeding image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./docker
+        file: ./docker/DockerfileKeycloakSeeding
+        platforms: linux/amd64,linux/arm64,linux/386
+        push: true
+        tags: ndebuhr/cloud-native-workstation-keycloak-seeding:latest
+
+    - name: build and push novnc image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./docker
+        file: ./docker/DockerfileNovnc
+        platforms: linux/amd64,linux/arm64,linux/386
+        push: true
+        tags: ndebuhr/cloud-native-workstation-novnc:latest
