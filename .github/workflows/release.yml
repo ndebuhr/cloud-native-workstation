@@ -8,6 +8,8 @@ on:
       - master
   pull_request:
       types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
