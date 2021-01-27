@@ -1,4 +1,4 @@
-FROM codercom/code-server:3.4.1
+FROM codercom/code-server:3.8.0
 
 USER root
 ENV DEBIAN_FRONTEND noninteractive
@@ -43,23 +43,12 @@ RUN pip3 install black boto3 docker-compose
 
 RUN usermod -aG docker coder
 
-# install golang
-RUN wget https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz && \
-    tar xfz go1.13.5.linux-amd64.tar.gz -C /usr/local
-ENV GO_VERSION=1.13.5
-
 # install kubectl, kubeadm, and kubelet
 RUN RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)" && \
     curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl} && \
     install kubeadm /usr/local/bin/ && \
     install kubelet /usr/local/bin/ && \
     install kubectl /usr/local/bin/
-
-# install goswagger
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
-    echo "deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main" | tee /etc/apt/sources.list.d/goswagger.list && \
-    apt-get update -qqy && \
-    apt-get install -qqy swagger
 
 # install hugo extended
 RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
@@ -70,17 +59,14 @@ RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     install hugo /usr/local/bin/
 
 # install terraform
-RUN wget https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_linux_amd64.zip && \
-    unzip terraform_0.12.16_linux_amd64.zip && \
+RUN wget https://releases.hashicorp.com/terraform/0.14.5/terraform_0.14.5_linux_amd64.zip && \
+    unzip terraform_0.14.5_linux_amd64.zip && \
     install terraform /usr/local/bin/
 
 # install helm
-RUN wget https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz && \
-    tar xfvz helm-v3.0.2-linux-amd64.tar.gz linux-amd64/helm && \
+RUN wget https://get.helm.sh/helm-v3.5.0-linux-amd64.tar.gz && \
+    tar xfvz helm-v3.5.0-linux-amd64.tar.gz linux-amd64/helm && \
     install linux-amd64/helm /usr/local/bin/
-
-# install travis-ci cli
-RUN gem install travis -v 1.8.10 --no-rdoc --no-ri
 
 # install aws cli
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
@@ -91,7 +77,6 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN cd /root/.cargo/bin && find . -type f | xargs -i install {} /usr/local/bin/
 RUN rustup toolchain install beta && rustup default beta
-RUN cargo install cargo-generate
 
 # install wasm-pack for rust+wasm
 RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
