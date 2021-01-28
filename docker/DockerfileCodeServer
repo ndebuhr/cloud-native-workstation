@@ -77,9 +77,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN cd /root/.cargo/bin && find . -type f | xargs -i install {} /usr/local/bin/
 RUN rustup toolchain install beta && rustup default beta
-
-# install wasm-pack for rust+wasm
-RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+RUN cargo install --git https://github.com/rustwasm/wasm-pack.git
 
 # skopeo install
 RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
