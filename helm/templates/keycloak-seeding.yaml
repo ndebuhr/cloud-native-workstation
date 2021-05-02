@@ -373,7 +373,7 @@ data:
         "surrogateAuthRequired": false,
         "enabled": true,
         "clientAuthenticatorType": "client-secret",
-        "secret": "{{ $root.Values.clientSecret }}",
+        "secret": "{{ $root.Values.keycloak.clientSecret }}",
         "redirectUris": [
             "*"
         ],
