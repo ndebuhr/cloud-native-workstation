@@ -139,6 +139,8 @@ metadata:
   name: keycloak-gatekeeper
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: keycloak-gatekeeper
@@ -162,19 +164,19 @@ spec:
         args:
         - --listen=:{{ .port }}
         - --preserve-host=true
-        - --discovery-url=https://{{ $root.Values.certbot.domain }}:8080/auth/realms/master
+        - --discovery-url=https://{{ $root.Values.domain }}:8080/auth/realms/master
         - --oauth-uri=/devtools-oath
         - --upstream-url=http://{{ .name }}:{{ .port }}
         - --verbose=true
         - --resources=uri=/*|methods=GET
         - --skip-openid-provider-tls-verify=true
-        - --encryption-key={{ $root.Values.encryptionKey }}
+        - --encryption-key={{ $root.Values.keycloak.encryptionKey }}
         - --enable-refresh-tokens=true
         - --enable-encrypted-token=false
         - --cookie-refresh-name=kc-refresh-token
         - --enable-authorization-header=false
         - --client-id={{ .name }}
-        - --client-secret={{ $root.Values.clientSecret }}
+        - --client-secret={{ $root.Values.keycloak.clientSecret }}
         - --client-auth-method=secret-body
         - --server-read-timeout=50s
         - --server-write-timeout=50s

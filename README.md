@@ -63,11 +63,28 @@ Later, during the installation, be sure `certbot` is `enabled: true` in the Helm
 
 ### Bring your own SSL certificate
 
-Create an `ssl.pem`, as a concatenation of the cert and private key files.  Load this up as a generic Kubernetes secret:
+Create an `ssl.pem`, as a concatenation of the cert and private key files.  If you need a self-signed certificate, run the following bash commands:
+```
+openssl req -x509 \
+    -newkey rsa:2048 \
+    -days 3650 \
+    -nodes \
+    -out example.crt \
+    -keyout example.key
+```
+
+```
+cat example.crt example.key > ssl.pem
+rm example.crt example.key
+```
+
+Load this up as a generic Kubernetes secret:
+
 ```bash
 kubectl create secret generic ssl-pem --from-file ssl.pem
 ```
-Later, during the helm installation, be sure `certbot` is `enabled: false`
+
+Later, during the helm installation, be sure `certbot` is `enabled: false`.
 
 ## Build (Optional)
 
@@ -92,10 +109,10 @@ cd ..
 ```
 
 ## Configuration
-Configure [helm values](helm/values.yaml):
+Configure [helm values](helm/values.yaml), based on the instructions below.
 
 ### Docker Registry
-Configure the `docker.registry` and `docker.tag` values if you are not using the public Docker Hub images.
+Configure the `docker.registry` and `docker.tag` Helm values if you are not using the public Docker Hub images.
 
 ### Keycloak
 ```
@@ -106,10 +123,14 @@ head /dev/urandom | tr -dc A-Za-z0-9 | head -c32
 # To generate a value for the Keycloak encryption key
 head /dev/urandom | tr -dc A-Za-z0-9 | head -c16
 ```
-Use these for the `keycloak.clientSecret` and `keycloak.encryptionKey`, replacing the defaults for security.
+Use these for the `keycloak.clientSecret` and `keycloak.encryptionKey` Helm values - replacing the defaults for security.
+
+### Domain
+
+Set the `domain` value, based on the domain that you would like to run your workstation on.
 
 ### Certbot
-The `certbot.domain` and `certbot.email` should be configured if you are using the Certbot option for TLS certificates.
+The `certbot.email` should be configured if you are using the Certbot option for TLS certificates.
 
 ## Installation
 
@@ -120,7 +141,7 @@ helm dependency update
 helm install . --generate-name
 ```
 
-Create a DNS entry to point your domain to the Load Balancer created during the Helm installation.  To see the installed services, including this Load Balancer, run:
+Create a DNS entry to point your domain to the Load Balancer IP created during the Helm installation.  To see the installed services, including this Load Balancer, run:
 ```
 kubectl get services
 ```

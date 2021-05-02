@@ -14,8 +14,8 @@ spec:
         args:
         - |
             certbot certonly --dns-google --dns-google-credentials /home/certbot/.secrets/certbot/google.json \
-              -d {{ .Values.certbot.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
-            cat /etc/letsencrypt/live/{{ .Values.certbot.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.certbot.domain }}/privkey.pem > /etc/ssl/ssl.pem
+              -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
+            cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
         volumeMounts:
         - name: google-json
           mountPath: /home/certbot/.secrets/certbot/
@@ -61,8 +61,8 @@ spec:
             args:
             - |
                 certbot certonly --dns-google --dns-google-credentials /home/certbot/.secrets/certbot/google.json \
-                  -d {{ .Values.certbot.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
-                cat /etc/letsencrypt/live/{{ .Values.certbot.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.certbot.domain }}/privkey.pem > /etc/ssl/ssl.pem
+                  -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
+                cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
             volumeMounts:
             - name: google-json
               mountPath: /home/certbot/.secrets/certbot/

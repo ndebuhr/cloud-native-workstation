@@ -1,10 +1,11 @@
+# Domain for your workstation
+domain: example.com
 # Public images on Docker Hub
 docker:
   registry: ndebuhr
   tag: latest
 # Certbot details
 certbot:
-  domain: example.com
   email: admin@example.com
 # Keycloak security
 keycloak:
