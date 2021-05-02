@@ -16,3 +16,7 @@
 docker/ssl/*
 !docker/ssl/example.crt
 !docker/ssl/example.key
+
+# Key files
+google.json
+cloudflare.ini
