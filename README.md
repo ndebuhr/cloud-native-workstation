@@ -45,7 +45,8 @@ Secure SSL setup is required.  There are two options for SSL certificates:
 1. Automated SSL certificate generation using Let's Encrypt, Certbot, and the DNS01 challenge with Google Cloud DNS
 1. Bring your own certificate
 
-### Certbot with Let's Encrypt and DNS01 Challenge
+### Certbot with Google Cloud Platform DNS
+
 Create a Google Cloud Platform service account with the following permissions:
 1. dns.changes.create
 1. dns.changes.get
@@ -59,7 +60,21 @@ Generate a json key file for the service account and add it to Kubernetes as a s
 ```bash
 kubectl create secret generic google-json --from-file google.json
 ```
-Later, during the installation, be sure `certbot` is `enabled: true` in the Helm values
+Later, during the installation, be sure `certbot` is `enabled: true` and `certbot.type` is `google` in the Helm values
+
+### Certbot with Cloudflare DNS
+
+Create a Cloudflare API token with `Zone:DNS:Edit` permissions for only the zones you need certificates for.  Create a `cloudflare.ini` file using this format, and your specific API token:
+```
+# Cloudflare API token used by Certbot
+dns_cloudflare_api_token = 0123456789abcdef0123456789abcdef01234567
+```
+
+Once you have created the `cloudflare.ini` file, run:
+```bash
+kubectl create secret generic cloudflare-ini --from-file cloudflare.ini
+```
+Later, during the installation, be sure `certbot` is `enabled: true` and `certbot.type` is `cloudflare` in the Helm values
 
 ### Bring your own SSL certificate
 

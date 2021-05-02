@@ -6,6 +6,8 @@ docker:
   tag: latest
 # Certbot details
 certbot:
+  # Valid types are "google" and "cloudflare"
+  type: google
   email: admin@example.com
 # Keycloak security
 keycloak:

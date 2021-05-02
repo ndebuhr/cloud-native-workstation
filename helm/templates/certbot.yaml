@@ -1,4 +1,5 @@
 {{- if eq .Values.components.certbot.enabled true }}
+{{ if eq .Values.certbot.type "google" }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -88,6 +89,98 @@ spec:
           - name: ssl
             emptyDir: {}
           restartPolicy: OnFailure
+{{- end }}
+{{ if eq .Values.certbot.type "cloudflare" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: certbot-init
+spec:
+  template:
+    spec:
+      serviceAccountName: sa-ssl
+      initContainers:
+      - name: certbot
+        image: certbot/dns-cloudflare:v1.14.0
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+            certbot certonly --dns-cloudflare --dns-cloudflare-credentials /home/certbot/.secrets/certbot/cloudflare.ini \
+              -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
+            cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
+        volumeMounts:
+        - name: cloudflare-ini
+          mountPath: /home/certbot/.secrets/certbot/
+          readOnly: true
+        - name: ssl
+          mountPath: /etc/ssl
+      containers:
+      - name: ssl-secret-creation
+        image: bitnami/kubectl:latest
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+            kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
+              --dry-run -o yaml | kubectl apply -f -
+        volumeMounts:
+        - name: ssl
+          mountPath: /etc/ssl
+      volumes:
+      - name: cloudflare-ini
+        secret:
+          secretName: cloudflare-ini
+          defaultMode: 0400
+      - name: ssl
+        emptyDir: {}
+      restartPolicy: OnFailure
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: certbot
+spec:
+  # generate a new ssl certificate every 60 days
+  schedule: "0 11 12 */2 *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: sa-ssl
+          initContainers:
+          - name: certbot
+            image: certbot/dns-cloudflare:v1.14.0
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+                certbot certonly --dns-cloudflare --dns-cloudflare-credentials /home/certbot/.secrets/certbot/cloudflare.ini \
+                  -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
+                cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
+            volumeMounts:
+            - name: cloudflare-ini
+              mountPath: /home/certbot/.secrets/certbot/
+              readOnly: true
+            - name: ssl
+              mountPath: /etc/ssl
+          containers:
+          - name: ssl-secret-creation
+            image: bitnami/kubectl:latest
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+                kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
+                  --dry-run -o yaml | kubectl apply -f -
+            volumeMounts:
+            - name: ssl
+              mountPath: /etc/ssl
+          volumes:
+          - name: cloudflare-ini
+            secret:
+              secretName: cloudflare-ini
+              defaultMode: 0400
+          - name: ssl
+            emptyDir: {}
+          restartPolicy: OnFailure
+{{- end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
