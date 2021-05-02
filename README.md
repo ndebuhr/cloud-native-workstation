@@ -189,4 +189,4 @@ If you fork this and add something cool, please let me know or contribute it bac
 
 Licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-See license in [LICENSE.md](LICENSE.md)
+See license in [LICENSE](LICENSE)
