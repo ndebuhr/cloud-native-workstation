@@ -26,12 +26,6 @@ jobs:
     - name: Install terraform cli
       uses: hashicorp/setup-terraform@v1
 
-    - name: Install helm cli
-      run: |
-        wget https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz
-        tar xfvz helm-v3.5.4-linux-amd64.tar.gz linux-amd64/helm
-        install linux-amd64/helm /usr/local/bin/
-
     - name: Provision a GKE cluster
       working-directory: ./core
       run: |
@@ -41,6 +35,7 @@ jobs:
     - name: Deploy to GKE
       working-directory: ./helm
       run: |
+        alias helm="docker run -ti --rm -v $(pwd):/apps -v ~/.kube:/root/.kube -v ~/.helm:/root/.helm alpine/helm:3.5.4"
         helm install cloud-native-workstation . || exit 1
         helm uninstall cloud-native-workstation
 
