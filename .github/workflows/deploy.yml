@@ -36,7 +36,7 @@ jobs:
       working-directory: ./core
       run: |
         terraform init
-        terraform apply -auto-approve || terraform destroy -auto-approve && exit 1
+        terraform apply -auto-approve -var="gcp_project=${{ secrets.GCP_PROJECT_ID }}" || terraform destroy -auto-approve && exit 1
 
     - name: Deploy to GKE
       working-directory: ./helm

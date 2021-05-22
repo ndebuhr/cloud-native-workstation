@@ -1,6 +1,7 @@
 variable "gcp_project" {
   description = "ID of the target project on Google Cloud Platform"
   default = "my-project"
+  sensitive = true
 }
 
 variable "gcp_zone" {
