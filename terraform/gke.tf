@@ -1,19 +1,18 @@
 provider "google" {
-  credentials = "${file("${var.gcp_service_account_key_filepath}")}"
-  project     = ${var.gcp_project}
+  project     = var.gcp_project
 }
 
 resource "google_container_cluster" "primary" {
-  name                     = ${var.gke_cluster_name}
-  project                  = ${var.gcp_project}
-  location                 = ${var.gcp_zone}
+  name                     = var.gke_cluster_name
+  project                  = var.gcp_project
+  location                 = var.gcp_zone
   remove_default_node_pool = true
   initial_node_count       = 1
 }
 
 resource "google_container_node_pool" "primary_core" {
-  name       = core
-  location   = ${var.gcp_zone}
+  name       = "core"
+  location   = var.gcp_zone
   cluster    = google_container_cluster.primary.name
   node_count = 1
   autoscaling {
