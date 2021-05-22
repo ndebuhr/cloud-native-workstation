@@ -61,6 +61,7 @@ spec:
           subPath: home/coder
       containers:
       - image: {{ .Values.docker.registry }}/cloud-native-workstation-code-server:{{ .Values.docker.tag }}
+        imagePullPolicy: Always
         name: code
         ports:
         - name: ide
