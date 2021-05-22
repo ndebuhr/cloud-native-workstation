@@ -64,7 +64,6 @@ spec:
         persistentVolumeClaim:
           claimName: kdenlive-pvc
       restartPolicy: Always
-status: {}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

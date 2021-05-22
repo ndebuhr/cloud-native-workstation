@@ -39,7 +39,6 @@ spec:
       - name: keycloak-postgres
         persistentVolumeClaim:
           claimName: keycloak-postgres-pvc
-status: {}
 ---
 apiVersion: v1
 kind: Service
@@ -108,7 +107,6 @@ spec:
           value: "DEBUG"
         resources: {{- toYaml .Values.components.keycloak.resources | nindent 10 }}
       restartPolicy: Always
-status: {}
 ---
 apiVersion: v1
 kind: Service
@@ -173,7 +171,6 @@ spec:
         - --server-write-timeout=50s
       {{- end }}
       restartPolicy: Always
-status: {}
 ---
 apiVersion: v1
 kind: Service

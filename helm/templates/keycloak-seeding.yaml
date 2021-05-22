@@ -42,7 +42,6 @@ spec:
           defaultMode: 0444
       restartPolicy: Never
   backoffLimit: 32
-status: {}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -87,7 +86,6 @@ spec:
           defaultMode: 0444
       restartPolicy: Never
   backoffLimit: 32
-status: {}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -316,7 +314,6 @@ spec:
           defaultMode: 0555
       restartPolicy: Never
   backoffLimit: 32
-status: {}
 ---
 apiVersion: v1
 kind: ConfigMap

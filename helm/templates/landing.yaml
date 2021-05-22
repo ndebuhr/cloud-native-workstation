@@ -35,5 +35,4 @@ spec:
         image: {{ .Values.landing.image }}
         resources: {{- toYaml .Values.components.landing.resources | nindent 10 }}
       restartPolicy: Always
-status: {}
 {{- end }}

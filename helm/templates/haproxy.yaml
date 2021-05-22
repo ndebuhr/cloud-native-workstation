@@ -52,7 +52,6 @@ spec:
           secretName: ssl-pem
           defaultMode: 0400
       restartPolicy: Always
-status: {}
 ---
 apiVersion: v1
 kind: ConfigMap
