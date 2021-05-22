@@ -27,7 +27,7 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Provision a GKE cluster
-      working-directory: ./core
+      working-directory: ./terraform
       run: |
         terraform init
         terraform apply -auto-approve -var="gcp_project=${{ secrets.GCP_PROJECT_ID }}" || terraform destroy -auto-approve && exit 1
