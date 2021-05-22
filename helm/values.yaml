@@ -22,24 +22,125 @@ authentication:
   password: M@inz!DE
 # Components included in the workstation
 components:
+  keycloak:
+    resources:
+      requests: {}
+        # memory: "512Mi"
+        # cpu: "250m"
+      limits: {}
+        # memory: "2Gi"
+        # cpu: "1"
+    postgres:
+      resources:
+        requests: {}
+          # memory: "512Mi"
+          # cpu: "250m"
+        limits: {}
+          # memory: "2Gi"
+          # cpu: "1"
+    gatekeepers:
+      resources:
+        requests: {}
+          # memory: "128Mi"
+          # cpu: "50m"
+        limits: {}
+          # memory: "1Gi"
+          # cpu: "500m"
+  haproxy:
+    resources:
+      requests: {}
+        # memory: "256Mi"
+        # cpu: "100m"
+      limits: {}
+        # memory: "1Gi"
+        # cpu: "500m"
   code:
     enabled: true
+    resources:
+      requests: {}
+        # memory: "2Gi"
+        # cpu: "1"
+      limits: {}
+        # memory: "6Gi"
+        # cpu: "3"
+    dind:
+      image: docker
+      tag: 19-dind
+      resources:
+        requests: {}
+          # memory: "1Gi"
+          # cpu: "500m"
+        limits: {}
+          # memory: "3Gi"
+          # cpu: "1.5"
   hackmd:
     enabled: false
   kdenlive:
     enabled: false
+    resources:
+      requests: {}
+        # memory: "8Gi"
+        # cpu: "2"
+      limits: {}
+        # memory: "24Gi"
+        # cpu: "6"
   selenium:
     enabled: false
+    novnc:
+      resources:
+        requests: {}
+          # memory: "2Gi"
+          # cpu: "1"
+        limits: {}
+          # memory: "6Gi"
+          # cpu: "3"
   jupyter:
     enabled: false
+    resources:
+      requests: {}
+        # memory: "2Gi"
+        # cpu: "500m"
+      limits: {}
+        # memory: "6Gi"
+        # cpu: "1.5"
   certbot:
     enabled: true
   landing:
     enabled: false
+    resources:
+      requests: {}
+        # memory: "256Mi"
+        # cpu: "125m"
+      limits: {}
+        # memory: "1Gi"
+        # cpu: "500m"
   sonarqube:
     enabled: false
   guacamole:
     enabled: false
+    resources:
+      requests: {}
+        # memory: "2Gi"
+        # cpu: "1"
+      limits: {}
+        # memory: "6Gi"
+        # cpu: "3"
+    guacd:
+      resources:
+        requests: {}
+          # memory: "2Gi"
+          # cpu: "1"
+        limits: {}
+          # memory: "6Gi"
+          # cpu: "3"
+    postgres:
+      resources:
+        requests: {}
+          # memory: "1Gi"
+          # cpu: "500m"
+        limits: {}
+          # memory: "3Gi"
+          # cpu: "1.5"
 # Ports for the component endpoints
 access:
 - name: keycloak

@@ -54,10 +54,7 @@ spec:
           containerPort: 6901
         - name: audio
           containerPort: 8090
-        resources:
-          requests:
-            memory: "8Gi"
-            cpu: "2"
+        resources: {{- toYaml .Values.components.kdenlive.resources | nindent 10 }}
         volumeMounts:
         - name: kdenlive
           mountPath: /headless/Desktop

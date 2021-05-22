@@ -30,10 +30,7 @@ spec:
         ports:
         - containerPort: 5432
           name: postgresql
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
+        resources: {{- toYaml .Values.components.keycloak.postgres.resources | nindent 10 }}
         volumeMounts:
         - name: keycloak-postgres
           mountPath: /var/lib/postgresql/data
@@ -109,10 +106,7 @@ spec:
           value: "true"
         - name: KEYCLOAK_LOGLEVEL
           value: "DEBUG"
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
+        resources: {{- toYaml .Values.components.keycloak.resources | nindent 10 }}
       restartPolicy: Always
 status: {}
 ---
@@ -157,10 +151,7 @@ spec:
         ports:
         - containerPort: {{ .port }}
           name: listen
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "50m"
+        resources: {{- toYaml $root.Values.components.keycloak.gatekeepers.resources | nindent 10 }}
         args:
         - --listen=:{{ .port }}
         - --preserve-host=true

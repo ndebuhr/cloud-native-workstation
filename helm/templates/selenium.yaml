@@ -58,10 +58,7 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
         - "bash /opt/novnc/utils/launch.sh --vnc chrome-vnc:5900"
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "1"
+        resources: {{- toYaml .Values.components.selenium.novnc.resources | nindent 10 }}
       restartPolicy: Always
 status: {}
 {{- end }}

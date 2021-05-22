@@ -77,25 +77,19 @@ spec:
           value: "{{ .Values.authentication.password }}"
         securityContext:
           privileged: true
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "1"
+        resources: {{- toYaml .Values.components.code.resources | nindent 10 }}
         volumeMounts:
         - name: coder
           mountPath: /home/coder
           subPath: home/coder
       - name: dind-daemon
-        image: docker:19-dind
+        image: {{ .Values.components.code.dind.image }}:{{ .Values.components.code.dind.tag }}
         env:
         - name: DOCKER_TLS_CERTDIR
           value: ""
         securityContext:
           privileged: true
-        resources:
-          requests:
-            memory: 1Gi
-            cpu: 500m
+        resources: {{- toYaml .Values.components.code.dind.resources | nindent 10 }}
         volumeMounts:
           - name: code-dind-pv
             mountPath: /var/lib/docker

@@ -34,6 +34,7 @@ spec:
       containers:
       - image: guacamole/guacd:1.2.0
         name: guacd
+        resources: {{- toYaml .Values.components.guacamole.guacd.resources | nindent 10 }}
         resources:
           requests:
             cpu: "1"
@@ -91,10 +92,7 @@ spec:
           value: guacamole_user
         - name: POSTGRES_PASSWORD
           value: myguac123
-        resources:
-          requests:
-            cpu: "1"
-            memory: "2Gi"
+        resources: {{- toYaml .Values.components.guacamole.resources | nindent 10 }}
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -151,10 +149,7 @@ spec:
         ports:
         - name: postgresql
           containerPort: 5432
-        resources:
-          requests:
-            memory: "1Gi"
-            cpu: "500m"
+        resources: {{- toYaml .Values.components.guacamole.postgres.resources | nindent 10 }}
         volumeMounts:
         - name: guacamole-postgresql
           mountPath: /var/lib/postgresql/data

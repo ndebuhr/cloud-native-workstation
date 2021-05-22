@@ -34,10 +34,7 @@ spec:
         image: haproxytech/haproxy-debian:2.0
         imagePullPolicy: Always
         command: ["/usr/local/sbin/haproxy", "-f", "/etc/haproxy/haproxy.cfg"]
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
+        resources: {{- toYaml .Values.components.haproxy.resources | nindent 10 }}
         volumeMounts:
         - name: haproxy-cfg
           mountPath: /etc/haproxy/haproxy.cfg

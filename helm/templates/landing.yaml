@@ -33,10 +33,7 @@ spec:
       containers:
       - name: landing
         image: {{ .Values.landing.image }}
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "125m"
+        resources: {{- toYaml .Values.components.landing.resources | nindent 10 }}
       restartPolicy: Always
 status: {}
 {{- end }}
