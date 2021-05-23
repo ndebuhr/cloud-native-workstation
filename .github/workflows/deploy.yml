@@ -25,7 +25,7 @@ jobs:
 
     - name: Install helm
       run: |
-        gcloud container clusters get-credentials cloud-native-workstation --zone -us-central1-a
+        gcloud container clusters get-credentials cloud-native-workstation --zone us-central1-a
         alias helm="docker run -ti --rm -v $(pwd):/apps -v ~/.kube:/root/.kube -v ~/.helm:/root/.helm alpine/helm:3.5.4"
 
     - name: Install terraform cli
