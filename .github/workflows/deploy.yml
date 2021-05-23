@@ -49,6 +49,6 @@ jobs:
         helm uninstall cloud-native-workstation
 
     - name: Deprovision
-      working-directory: ./core
+      working-directory: ./terraform
       run: |
         terraform destroy -auto-approve
