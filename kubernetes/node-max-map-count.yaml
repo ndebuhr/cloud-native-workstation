@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vm-max-map-count
+  namespace: kube-system
+  labels:
+    k8s-app: vm-max-map-count
+spec:
+  selector:
+    matchLabels:
+      name: vm-max-map-count
+  template:
+    metadata:
+      labels:
+        name: vm-max-map-count
+    spec:
+      hostPID: true
+      containers:
+      - name: vm-max-map-count
+        image: gcr.io/google-containers/startup-script:v1
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+        env:
+        - name: STARTUP_SCRIPT
+          value: |
+            #! /bin/bash
+            sleep 5
+            while true; do
+              sysctl -w vm.max_map_count=262144
+              sleep 300
+            done

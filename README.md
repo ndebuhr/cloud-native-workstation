@@ -165,6 +165,13 @@ The domain must resolve before the components will work (access by IP only is no
 
 Note that workstation creation can take a few minutes.  The DNS propagation is particularly time consuming.
 
+### Update `vm.max_map_count` (Optional)
+
+If your work requires monitoring a large number of files (e.g., continually running a development server as you work on a large application), then you may want to bump vm.max_map_count on the Kubernetes nodes.
+```
+kubectl apply -f kubernetes/node-max-map-count.yaml
+```
+
 ## Usage
 
 Access the components that you've enabled in the Helm values (after authenticating with the Keycloak proxy):
