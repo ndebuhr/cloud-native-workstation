@@ -1,10 +1,10 @@
-provider "google" {
-  project     = var.gcp_project
-}
+provider "google" {}
+
+data "google_project" "project" {}
 
 resource "google_container_cluster" "primary" {
   name                     = var.gke_cluster_name
-  project                  = var.gcp_project
+  project                  = data.google_project.project.number
   location                 = var.gcp_zone
   remove_default_node_pool = true
   initial_node_count       = 1

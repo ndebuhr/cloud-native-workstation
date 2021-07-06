@@ -8,9 +8,10 @@
 # Local .terraform directories
 **/.terraform/*
 
-# Terrform state files
+# Terrform files
 *.tfstate
 *.tfstate.*
+terraform/.terraform.lock.hcl
 
 # Key files
 google.json

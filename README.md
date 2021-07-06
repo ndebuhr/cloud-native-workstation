@@ -8,8 +8,6 @@
 
 > A set of development and prototyping tools that can be useful in some cloud-native-centric projects
 
-## Background
-
 The components in this project are tailored towards cloud-native application development, delivery, and administration.  Specific use cases include:
 1. Prototyping cloud-native systems
 1. Developing microservices and microsites
@@ -20,21 +18,59 @@ The components in this project are tailored towards cloud-native application dev
 
 My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
+## Table of Contents
+
+- [Provisioning (Optional)](#provisioning-(optional))
+- [Configure `kubectl`](#configure-`kubectl`)
+- [Prepare SSL](#prepare-ssl)
+    - [Certbot with Google Cloud Platform DNS](#certbot-with-google-cloud-platform-dns)
+    - [Certbot with Cloudflare DNS](#certbot-with-cloudflare-dns)
+    - [Bring your own SSL certificate](#bring-your-own-ssl-certificate)
+- [Build (Optional)](#build-(optional))
+- [Configuration](#configuration)
+    - [Docker Registry](#docker-registry)
+    - [Keycloak](#keycloak)
+    - [Domain](#domain)
+    - [Certbot](#certbot)
+- [Installation](#installation)
+    - [Update `vm.max_map_count` (Optional)](#update-`vm.max_map_count`-(optional))
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Provisioning (Optional)
 
 If you would like to provision a Kubernetes cluster on Google Kubernetes Engine to run your workstation:
-1. Configure the [variables.tf](terraform/variables.tf) in the terraform directory
-2.
-    ```
-    cd terraform
-    terraform init
-    terraform apply .
-    cd ..
-    ```
+1. Create a Cloud Native Workstation role in Google Cloud Platform with the following permissions:
+    1. compute.instanceGroupManagers.get
+    1. container.clusters.create
+    1. container.clusters.delete
+    1. container.clusters.get
+    1. container.clusters.update
+    1. container.operations.get
+1. Create a new service account and assign the Cloud Native Workstation and Service Account User roles
+1. Generate a service account key
+1. Set the GCP authentication environment variable `export GOOGLE_APPLICATION_CREDENTIALS=YOUR_KEY_FILE.json`
+1. Set the GCP project environment variable `export GOOGLE_PROJECT=YOUR_PROJECT`
+1. Provision:
+    1. With the default zone (us-central1-a) and cluster name (cloud-native-workstation):
+        ```
+        cd terraform
+        terraform init
+        terraform apply
+        cd ..
+        ```
+    1. With a custom zone or custom cluster name:
+        ```
+        cd terraform
+        terraform init
+        terraform apply -var gcp_zone=YOUR_REGION -var gke_cluster_name=YOUR_CLUSTER_NAME
+        cd ..
+        ```
 
 ## Configure `kubectl`
 
-If using Google Kubernetes Engine, execute the commands below.  Replace YOUR_CLUSTER and YOUR_ZONE with values [from your Terraform provisioning](terraform/variables.tf) or from your existing target cluster.  Other cloud vendors should provide a similar cli and commands.
+If using Google Kubernetes Engine, execute the commands below.  If you [ran provisioning with the default GCP zone and cluster name](#provisioning-(optional)), then use `cloud-native-workstation` as the cluster name and `us-central1-a` as the cluster zone.  Other cloud vendors should provide a similar cli and commands, for configuring `kubectl`.
 ```
 gcloud init
 gcloud container clusters get-credentials YOUR_CLUSTER --zone YOUR_ZONE
@@ -48,16 +84,19 @@ Secure SSL setup is required.  There are two options for SSL certificates:
 
 ### Certbot with Google Cloud Platform DNS
 
-Create a Google Cloud Platform service account with the following permissions:
-1. dns.changes.create
-1. dns.changes.get
-1. dns.managedZones.list
-1. dns.resourceRecordSets.create
-1. dns.resourceRecordSets.delete
-1. dns.resourceRecordSets.list
-1. dns.resourceRecordSets.update
+1. In Google Cloud Platform, create a Cloud DNS zone for your domain
+1. In your domain name registrar, ensure the domain nameservers are set to the values from Google
+1. In Google Cloud Platform, create a Cloud Native Workstation Certbot role with the following permissions:
+    1. dns.changes.create
+    1. dns.changes.get
+    1. dns.managedZones.list
+    1. dns.resourceRecordSets.create
+    1. dns.resourceRecordSets.delete
+    1. dns.resourceRecordSets.list
+    1. dns.resourceRecordSets.update
+1. Create a new service account and assign the Cloud Native Workstation Certbot role
 
-Generate a json key file for the service account and add it to Kubernetes as a secret.  The file name must be exactly `google.json`.
+Generate a json key file for the service account and add it to Kubernetes as a secret.  Rename the file to `google.json`, then add it to Kubernetes as a secret:
 ```bash
 kubectl create secret generic google-json --from-file google.json
 ```
@@ -68,7 +107,7 @@ Later, during the installation, be sure `certbot` is `enabled: true` and `certbo
 Create a Cloudflare API token with `Zone:DNS:Edit` permissions for only the zones you need certificates for.  Create a `cloudflare.ini` file using this format, and your specific API token:
 ```
 # Cloudflare API token used by Certbot
-dns_cloudflare_api_token = 0123456789abcdef0123456789abcdef01234567
+dns_cloudflare_api_token = YOUR_TOKEN
 ```
 
 Once you have created the `cloudflare.ini` file, run:
@@ -153,9 +192,10 @@ Install the workstation on the Kubernetes cluster with Helm:
 cd helm
 helm dependency update
 helm install . --generate-name
+cd ..
 ```
 
-Create a DNS entry to point your domain to the Load Balancer IP created during the Helm installation.  To see the installed services, including this Load Balancer, run:
+Create a DNS entry to point your domain to the Load Balancer External IP created during the Helm installation.  To see the installed services, including this Load Balancer, run:
 ```
 kubectl get services
 ```
