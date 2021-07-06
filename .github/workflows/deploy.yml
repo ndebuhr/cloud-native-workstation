@@ -30,7 +30,7 @@ jobs:
       working-directory: ./terraform
       run: |
         terraform init
-        terraform apply -auto-approve -var="gcp_project=${{ secrets.GCP_PROJECT_ID }}"
+        terraform apply -auto-approve
 
     - name: Install helm
       run: |
