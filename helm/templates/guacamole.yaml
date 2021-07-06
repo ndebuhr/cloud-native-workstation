@@ -41,6 +41,28 @@ spec:
             memory: "2Gi"
       restartPolicy: Always
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: guacd
+spec:
+  podSelector:
+    matchLabels:
+      app: guacd
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: guacamole
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: guacamole
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -94,6 +116,25 @@ spec:
           value: myguac123
         resources: {{- toYaml .Values.components.guacamole.resources | nindent 10 }}
       restartPolicy: Always
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: guacamole
+spec:
+  podSelector:
+    matchLabels:
+      app: guacamole
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
+  egress:
+  - {}
 ---
 apiVersion: v1
 kind: Service
@@ -165,6 +206,28 @@ spec:
         configMap:
           name: guacamole-init-sql
           defaultMode: 0777
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: guacamole-postgresql
+spec:
+  podSelector:
+    matchLabels:
+      app: guacamole-postgresql
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: guacamole
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: guacamole
 ---
 apiVersion: v1
 kind: ConfigMap

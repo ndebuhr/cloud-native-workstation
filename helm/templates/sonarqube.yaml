@@ -11,4 +11,42 @@ spec:
     port: 9000
   selector:
     app: sonarqube
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sonarqube
+spec:
+  podSelector:
+    matchLabels:
+      app: sonarqube
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
+    - podSelector:
+        matchLabels:
+          app: code
+  egress:
+  - {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sonarqube-postgresql
+spec:
+  podSelector:
+    matchLabels:
+      app: postgresql
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: sonarqube
 {{- end }}

@@ -60,4 +60,67 @@ spec:
         - "bash /opt/novnc/utils/launch.sh --vnc chrome-vnc:5900"
         resources: {{- toYaml .Values.components.selenium.novnc.resources | nindent 10 }}
       restartPolicy: Always
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: novnc
+spec:
+  podSelector:
+    matchLabels:
+      app: novnc
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: {{ .Release.Name }}-selenium-chrome-debug
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: selenium
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Release.Name }}-selenium-hub
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - {}
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: {{ .Release.Name }}-selenium-chrome-debug
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: chrome-vnc
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Release.Name }}-selenium-chrome-debug
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: {{ .Release.Name }}-selenium-hub
+    - podSelector:
+        matchLabels:
+          app: novnc
+  egress:
+  - {}
 {{- end }}

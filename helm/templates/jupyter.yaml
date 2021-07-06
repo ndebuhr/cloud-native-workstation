@@ -44,6 +44,25 @@ spec:
           claimName: jupyter-pvc
       restartPolicy: Always
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: jupyter
+spec:
+  podSelector:
+    matchLabels:
+      app: jupyter
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
+  egress:
+  - {}
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

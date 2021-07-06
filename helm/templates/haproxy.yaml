@@ -53,6 +53,28 @@ spec:
           defaultMode: 0400
       restartPolicy: Always
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: haproxy
+spec:
+  podSelector:
+    matchLabels:
+      app: haproxy
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - {}
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
+    - podSelector:
+        matchLabels:
+          app: keycloak
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:

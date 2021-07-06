@@ -35,4 +35,20 @@ spec:
         image: {{ .Values.landing.image }}
         resources: {{- toYaml .Values.components.landing.resources | nindent 10 }}
       restartPolicy: Always
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: landing
+spec:
+  podSelector:
+    matchLabels:
+      app: landing
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
 {{- end }}

@@ -6,6 +6,9 @@ metadata:
   name: certbot-init
 spec:
   template:
+    metadata:
+      labels:
+        app: certbot
     spec:
       serviceAccountName: sa-ssl
       initContainers:
@@ -53,6 +56,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            app: certbot
         spec:
           serviceAccountName: sa-ssl
           initContainers:
@@ -97,6 +103,9 @@ metadata:
   name: certbot-init
 spec:
   template:
+    metadata:
+      labels:
+        app: certbot
     spec:
       serviceAccountName: sa-ssl
       initContainers:
@@ -144,6 +153,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            app: certbot
         spec:
           serviceAccountName: sa-ssl
           initContainers:
@@ -181,6 +193,19 @@ spec:
             emptyDir: {}
           restartPolicy: OnFailure
 {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: certbot
+spec:
+  podSelector:
+    matchLabels:
+      app: certbot
+  policyTypes:
+  - Egress
+  egress:
+  - {}
 ---
 apiVersion: v1
 kind: ServiceAccount
