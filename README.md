@@ -114,11 +114,9 @@ REPO=us.gcr.io/my-project/my-repo  # for example
 # Build and push images
 cd docker
 docker build --file DockerfileCodeServer --tag $REPO/cloud-native-workstation-code-server:latest .
-docker build --file DockerfileKdenlive --tag $REPO/cloud-native-workstation-kdenlive:latest .
 docker build --file DockerfileKeycloakSeeding --tag $REPO/cloud-native-workstation-keycloak-seeding:latest .
 docker build --file DockerfileNovnc --tag $REPO/cloud-native-workstation-novnc:latest .
 docker push $REPO/cloud-native-workstation-code-server:latest
-docker push $REPO/cloud-native-workstation-kdenlive:latest
 docker push $REPO/cloud-native-workstation-keycloak-seeding:latest
 docker push $REPO/cloud-native-workstation-novnc:latest
 cd ..
@@ -179,12 +177,9 @@ Access the components that you've enabled in the Helm values (after authenticati
 * YOUR_DOMAIN:1313 for Development web server
     * e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl YOUR_DOMAIN` in Code Server
 * YOUR_DOMAIN:3000 for Code Server IDE
-* YOUR_DOMAIN:3003 for HackMD markup notes
 * YOUR_DOMAIN:4444 for Selenium Grid hub
 * YOUR_DOMAIN:6080 for Ubuntu+Chrome Selenium node
-* YOUR_DOMAIN:6901 for Kdenlive video editor
 * YOUR_DOMAIN:8080 for Keycloak administration
-* YOUR_DOMAIN:8090 for Kdenlive audio stream
 * YOUR_DOMAIN:8888 for Jupyter data science notebook
 * YOUR_DOMAIN:9000 for SonarQube
 * YOUR_DOMAIN:8081 for Apache Guacamole (default login guacadmin:guacadmin)

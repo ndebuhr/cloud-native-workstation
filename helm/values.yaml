@@ -73,17 +73,6 @@ components:
         limits: {}
           # memory: "3Gi"
           # cpu: "1.5"
-  hackmd:
-    enabled: false
-  kdenlive:
-    enabled: false
-    resources:
-      requests: {}
-        # memory: "8Gi"
-        # cpu: "2"
-      limits: {}
-        # memory: "24Gi"
-        # cpu: "6"
   selenium:
     enabled: false
     novnc:
@@ -149,12 +138,6 @@ access:
   port: 3000
 - name: hugo
   port: 1313
-- name: hackmd
-  port: 3003
-- name: kdenlive-desktop
-  port: 6901
-- name: kdenlive-audio
-  port: 8090
 - name: selenium
   port: 4444
 - name: chrome
@@ -168,11 +151,6 @@ access:
 - name: guacamole
   port: 8081
 # Additional component-specific configuration
-hackmd:
-  persistence:
-    size: 64Gi
-  postgresql:
-    postgresPassword: M@inz!
 selenium:
   hub:
     serviceType: ClusterIP
