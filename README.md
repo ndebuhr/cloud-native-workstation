@@ -33,7 +33,9 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
     - [Domain](#domain)
     - [Certbot](#certbot)
 - [Installation](#installation)
+    - [Open Policy Agent](#open-policy-agent)
     - [Update `vm.max_map_count` (Optional)](#update-`vm.max_map_count`-(optional))
+    - [Cloud-native development platform](#cloud-native-development-platform)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
@@ -193,6 +195,22 @@ The `certbot.email` should be configured if you are using the Certbot option for
 
 ## Installation
 
+### Open Policy Agent
+
+Open Policy Agent is used for policy-based workstation controls and security.  Install with:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.5/deploy/gatekeeper.yaml
+```
+
+### Update `vm.max_map_count` (Optional)
+
+If your work requires monitoring a large number of files (e.g., continually running a development server as you work on a large application), then you may want to bump vm.max_map_count on the Kubernetes nodes.
+```
+kubectl apply -f kubernetes/node-max-map-count.yaml
+```
+
+### Cloud-native development platform
+
 Install the workstation on the Kubernetes cluster with Helm:
 ```
 cd helm
@@ -208,13 +226,6 @@ kubectl get services
 The domain must resolve before the components will work (access by IP only is not possible).
 
 Note that workstation creation can take a few minutes.  The DNS propagation is particularly time consuming.
-
-### Update `vm.max_map_count` (Optional)
-
-If your work requires monitoring a large number of files (e.g., continually running a development server as you work on a large application), then you may want to bump vm.max_map_count on the Kubernetes nodes.
-```
-kubectl apply -f kubernetes/node-max-map-count.yaml
-```
 
 ## Usage
 
