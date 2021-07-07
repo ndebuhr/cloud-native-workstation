@@ -200,6 +200,7 @@ The `certbot.email` should be configured if you are using the Certbot option for
 Open Policy Agent is used for policy-based workstation controls and security.  Install with:
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.5/deploy/gatekeeper.yaml
+kubectl apply -f kubernetes/constraint-templates.yaml
 ```
 
 ### Update `vm.max_map_count` (Optional)

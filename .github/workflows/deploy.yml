@@ -42,9 +42,11 @@ jobs:
         kubectl create namespace cloud-native-workstation
         kubectl config set-context --current --namespace cloud-native-workstation
 
-    - name: Install OPA gatekeeper
+    - name: Install cluster-level workstation prerequisites
       run: |
         kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.5/deploy/gatekeeper.yaml
+        kubectl apply -f kubernetes/node-max-map-count.yaml
+        kubectl apply -f kubernetes/constraint-templates.yaml
 
     - name: Deploy to GKE
       working-directory: ./helm
