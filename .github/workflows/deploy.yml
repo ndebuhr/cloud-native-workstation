@@ -37,6 +37,11 @@ jobs:
         gcloud container clusters get-credentials cloud-native-workstation --zone us-central1-a
         alias helm="docker run -ti --rm -v $(pwd):/apps -v ~/.kube:/root/.kube -v ~/.helm:/root/.helm alpine/helm:3.5.4"
 
+    - name: Setup kubeconfig
+      run: |
+        kubectl create namespace cloud-native-workstation
+        kubectl config set-context --current --namespace cloud-native-workstation
+
     - name: Deploy to GKE
       working-directory: ./helm
       run: |

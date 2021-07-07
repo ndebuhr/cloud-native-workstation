@@ -3,6 +3,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: haproxy
+  namespace: cloud-native-workstation
 spec:
   type: LoadBalancer
   selector:
@@ -16,9 +17,10 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: haproxy
+  namespace: cloud-native-workstation
   labels:
     app: haproxy
-  name: haproxy
 spec:
   replicas: 1
   selector:
@@ -57,6 +59,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: haproxy
+  namespace: cloud-native-workstation
 spec:
   podSelector:
     matchLabels:
@@ -79,6 +82,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: haproxy-cfg
+  namespace: cloud-native-workstation
 data:
   haproxy.cfg: |
     defaults

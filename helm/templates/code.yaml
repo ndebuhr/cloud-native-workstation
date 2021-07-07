@@ -2,9 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: code
+  namespace: cloud-native-workstation
   labels:
     app: code
-  name: code
 spec:
   type: ClusterIP
   ports:
@@ -17,9 +18,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: hugo
+  namespace: cloud-native-workstation
   labels:
     app: code
-  name: hugo
 spec:
   type: ClusterIP
   ports:
@@ -31,9 +33,10 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: code
+  namespace: cloud-native-workstation
   labels:
     app: code
-  name: code
 spec:
   replicas: 1
   strategy:
@@ -107,6 +110,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: code-server
+  namespace: cloud-native-workstation
 spec:
   podSelector:
     matchLabels:
@@ -126,6 +130,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: coder-pvc
+  namespace: cloud-native-workstation
   labels:
     app: code
 spec:
@@ -139,6 +144,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: code-dind-pvc
+  namespace: cloud-native-workstation
 spec:
   accessModes:
     - ReadWriteOnce

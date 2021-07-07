@@ -76,6 +76,12 @@ gcloud init
 gcloud container clusters get-credentials YOUR_CLUSTER --zone YOUR_ZONE
 ```
 
+Next, create a namespace and configure `kubectl` to use that namespace:
+```bash
+kubectl create namespace cloud-native-workstation
+kubectl config set-context --current --namespace cloud-native-workstation
+```
+
 ## Prepare SSL
 
 Secure SSL setup is required.  There are two options for SSL certificates:

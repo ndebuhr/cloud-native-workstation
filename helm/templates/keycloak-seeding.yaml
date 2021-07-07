@@ -2,9 +2,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  name: master-keycloak-init
+  namespace: cloud-native-workstation
   labels:
     app: master-keycloak-init
-  name: master-keycloak-init
 spec:
   template:
     metadata:
@@ -47,6 +48,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: master-keycloak-init
+  namespace: cloud-native-workstation
 spec:
   podSelector:
     matchLabels:
@@ -62,9 +64,10 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  name: client-scopes-keycloak-init
+  namespace: cloud-native-workstation
   labels:
     app: client-scopes-keycloak-init
-  name: client-scopes-keycloak-init
 spec:
   template:
     metadata:
@@ -107,6 +110,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: client-scopes-keycloak-init
+  namespace: cloud-native-workstation
 spec:
   podSelector:
     matchLabels:
@@ -123,6 +127,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: master-sh
+  namespace: cloud-native-workstation
 data:
   master.sh: |
     ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
@@ -137,6 +142,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: client-scopes-sh
+  namespace: cloud-native-workstation
 data:
   client-scopes.sh: |
     ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
@@ -151,6 +157,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: master-json
+  namespace: cloud-native-workstation
 data:
   master.json: |
     {
@@ -265,6 +272,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: client-scopes-json
+  namespace: cloud-native-workstation
 data:
   client-scopes.json: |
     {
@@ -283,9 +291,10 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  name: {{ .name }}-keycloak-init
+  namespace: cloud-native-workstation
   labels:
     app: {{ .name }}-keycloak-init
-  name: {{ .name }}-keycloak-init
 spec:
   template:
     metadata:
@@ -351,6 +360,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: {{ .name }}-keycloak-init
+  namespace: cloud-native-workstation
 spec:
   podSelector:
     matchLabels:
@@ -367,6 +377,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .name }}-client-sh
+  namespace: cloud-native-workstation
 data:
   client.sh: |
     ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
@@ -381,6 +392,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .name }}-protocol-mapper-sh
+  namespace: cloud-native-workstation
 data:
   protocol-mapper.sh: |
     ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
@@ -395,6 +407,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .name }}-default-client-scopes-sh
+  namespace: cloud-native-workstation
 data:
   default-client-scopes.sh: |
     ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
@@ -408,6 +421,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .name }}-client-json
+  namespace: cloud-native-workstation
 data:
   client.json: |
     {
@@ -464,6 +478,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .name }}-protocol-mapper-json
+  namespace: cloud-native-workstation
 data:
   protocol-mapper.json: |
     {
