@@ -44,10 +44,8 @@ jobs:
 
     - name: Install cluster-level workstation prerequisites
       run: |
-        kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.5/deploy/gatekeeper.yaml
+        ./opa/gatekeeper.sh
         kubectl apply -f kubernetes/node-max-map-count.yaml
-        kubectl apply -f kubernetes/constraint-templates.yaml
-        sleep 60
 
     - name: Deploy to GKE
       working-directory: ./helm
