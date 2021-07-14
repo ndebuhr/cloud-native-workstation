@@ -221,7 +221,7 @@ cd ..
 
 Create a DNS entry to point your domain to the Load Balancer External IP created during the Helm installation.  To see the installed services, including this Load Balancer, run:
 ```
-kubectl get services
+kubectl get service --field-selector=metadata.name=haproxy -o custom-columns=NAME:.metadata.name,TYPE:.spec.type,EXTERNAL-IP:.status.loadBalancer.ingress[0].ip
 ```
 The domain must resolve before the components will work (access by IP only is not possible).
 
