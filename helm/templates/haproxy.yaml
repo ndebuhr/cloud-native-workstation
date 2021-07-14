@@ -37,6 +37,8 @@ spec:
         imagePullPolicy: Always
         command: ["/usr/local/sbin/haproxy", "-f", "/etc/haproxy/haproxy.cfg"]
         resources: {{- toYaml .Values.components.haproxy.resources | nindent 10 }}
+        securityContext:
+          readOnlyRootFilesystem: true
         volumeMounts:
         - name: haproxy-cfg
           mountPath: /etc/haproxy/haproxy.cfg

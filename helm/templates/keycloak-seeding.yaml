@@ -25,6 +25,9 @@ spec:
           value: {{ .Values.authentication.username }}
         - name: PASSWORD
           value: {{ .Values.authentication.password }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
         volumeMounts:
         - name: master-sh
           mountPath: /opt/master.sh
@@ -87,6 +90,9 @@ spec:
           value: {{ .Values.authentication.username }}
         - name: PASSWORD
           value: {{ .Values.authentication.password }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
         volumeMounts:
         - name: client-scopes-sh
           mountPath: /opt/client-scopes.sh
@@ -316,6 +322,9 @@ spec:
           value: {{ $root.Values.authentication.username }}
         - name: PASSWORD
           value: {{ $root.Values.authentication.password }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
         volumeMounts:
         - name: {{ .name }}-client-sh
           mountPath: /opt/client.sh

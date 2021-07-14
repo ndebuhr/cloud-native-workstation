@@ -37,6 +37,8 @@ spec:
       - image: guacamole/guacd:1.2.0
         name: guacd
         resources: {{- toYaml .Values.components.guacamole.guacd.resources | nindent 10 }}
+        securityContext:
+          readOnlyRootFilesystem: true
         resources:
           requests:
             cpu: "1"

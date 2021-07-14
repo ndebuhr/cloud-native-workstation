@@ -35,6 +35,8 @@ spec:
         name: jupyter
         command: ["start.sh"]
         args: ["jupyter", "lab", "--LabApp.token=''", "--LabApp.allow_origin='*'"]
+        securityContext:
+          runAsNonRoot: true
         resources: {{- toYaml .Values.components.jupyter.resources | nindent 10 }}
         volumeMounts:
         - name: jupyter

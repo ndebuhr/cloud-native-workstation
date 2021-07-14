@@ -126,6 +126,8 @@ spec:
           value: "true"
         - name: KEYCLOAK_LOGLEVEL
           value: "DEBUG"
+        securityContext:
+          runAsNonRoot: true
         resources: {{- toYaml .Values.components.keycloak.resources | nindent 10 }}
       restartPolicy: Always
 ---
@@ -192,6 +194,8 @@ spec:
         ports:
         - containerPort: {{ .port }}
           name: listen
+        securityContext:
+          readOnlyRootFilesystem: true
         resources: {{- toYaml $root.Values.components.keycloak.gatekeepers.resources | nindent 10 }}
         args:
         - --listen=:{{ .port }}

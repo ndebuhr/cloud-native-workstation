@@ -35,6 +35,9 @@ spec:
         - |
             kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
               --dry-run -o yaml | kubectl apply -f -
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
         volumeMounts:
         - name: ssl
           mountPath: /etc/ssl
@@ -86,6 +89,9 @@ spec:
             - |
                 kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
                   --dry-run -o yaml | kubectl apply -f -
+            securityContext:
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
             volumeMounts:
             - name: ssl
               mountPath: /etc/ssl
@@ -134,6 +140,9 @@ spec:
         - |
             kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
               --dry-run -o yaml | kubectl apply -f -
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
         volumeMounts:
         - name: ssl
           mountPath: /etc/ssl
@@ -185,6 +194,9 @@ spec:
             - |
                 kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
                   --dry-run -o yaml | kubectl apply -f -
+            securityContext:
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
             volumeMounts:
             - name: ssl
               mountPath: /etc/ssl
