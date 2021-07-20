@@ -16,6 +16,35 @@ The components in this project are tailored towards cloud-native application dev
 1. Managing Google Cloud Platform workloads
 1. Handling Helm charts and Kubernetes resources
 
+Relevant technologies include:
+<style>
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    ". . . . . ."
+    ". . . . . .";
+}
+</style>
+<div class="container">
+<img src="images/certbot.png" title="Certbot">
+<img src="images/code-server.png" title="Code Server">
+<img src="images/docker.png" title="Docker">
+<img src="images/guacamole.png" title="Guacamole">
+<img src="images/helm.png" title="Helm">
+<img src="images/jupyter.png" title="Jupyter">
+<img src="images/keycloak.png" title="Keycloak">
+<img src="images/kubernetes.png" title="Kubernetes">
+<img src="images/open-policy-agent.png" title="Open Policy Agent">
+<img src="images/selenium.png" title="Selenium">
+<img src="images/sonarqube.png" title="SonarQube">
+<img src="images/terraform.png" title="Terraform">
+</div>
+
+
 My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
 ## Table of Contents
