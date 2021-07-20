@@ -17,20 +17,19 @@ The components in this project are tailored towards cloud-native application dev
 1. Handling Helm charts and Kubernetes resources
 
 Relevant technologies include:
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0px 0px; grid-auto-flow: row;">
-<img src="images/certbot.png" title="Certbot">
-<img src="images/code-server.png" title="Code Server">
-<img src="images/docker.png" title="Docker">
-<img src="images/guacamole.png" title="Guacamole">
-<img src="images/helm.png" title="Helm">
-<img src="images/jupyter.png" title="Jupyter">
-<img src="images/keycloak.png" title="Keycloak">
-<img src="images/kubernetes.png" title="Kubernetes">
-<img src="images/open-policy-agent.png" title="Open Policy Agent">
-<img src="images/selenium.png" title="Selenium">
-<img src="images/sonarqube.png" title="SonarQube">
-<img src="images/terraform.png" title="Terraform">
-</div>
+
+![Certbot](images/certbot.png "Certbot")
+![Code Server](images/code-server.png "Code Server")
+![Docker](images/docker.png "Docker")
+![Apache Guacamole](images/guacamole.png "Apache Guacamole")
+![Helm](images/helm.png "Helm")
+![Jupyter](images/jupyter.png "Jupyter")
+![Keycloak](images/keycloak.png "Keycloak")
+![Kubernetes](images/kubernetes.png "Kubernetes")
+![Open Policy Agent](images/open-policy-agent.png "Open Policy Agent")
+![Selenium](images/selenium.png "Selenium")
+![SonarQube](images/sonarqube.png "SonarQube")
+![Terraform](images/terraform.png "Terraform")
 
 My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
