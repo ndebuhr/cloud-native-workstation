@@ -96,3 +96,4 @@ RUN code-server --install-extension bungcip.better-toml
 RUN code-server --install-extension rust-lang.rust
 RUN code-server --install-extension james-yu.latex-workshop
 RUN code-server --install-extension redhat.vscode-yaml
+RUN code-server --install-extension tsandall.opa
