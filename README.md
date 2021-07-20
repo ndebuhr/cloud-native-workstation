@@ -17,19 +17,7 @@ The components in this project are tailored towards cloud-native application dev
 1. Handling Helm charts and Kubernetes resources
 
 Relevant technologies include:
-<style>
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 0px 0px;
-  grid-auto-flow: row;
-  grid-template-areas:
-    ". . . . . ."
-    ". . . . . .";
-}
-</style>
-<div class="container">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0px 0px; grid-auto-flow: row;">
 <img src="images/certbot.png" title="Certbot">
 <img src="images/code-server.png" title="Code Server">
 <img src="images/docker.png" title="Docker">
@@ -43,7 +31,6 @@ Relevant technologies include:
 <img src="images/sonarqube.png" title="SonarQube">
 <img src="images/terraform.png" title="Terraform">
 </div>
-
 
 My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
