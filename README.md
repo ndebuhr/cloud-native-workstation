@@ -33,6 +33,8 @@ Relevant technologies include:
 
 My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
+![Architecture Diagram](images/architecture.png "Architecture Diagram")
+
 ## Table of Contents
 
 - [Provisioning (Optional)](#provisioning-(optional))
