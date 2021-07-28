@@ -48,3 +48,49 @@ spec:
           missing := input.parameters.selector
           msg := sprintf("you must include the deployment label selector: %v", [input.parameters.selector])
         }
+---
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: resourcelimit
+spec:
+  crd:
+    spec:
+      names:
+        kind: ResourceLimit
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package resourcelimit
+        missing(obj, field) = true {
+          not obj[field]
+        }
+        missing(obj, field) = true {
+          obj[field] == ""
+        }
+        violation[{"msg": msg}] {
+          general_violation[{"msg": msg, "field": "containers"}]
+        }
+        violation[{"msg": msg}] {
+          general_violation[{"msg": msg, "field": "initContainers"}]
+        }
+        general_violation[{"msg": msg, "field": field}] {
+          container := input.review.object.spec[field][_]
+          not container.resources
+          msg := sprintf("container <%v> has no resource limits", [container.name])
+        }
+        general_violation[{"msg": msg, "field": field}] {
+          container := input.review.object.spec[field][_]
+          not container.resources.limits
+          msg := sprintf("container <%v> has no resource limits", [container.name])
+        }
+        general_violation[{"msg": msg, "field": field}] {
+          container := input.review.object.spec[field][_]
+          missing(container.resources.limits, "cpu")
+          msg := sprintf("container <%v> has no cpu limit", [container.name])
+        }
+        general_violation[{"msg": msg, "field": field}] {
+          container := input.review.object.spec[field][_]
+          missing(container.resources.limits, "memory")
+          msg := sprintf("container <%v> has no memory limit", [container.name])
+        }

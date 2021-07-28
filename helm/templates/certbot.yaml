@@ -21,6 +21,7 @@ spec:
             certbot certonly --dns-google --dns-google-credentials /home/certbot/.secrets/certbot/google.json \
               -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
+        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: google-json
           mountPath: /home/certbot/.secrets/certbot/
@@ -38,6 +39,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: ssl
           mountPath: /etc/ssl

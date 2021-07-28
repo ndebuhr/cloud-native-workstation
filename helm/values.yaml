@@ -27,42 +27,50 @@ components:
       requests: {}
         # memory: "512Mi"
         # cpu: "250m"
-      limits: {}
-        # memory: "2Gi"
-        # cpu: "1"
+      limits:
+        memory: "4Gi"
+        cpu: "2"
     postgres:
       resources:
         requests: {}
           # memory: "512Mi"
           # cpu: "250m"
-        limits: {}
-          # memory: "2Gi"
-          # cpu: "1"
+        limits:
+          memory: "4Gi"
+          cpu: "2"
     gatekeepers:
       resources:
         requests: {}
           # memory: "128Mi"
           # cpu: "50m"
-        limits: {}
-          # memory: "1Gi"
-          # cpu: "500m"
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+    init:
+      resources:
+        requests: {}
+          # memory: "128Mi"
+          # cpu: "50m"
+        limits:
+          memory: "256Mi"
+          cpu: "125m"
   haproxy:
     resources:
       requests: {}
         # memory: "256Mi"
         # cpu: "100m"
-      limits: {}
-        # memory: "1Gi"
-        # cpu: "500m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
   code:
     enabled: true
     resources:
       requests: {}
         # memory: "2Gi"
         # cpu: "1"
-      limits: {}
-        # memory: "6Gi"
-        # cpu: "3"
+      limits:
+        memory: "8Gi"
+        cpu: "4"
     dind:
       image: docker
       tag: 19-dind
@@ -70,9 +78,9 @@ components:
         requests: {}
           # memory: "1Gi"
           # cpu: "500m"
-        limits: {}
-          # memory: "3Gi"
-          # cpu: "1.5"
+        limits:
+          memory: "4Gi"
+          cpu: "2"
   selenium:
     enabled: false
     novnc:
@@ -80,29 +88,36 @@ components:
         requests: {}
           # memory: "2Gi"
           # cpu: "1"
-        limits: {}
-          # memory: "6Gi"
-          # cpu: "3"
+        limits:
+          memory: "4Gi"
+          cpu: "2"
   jupyter:
     enabled: false
     resources:
       requests: {}
         # memory: "2Gi"
         # cpu: "500m"
-      limits: {}
-        # memory: "6Gi"
-        # cpu: "1.5"
+      limits:
+        memory: "8Gi"
+        cpu: "4"
   certbot:
     enabled: true
+    resources:
+      requests: {}
+        # memory: "128Mi"
+        # cpu: "50m"
+      limits:
+        memory: "256Mi"
+        cpu: "125m"
   landing:
     enabled: false
     resources:
       requests: {}
         # memory: "256Mi"
         # cpu: "125m"
-      limits: {}
-        # memory: "1Gi"
-        # cpu: "500m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
   sonarqube:
     enabled: false
   guacamole:
@@ -111,25 +126,25 @@ components:
       requests: {}
         # memory: "2Gi"
         # cpu: "1"
-      limits: {}
-        # memory: "6Gi"
-        # cpu: "3"
+      limits:
+        memory: "4Gi"
+        cpu: "1"
     guacd:
       resources:
         requests: {}
           # memory: "2Gi"
           # cpu: "1"
-        limits: {}
-          # memory: "6Gi"
-          # cpu: "3"
+        limits:
+          memory: "4Gi"
+          cpu: "1"
     postgres:
       resources:
         requests: {}
           # memory: "1Gi"
           # cpu: "500m"
-        limits: {}
-          # memory: "3Gi"
-          # cpu: "1.5"
+        limits:
+          memory: "4Gi"
+          cpu: "2"
 # Ports for the component endpoints
 access:
 - name: keycloak
@@ -155,18 +170,37 @@ selenium:
   hub:
     serviceType: ClusterIP
     resources:
+      requests: {}
+        # memory: "512Mi"
+        # cpu: "1"
       limits:
         cpu: 1
-        memory: 1Gi
+        memory: 2Gi
   chromeDebug:
     enabled: true
     resources:
       limits:
-        cpu: 1
-        memory: 4Gi
+        cpu: 2
+        memory: 8Gi
     extraEnvs:
     - name: VNC_NO_PASSWORD
       value: "1"
+sonarqube:
+  initContainers:
+    resources:
+      requests: {}
+        # memory: "128Mi"
+        # cpu: "50m"
+      limits:
+        memory: "256Mi"
+        cpu: "125m"
+  resources:
+    requests: {}
+      # memory: "512Mi"
+      # cpu: "1"
+    limits:
+      cpu: 1
+      memory: 2Gi
 landing:
   image: gcr.io/google-samples/hello-app:2.0
   targetPort: 8080

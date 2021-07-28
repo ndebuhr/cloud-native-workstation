@@ -28,6 +28,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+        resources: {{- toYaml .Values.components.keycloak.init.resources | nindent 10 }}
         volumeMounts:
         - name: master-sh
           mountPath: /opt/master.sh
@@ -90,6 +91,7 @@ spec:
           value: {{ .Values.authentication.username }}
         - name: PASSWORD
           value: {{ .Values.authentication.password }}
+        resources: {{- toYaml .Values.components.keycloak.init.resources | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
@@ -322,6 +324,7 @@ spec:
           value: {{ $root.Values.authentication.username }}
         - name: PASSWORD
           value: {{ $root.Values.authentication.password }}
+        resources: {{- toYaml $root.Values.components.keycloak.init.resources | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true

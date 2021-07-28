@@ -39,10 +39,6 @@ spec:
         resources: {{- toYaml .Values.components.guacamole.guacd.resources | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
-        resources:
-          requests:
-            cpu: "1"
-            memory: "2Gi"
       restartPolicy: Always
 ---
 apiVersion: networking.k8s.io/v1
