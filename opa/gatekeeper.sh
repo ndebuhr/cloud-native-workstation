@@ -12,9 +12,11 @@ do
     requiredlabels=$?
     kubectl get deploymentselector 2> /dev/null
     deploymentselector=$?
+    kubectl get resourcelimit 2> /dev/null
+    resourcelimit=$?
     # Exit code 0 means there were no resources found (desired behavior)
     # Before CRD registration, the exit code for the get commands is 1
-    if [ $requiredlabels -ne 0 ] || [ $deploymentselector -ne 0 ]
+    if [ $requiredlabels -ne 0 ] || [ $deploymentselector -ne 0 ] ||  [ $resourcelimit -ne 0 ]
     then
         echo "Constraint Template CRDs: Still creating..."
         sleep 5
@@ -26,6 +28,8 @@ do
 done
 echo "Constraint Template CRDs: Failed"
 # On failure, display stderr
+set -x
 kubectl get requiredlabels
 kubectl get deploymentselector
+kubectl get resourcelimit
 exit 3
