@@ -27,13 +27,25 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    - name: meta for code server image
+      id: meta-code-server
+      uses: docker/metadata-action@v3
+      with:
+        images: ndebuhr/cloud-native-workstation-code-server
+
     - name: build and push code server image
       uses: docker/build-push-action@v2
       with:
         context: ./docker
         file: ./docker/DockerfileCodeServer
         push: true
-        tags: ndebuhr/cloud-native-workstation-code-server:latest
+        tags: ${{ steps.meta-code-server.outputs.tags }}
+
+    - name: meta for keycloak seeding image
+      id: meta-keycloak-seeding
+      uses: docker/metadata-action@v3
+      with:
+        images: ndebuhr/cloud-native-workstation-keycloak-seeding
 
     - name: build and push keycloak seeding image
       uses: docker/build-push-action@v2
@@ -41,7 +53,13 @@ jobs:
         context: ./docker
         file: ./docker/DockerfileKeycloakSeeding
         push: true
-        tags: ndebuhr/cloud-native-workstation-keycloak-seeding:latest
+        tags: ${{ steps.meta-keycloak-seeding.outputs.tags }}
+
+    - name: meta for novnc image
+      id: meta-novnc
+      uses: docker/metadata-action@v3
+      with:
+        images: ndebuhr/cloud-native-workstation-novnc
 
     - name: build and push novnc image
       uses: docker/build-push-action@v2
@@ -49,4 +67,4 @@ jobs:
         context: ./docker
         file: ./docker/DockerfileNovnc
         push: true
-        tags: ndebuhr/cloud-native-workstation-novnc:latest
+        tags: ${{ steps.meta-novnc.outputs.tags }}
