@@ -55,6 +55,7 @@ spec:
       labels:
         app: novnc
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - image: {{ .Values.docker.registry }}/cloud-native-workstation-novnc:{{ .Values.docker.tag }}
         imagePullPolicy: Always

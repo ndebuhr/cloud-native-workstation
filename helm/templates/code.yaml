@@ -49,6 +49,7 @@ spec:
       labels:
         app: code
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       initContainers:
       - image: {{ .Values.docker.registry }}/cloud-native-workstation-code-server:{{ .Values.docker.tag }}
         imagePullPolicy: Always

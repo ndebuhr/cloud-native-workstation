@@ -33,6 +33,7 @@ spec:
       labels:
         app: guacd
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - image: guacamole/guacd:1.2.0
         name: guacd
@@ -99,6 +100,7 @@ spec:
       labels:
         app: guacamole
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - image: guacamole/guacamole:1.2.0
         name: guacamole
@@ -184,6 +186,7 @@ spec:
       labels:
         app: guacamole-postgresql
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - image: postgres:9.6
         name: postgresql

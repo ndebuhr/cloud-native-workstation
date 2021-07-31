@@ -12,6 +12,7 @@ spec:
       labels:
         app: master-keycloak-init
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: keycloak-init
         image: {{ .Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ .Values.docker.tag }}
@@ -78,6 +79,7 @@ spec:
       labels:
         app: client-scopes-keycloak-init
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: keycloak-init
         image: {{ .Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ .Values.docker.tag }}
@@ -309,6 +311,7 @@ spec:
       labels:
         app: {{ .name }}-keycloak-init
     spec:
+      {{ toYaml $root.Values.podDefaults | nindent 6 }}
       containers:
       - name: keycloak-init
         image: {{ $root.Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ $root.Values.docker.tag }}

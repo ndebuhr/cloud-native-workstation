@@ -32,6 +32,7 @@ spec:
       labels:
         app: landing
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: landing
         image: {{ .Values.landing.image }}

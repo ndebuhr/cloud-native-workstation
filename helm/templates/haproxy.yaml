@@ -31,6 +31,7 @@ spec:
       labels:
         app: haproxy
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: haproxy
         image: haproxytech/haproxy-debian:2.0

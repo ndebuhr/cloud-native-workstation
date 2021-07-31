@@ -19,6 +19,7 @@ spec:
       labels:
         app: jupyter
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       initContainers:
       - image: jupyter/datascience-notebook:notebook-6.0.3
         name: permissions

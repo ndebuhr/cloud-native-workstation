@@ -18,6 +18,7 @@ spec:
       labels:
         app: keycloak-postgres
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - image: postgres:9.6
         name: postgres
@@ -102,6 +103,7 @@ spec:
       labels:
         app: keycloak
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - image: jboss/keycloak:7.0.0
         name: keycloak
@@ -186,6 +188,7 @@ spec:
       labels:
         app: keycloak-gatekeeper
     spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       {{- $root := . }}
       {{- range .Values.access }}

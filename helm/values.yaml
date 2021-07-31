@@ -165,6 +165,9 @@ access:
   port: 9000
 - name: guacamole
   port: 8081
+podDefaults:
+  automountServiceAccountToken: false
+  serviceAccountName: workstation-default
 # Additional component-specific configuration
 selenium:
   hub:
