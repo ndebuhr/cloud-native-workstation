@@ -8,6 +8,7 @@ resource "google_container_cluster" "primary" {
   location                 = var.gcp_zone
   remove_default_node_pool = true
   initial_node_count       = 1
+  enable_shielded_nodes = true
   network_policy {
     enabled = true
   }
@@ -23,6 +24,7 @@ resource "google_container_node_pool" "primary_core" {
     max_node_count = 4
   }
   node_config {
+    image_type = "COS_CONTAINERD"
     machine_type = "n1-standard-8"
     metadata = {
       disable-legacy-endpoints = "true"
@@ -32,5 +34,8 @@ resource "google_container_node_pool" "primary_core" {
       "https://www.googleapis.com/auth/monitoring",
       "https://www.googleapis.com/auth/devstorage.read_only"
     ]
+    workload_metadata_config {
+      node_metadata = "SECURE"
+    }
   }
 }
