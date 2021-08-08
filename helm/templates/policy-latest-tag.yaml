@@ -1,3 +1,4 @@
+{{- if eq .Values.policies.enabled true }}
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: DisallowedTags
 metadata:
@@ -11,3 +12,4 @@ spec:
     - "cloud-native-workstation"
   parameters:
     tags: ["latest"]
+{{- end }}

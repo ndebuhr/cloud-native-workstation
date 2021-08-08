@@ -20,6 +20,9 @@ authentication:
   username: workstation
   # Change me!
   password: M@inz!DE
+# Network policies and OPA constraint templates
+policies:
+  enabled: true
 # Components included in the workstation
 components:
   keycloak:
