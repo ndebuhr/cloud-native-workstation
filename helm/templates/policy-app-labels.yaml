@@ -10,7 +10,7 @@ spec:
     - apiGroups: [""]
       kinds: ["Pod"]
     namespaces:
-    - "cloud-native-workstation"
+    - {{ .Values.namespace }}
   parameters:
     labels: ["app"]
 ---
@@ -24,7 +24,7 @@ spec:
     - apiGroups: ["apps"]
       kinds: ["Deployment"]
     namespaces:
-    - "cloud-native-workstation"
+    - {{ .Values.namespace }}
   parameters:
     selector: "app"
 {{- end }}

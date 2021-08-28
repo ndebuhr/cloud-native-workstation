@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: landing
-  namespace: cloud-native-workstation
+  namespace: {{ .Values.namespace }}
   labels:
     app: landing
 spec:
@@ -19,7 +19,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: landing
-  namespace: cloud-native-workstation
+  namespace: {{ .Values.namespace }}
   labels:
     app: landing
 spec:
@@ -43,7 +43,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: landing
-  namespace: cloud-native-workstation
+  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
