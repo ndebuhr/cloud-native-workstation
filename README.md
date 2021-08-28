@@ -18,18 +18,18 @@ The components in this project are tailored towards cloud-native application dev
 
 Relevant technologies include:
 
-![Certbot](images/certbot.png "Certbot")
-![Code Server](images/code-server.png "Code Server")
-![Docker](images/docker.png "Docker")
-![Apache Guacamole](images/guacamole.png "Apache Guacamole")
-![Helm](images/helm.png "Helm")
-![Jupyter](images/jupyter.png "Jupyter")
-![Keycloak](images/keycloak.png "Keycloak")
-![Kubernetes](images/kubernetes.png "Kubernetes")
-![Open Policy Agent](images/open-policy-agent.png "Open Policy Agent")
-![Selenium](images/selenium.png "Selenium")
-![SonarQube](images/sonarqube.png "SonarQube")
-![Terraform](images/terraform.png "Terraform")
+[![Certbot](images/certbot.png "Certbot")](https://certbot.eff.org/)
+[![Code Server](images/code-server.png "Code Server")](https://github.com/cdr/code-server)
+[![Docker](images/docker.png "Docker")](https://www.docker.com/)
+[![Apache Guacamole](images/guacamole.png "Apache Guacamole")](https://guacamole.apache.org/)
+[![Helm](images/helm.png "Helm")](https://helm.sh/)
+[![Jupyter](images/jupyter.png "Jupyter")](https://jupyter.org/)
+[![Keycloak](images/keycloak.png "Keycloak")](https://www.keycloak.org/)
+[![Kubernetes](images/kubernetes.png "Kubernetes")](https://kubernetes.io/)
+[![Open Policy Agent](images/open-policy-agent.png "Open Policy Agent")](https://www.openpolicyagent.org/)
+[![Selenium](images/selenium.png "Selenium")](https://www.selenium.dev/)
+[![SonarQube](images/sonarqube.png "SonarQube")](https://www.sonarqube.org/)
+[![Terraform](images/terraform.png "Terraform")](https://www.terraform.io/)
 
 My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
