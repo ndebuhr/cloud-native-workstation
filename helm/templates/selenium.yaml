@@ -65,6 +65,7 @@ spec:
         - "bash /opt/novnc/utils/novnc_proxy --vnc chrome-vnc:5900"
         resources: {{- toYaml .Values.components.selenium.novnc.resources | nindent 10 }}
       restartPolicy: Always
+{{- if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -131,4 +132,5 @@ spec:
           app: novnc
   egress:
   - {}
+{{- end }}
 {{- end }}

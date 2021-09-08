@@ -57,6 +57,7 @@ spec:
           secretName: ssl-pem
           defaultMode: 0400
       restartPolicy: Always
+{{- if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -80,6 +81,7 @@ spec:
     - podSelector:
         matchLabels:
           app: keycloak
+{{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap

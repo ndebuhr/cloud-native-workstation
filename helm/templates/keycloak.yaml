@@ -41,6 +41,7 @@ spec:
       - name: keycloak-postgres
         persistentVolumeClaim:
           claimName: keycloak-postgres-pvc
+{{- if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -58,6 +59,7 @@ spec:
     - podSelector:
         matchLabels:
           app: keycloak
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -132,6 +134,7 @@ spec:
           runAsNonRoot: true
         resources: {{- toYaml .Values.components.keycloak.resources | nindent 10 }}
       restartPolicy: Always
+{{- if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -152,6 +155,7 @@ spec:
     - podSelector:
         matchLabels:
           app: keycloak-postgres
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -221,6 +225,7 @@ spec:
         - --server-write-timeout=50s
       {{- end }}
       restartPolicy: Always
+{{- if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -241,6 +246,7 @@ spec:
           app: haproxy
   egress:
   - {}
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
