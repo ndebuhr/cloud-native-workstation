@@ -51,7 +51,12 @@ jobs:
       working-directory: ./helm
       run: |
         helm dep update
-        helm install cloud-native-workstation .
+        helm install cloud-native-workstation . \
+            --set components.selenium.enabled=true \
+            --set components.jupyter.enabled=true \
+            --set components.landing.enabled=true \
+            --set components.sonarqube.enabled=true \
+            --set components.guacamole.enabled=true
 
     - name: Undeploy
       working-directory: ./helm
