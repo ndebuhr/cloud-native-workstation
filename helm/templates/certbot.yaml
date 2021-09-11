@@ -85,7 +85,7 @@ spec:
               mountPath: /etc/ssl
           containers:
           - name: ssl-secret-creation
-            image: bitnami/kubectl:latest
+            image: bitnami/kubectl:1.20
             command: ["/bin/sh", "-c"]
             args:
             - |
@@ -136,7 +136,7 @@ spec:
           mountPath: /etc/ssl
       containers:
       - name: ssl-secret-creation
-        image: bitnami/kubectl:latest
+        image: bitnami/kubectl:1.20
         command: ["/bin/sh", "-c"]
         args:
         - |
@@ -190,7 +190,7 @@ spec:
               mountPath: /etc/ssl
           containers:
           - name: ssl-secret-creation
-            image: bitnami/kubectl:latest
+            image: bitnami/kubectl:1.20
             command: ["/bin/sh", "-c"]
             args:
             - |
