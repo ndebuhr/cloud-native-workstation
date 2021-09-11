@@ -2,19 +2,19 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: master-keycloak-init
+  name: keycloak-init
   namespace: {{ .Values.namespace }}
   labels:
-    app: master-keycloak-init
+    app: keycloak-init
 spec:
   template:
     metadata:
       labels:
-        app: master-keycloak-init
+        app: keycloak-init
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      containers:
-      - name: keycloak-init
+      initContainers:
+      - name: master-keycloak-init
         image: {{ .Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ .Values.docker.tag }}
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
@@ -37,53 +37,7 @@ spec:
         - name: master-json
           mountPath: /etc/master.json
           subPath: master.json
-      volumes:
-      - name: master-sh
-        configMap:
-          name: master-sh
-          defaultMode: 0555
-      - name: master-json
-        configMap:
-          name: master-json
-          defaultMode: 0444
-      restartPolicy: Never
-  backoffLimit: 32
-{{- if eq .Values.policies.enabled true }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: master-keycloak-init
-  namespace: {{ .Values.namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: master-keycloak-init
-  policyTypes:
-  - Egress
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: keycloak
-{{- end }}
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: client-scopes-keycloak-init
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: client-scopes-keycloak-init
-spec:
-  template:
-    metadata:
-      labels:
-        app: client-scopes-keycloak-init
-    spec:
-      {{ toYaml .Values.podDefaults | nindent 6 }}
-      containers:
-      - name: keycloak-init
+      - name: client-scopes-keycloak-init
         image: {{ .Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ .Values.docker.tag }}
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
@@ -95,10 +49,10 @@ spec:
           value: {{ .Values.authentication.username }}
         - name: PASSWORD
           value: {{ .Values.authentication.password }}
-        resources: {{- toYaml .Values.components.keycloak.init.resources | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+        resources: {{- toYaml .Values.components.keycloak.init.resources | nindent 10 }}
         volumeMounts:
         - name: client-scopes-sh
           mountPath: /opt/client-scopes.sh
@@ -106,7 +60,59 @@ spec:
         - name: client-scopes-json
           mountPath: /etc/client-scopes.json
           subPath: client-scopes.json
+{{- $root := . }}
+{{- range .Values.access }}
+      - name: {{ .name }}-keycloak-init
+        image: {{ $root.Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ $root.Values.docker.tag }}
+        imagePullPolicy: Always
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          /opt/client.sh || exit $?
+          /opt/protocol-mapper.sh || exit $?
+          /opt/default-client-scopes.sh || exit $?
+        env:
+        - name: USERNAME
+          value: {{ $root.Values.authentication.username }}
+        - name: PASSWORD
+          value: {{ $root.Values.authentication.password }}
+        resources: {{- toYaml $root.Values.components.keycloak.init.resources | nindent 10 }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        volumeMounts:
+        - name: {{ .name }}-client-sh
+          mountPath: /opt/client.sh
+          subPath: client.sh
+        - name: {{ .name }}-client-json
+          mountPath: /etc/client.json
+          subPath: client.json
+        - name: {{ .name }}-protocol-mapper-sh
+          mountPath: /opt/protocol-mapper.sh
+          subPath: protocol-mapper.sh
+        - name: {{ .name }}-protocol-mapper-json
+          mountPath: /etc/protocol-mapper.json
+          subPath: protocol-mapper.json
+        - name: {{ .name }}-default-client-scopes-sh
+          mountPath: /opt/default-client-scopes.sh
+          subPath: default-client-scopes.sh
+{{- end }}
+      containers:
+      - name: verify
+        image: {{ $root.Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ $root.Values.docker.tag }}
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          curl http://keycloak:8080
       volumes:
+      - name: master-sh
+        configMap:
+          name: master-sh
+          defaultMode: 0555
+      - name: master-json
+        configMap:
+          name: master-json
+          defaultMode: 0444
       - name: client-scopes-sh
         configMap:
           name: client-scopes-sh
@@ -115,6 +121,28 @@ spec:
         configMap:
           name: client-scopes-json
           defaultMode: 0444
+{{- range .Values.access }}
+      - name: {{ .name }}-client-sh
+        configMap:
+          name: {{ .name }}-client-sh
+          defaultMode: 0555
+      - name: {{ .name }}-client-json
+        configMap:
+          name: {{ .name }}-client-json
+          defaultMode: 0444
+      - name: {{ .name }}-protocol-mapper-sh
+        configMap:
+          name: {{ .name }}-protocol-mapper-sh
+          defaultMode: 0555
+      - name: {{ .name }}-protocol-mapper-json
+        configMap:
+          name: {{ .name }}-protocol-mapper-json
+          defaultMode: 0444
+      - name: {{ .name }}-default-client-scopes-sh
+        configMap:
+          name: {{ .name }}-default-client-scopes-sh
+          defaultMode: 0555
+{{- end }}
       restartPolicy: Never
   backoffLimit: 32
 {{- if eq .Values.policies.enabled true }}
@@ -122,12 +150,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: client-scopes-keycloak-init
+  name: keycloak-init
   namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
-      app: client-scopes-keycloak-init
+      app: keycloak-init
   policyTypes:
   - Egress
   egress:
@@ -151,21 +179,6 @@ data:
       -H "Authorization: Bearer $ACCESSTOKEN" \
       -H "Content-Type: application/json" \
       -d @/etc/master.json
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: client-scopes-sh
-  namespace: {{ .Values.namespace }}
-data:
-  client-scopes.sh: |
-    ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
-      -d "username=$USERNAME&password=$PASSWORD&grant_type=password&client_id=admin-cli" | jq .access_token | sed 's/"//g')
-    curl -vv -f -X POST "http://keycloak:8080/auth/admin/realms/master/client-scopes" \
-      -H "Accept: application/json" \
-      -H "Authorization: Bearer $ACCESSTOKEN" \
-      -H "Content-Type: application/json" \
-      -d @/etc/client-scopes.json
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -285,6 +298,21 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: client-scopes-sh
+  namespace: {{ .Values.namespace }}
+data:
+  client-scopes.sh: |
+    ACCESSTOKEN=$(curl http://keycloak:8080/auth/realms/master/protocol/openid-connect/token \
+      -d "username=$USERNAME&password=$PASSWORD&grant_type=password&client_id=admin-cli" | jq .access_token | sed 's/"//g')
+    curl -vv -f -X POST "http://keycloak:8080/auth/admin/realms/master/client-scopes" \
+      -H "Accept: application/json" \
+      -H "Authorization: Bearer $ACCESSTOKEN" \
+      -H "Content-Type: application/json" \
+      -d @/etc/client-scopes.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: client-scopes-json
   namespace: {{ .Values.namespace }}
 data:
@@ -298,101 +326,7 @@ data:
             "display.on.consent.screen": "true"
         }
     }
----
-{{- $root := . }}
 {{- range .Values.access }}
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: {{ .name }}-keycloak-init
-  namespace: {{ $root.Values.namespace }}
-  labels:
-    app: {{ .name }}-keycloak-init
-spec:
-  template:
-    metadata:
-      labels:
-        app: {{ .name }}-keycloak-init
-    spec:
-      {{ toYaml $root.Values.podDefaults | nindent 6 }}
-      containers:
-      - name: keycloak-init
-        image: {{ $root.Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ $root.Values.docker.tag }}
-        imagePullPolicy: Always
-        command: ["/bin/bash", "-c"]
-        args:
-        - |
-          /opt/client.sh || exit $?
-          /opt/protocol-mapper.sh || exit $?
-          /opt/default-client-scopes.sh || exit $?
-        env:
-        - name: USERNAME
-          value: {{ $root.Values.authentication.username }}
-        - name: PASSWORD
-          value: {{ $root.Values.authentication.password }}
-        resources: {{- toYaml $root.Values.components.keycloak.init.resources | nindent 10 }}
-        securityContext:
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-        volumeMounts:
-        - name: {{ .name }}-client-sh
-          mountPath: /opt/client.sh
-          subPath: client.sh
-        - name: {{ .name }}-client-json
-          mountPath: /etc/client.json
-          subPath: client.json
-        - name: {{ .name }}-protocol-mapper-sh
-          mountPath: /opt/protocol-mapper.sh
-          subPath: protocol-mapper.sh
-        - name: {{ .name }}-protocol-mapper-json
-          mountPath: /etc/protocol-mapper.json
-          subPath: protocol-mapper.json
-        - name: {{ .name }}-default-client-scopes-sh
-          mountPath: /opt/default-client-scopes.sh
-          subPath: default-client-scopes.sh
-      volumes:
-      - name: {{ .name }}-client-sh
-        configMap:
-          name: {{ .name }}-client-sh
-          defaultMode: 0555
-      - name: {{ .name }}-client-json
-        configMap:
-          name: {{ .name }}-client-json
-          defaultMode: 0444
-      - name: {{ .name }}-protocol-mapper-sh
-        configMap:
-          name: {{ .name }}-protocol-mapper-sh
-          defaultMode: 0555
-      - name: {{ .name }}-protocol-mapper-json
-        configMap:
-          name: {{ .name }}-protocol-mapper-json
-          defaultMode: 0444
-      - name: {{ .name }}-default-client-scopes-sh
-        configMap:
-          name: {{ .name }}-default-client-scopes-sh
-          defaultMode: 0555
-      restartPolicy: Never
-  backoffLimit: 32
-{{- if eq $root.Values.policies.enabled true }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: {{ .name }}-keycloak-init
-  namespace: {{ $root.Values.namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: {{ .name }}-keycloak-init
-  policyTypes:
-  - Egress
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: keycloak
-{{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
