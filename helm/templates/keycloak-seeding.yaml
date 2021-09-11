@@ -104,6 +104,7 @@ spec:
         args:
         - |
           curl http://keycloak:8080
+        resources: {{- toYaml .Values.components.keycloak.init.resources | nindent 10 }}
       volumes:
       - name: master-sh
         configMap:
