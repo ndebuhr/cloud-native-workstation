@@ -41,25 +41,6 @@ spec:
       - name: keycloak-postgres
         persistentVolumeClaim:
           claimName: keycloak-postgres-pvc
-{{- if eq .Values.policies.enabled true }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: keycloak-postgres
-  namespace: {{ .Values.namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: keycloak-postgres
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: keycloak
-{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -134,28 +115,6 @@ spec:
           runAsNonRoot: true
         resources: {{- toYaml .Values.components.keycloak.resources | nindent 10 }}
       restartPolicy: Always
-{{- if eq .Values.policies.enabled true }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: keycloak
-  namespace: {{ .Values.namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: keycloak
-  policyTypes:
-  - Egress
-  - Ingress
-  ingress:
-  - {}
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: keycloak-postgres
-{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -225,7 +184,67 @@ spec:
         - --server-write-timeout=50s
       {{- end }}
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-gatekeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: keycloak-gatekeeper
+spec:
+  type: ClusterIP
+  ports:
+  {{- range .Values.access }}
+  - name: {{ .name }}
+    port: {{ .port }}
+  {{- end }}
+  selector:
+    app: keycloak-gatekeeper
 {{- if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: keycloak-postgres
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: keycloak-postgres
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: keycloak
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: keycloak
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-init
+    - podSelector:
+        matchLabels:
+          app: haproxy
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: keycloak-postgres
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -247,20 +266,3 @@ spec:
   egress:
   - {}
 {{- end }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: keycloak-gatekeeper
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: keycloak-gatekeeper
-spec:
-  type: ClusterIP
-  ports:
-  {{- range .Values.access }}
-  - name: {{ .name }}
-    port: {{ .port }}
-  {{- end }}
-  selector:
-    app: keycloak-gatekeeper

@@ -41,31 +41,6 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
       restartPolicy: Always
-{{- if eq .Values.policies.enabled true }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: guacd
-  namespace: {{ .Values.namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: guacd
-  policyTypes:
-  - Egress
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: guacamole
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: guacamole
-{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -123,28 +98,6 @@ spec:
           value: myguac123
         resources: {{- toYaml .Values.components.guacamole.resources | nindent 10 }}
       restartPolicy: Always
-{{- if eq .Values.policies.enabled true }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: guacamole
-  namespace: {{ .Values.namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: guacamole
-  policyTypes:
-  - Egress
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: keycloak-gatekeeper
-  egress:
-  - {}
-{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -220,31 +173,6 @@ spec:
         configMap:
           name: guacamole-init-sql
           defaultMode: 0777
-{{- if eq .Values.policies.enabled true }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: guacamole-postgresql
-  namespace: {{ .Values.namespace }}
-spec:
-  podSelector:
-    matchLabels:
-      app: guacamole-postgresql
-  policyTypes:
-  - Egress
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: guacamole
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: guacamole
-{{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -1044,4 +972,72 @@ data:
     JOIN guacamole_entity          ON permissions.username = guacamole_entity.name AND guacamole_entity.type = 'USER'
     JOIN guacamole_entity affected ON permissions.affected_username = affected.name AND guacamole_entity.type = 'USER'
     JOIN guacamole_user            ON guacamole_user.entity_id = affected.entity_id;
+{{- if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: guacd
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: guacd
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: guacamole
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: guacamole
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: guacamole
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: guacamole
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
+  egress:
+  - {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: guacamole-postgresql
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: guacamole-postgresql
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: guacamole
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: guacamole
+{{- end }}
 {{- end }}
