@@ -51,14 +51,14 @@ components:
         limits:
           memory: "1Gi"
           cpu: "500m"
-    init:
-      resources:
-        requests: {}
-          # memory: "128Mi"
-          # cpu: "50m"
-        limits:
-          memory: "256Mi"
-          cpu: "125m"
+  initializers:
+    resources:
+      requests: {}
+        # memory: "128Mi"
+        # cpu: "50m"
+      limits:
+        memory: "256Mi"
+        cpu: "125m"
   haproxy:
     resources:
       requests: {}
@@ -150,6 +150,24 @@ components:
         limits:
           memory: "4Gi"
           cpu: "2"
+  prometheus:
+    enabled: true
+    resources:
+      requests: {}
+        # memory: "1Gi"
+        # cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+  grafana:
+    enabled: true
+    resources:
+      requests: {}
+        # memory: "1Gi"
+        # cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
 # Ports for the component endpoints
 access:
 - name: keycloak
@@ -170,6 +188,10 @@ access:
   port: 9000
 - name: guacamole
   port: 8081
+- name: prometheus
+  port: 9090
+- name: grafana
+  port: 3030
 podDefaults:
   automountServiceAccountToken: false
   serviceAccountName: workstation-default

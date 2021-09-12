@@ -34,9 +34,9 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./docker
-        file: ./docker/DockerfileKeycloakSeeding
+        file: ./docker/DockerfileInitializers
         push: false
-        tags: ndebuhr/cloud-native-workstation-keycloak-seeding:latest
+        tags: ndebuhr/cloud-native-workstation-initializers:latest
 
     - name: build novnc image
       uses: docker/build-push-action@v2

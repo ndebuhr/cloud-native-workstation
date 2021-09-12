@@ -1,0 +1,91 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:v2.28.1
+        args: ["--config.file=/etc/prometheus/prometheus.yml"]
+        resources: {{- toYaml .Values.components.prometheus.resources | nindent 10 }}
+        volumeMounts:
+        - name: prometheus-yml
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: prometheus.yml
+      volumes:
+      - name: prometheus-yml
+        configMap:
+          name: prometheus-yml-v1
+          defaultMode: 0444
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-yml-v1
+data:
+  prometheus.yml: |
+    scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+      - targets: ['localhost:9090']
+    - job_name: 'kube-state-metrics'
+      static_configs:
+      - targets: ['prometheus-kube-state-metrics:8080']
+    - job_name: 'grafana'
+      static_configs:
+      - targets: ['grafana:3030']
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: prometheus
+spec:
+  type: ClusterIP
+  selector:
+    app: prometheus
+  ports:
+  - port: 9090
+{{- if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus
+  namespace: cloud-native-workstation
+spec:
+  podSelector:
+    matchLabels:
+      app: prometheus
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
+    - podSelector:
+        matchLabels:
+          app: grafana
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: grafana
+    - podSelector:
+        matchLabels:
+          app: prometheus-kube-state-metrics
+{{- end }}

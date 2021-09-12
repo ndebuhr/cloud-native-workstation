@@ -1,0 +1,134 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
+      initContainers:
+      - name: take-data-dir-ownership
+        image: alpine:3.6
+        # Give `grafana` user (id 472) permissions a mounted volume
+        # https://github.com/grafana/grafana-docker/blob/master/Dockerfile
+        command:
+        - chown
+        - -R
+        - 472:472
+        - /var/lib/grafana
+        resources: {{- toYaml .Values.components.grafana.resources | nindent 10 }}
+        volumeMounts:
+        - name: grafana-storage
+          mountPath: /var/lib/grafana
+      containers:
+      - name: grafana
+        image: grafana/grafana:8.1.1
+        ports:
+        - containerPort: 3000
+        env:
+        - name: GF_SERVER_HTTP_PORT
+          value: "3000"
+        - name: GF_SECURITY_ADMIN_USER
+          value: {{ .Values.authentication.username }}
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: {{ .Values.authentication.password }}
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-kubernetes-app"
+        resources: {{- toYaml .Values.components.grafana.resources | nindent 10 }}
+        volumeMounts:
+        - name: grafana-storage
+          mountPath: /var/lib/grafana
+        - name: prometheus-data-source
+          mountPath: /etc/grafana/provisioning/datasources/prometheus.yml
+          subPath: prometheus.yml
+      volumes:
+      - name: grafana-storage
+        persistentVolumeClaim:
+          claimName: grafana-storage-pvc
+      - name: prometheus-data-source
+        configMap:
+          name: prometheus-data-source-v1
+          defaultMode: 0444
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-storage-pvc
+  labels:
+    app: grafana
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 16Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-data-source-v1
+data:
+  prometheus.yml: |
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://prometheus:9090
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3030
+    targetPort: 3000
+  selector:
+    app: grafana
+{{- if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: grafana
+  namespace: cloud-native-workstation
+spec:
+  podSelector:
+    matchLabels:
+      app: grafana
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: keycloak-gatekeeper
+    - podSelector:
+        matchLabels:
+          app: grafana-init
+    - podSelector:
+        matchLabels:
+          app: prometheus
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: prometheus
+    - ipBlock:
+        # grafana.com
+        cidr: 34.120.177.193/0
+{{- end }}

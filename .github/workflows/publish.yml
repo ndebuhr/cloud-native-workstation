@@ -41,19 +41,19 @@ jobs:
         push: true
         tags: ${{ steps.meta-code-server.outputs.tags }}
 
-    - name: meta for keycloak seeding image
-      id: meta-keycloak-seeding
+    - name: meta for initializers image
+      id: meta-initializers
       uses: docker/metadata-action@v3
       with:
-        images: ndebuhr/cloud-native-workstation-keycloak-seeding
+        images: ndebuhr/cloud-native-workstation-initializers
 
-    - name: build and push keycloak seeding image
+    - name: build and push initializers image
       uses: docker/build-push-action@v2
       with:
         context: ./docker
-        file: ./docker/DockerfileKeycloakSeeding
+        file: ./docker/DockerfileInitializers
         push: true
-        tags: ${{ steps.meta-keycloak-seeding.outputs.tags }}
+        tags: ${{ steps.meta-initializers.outputs.tags }}
 
     - name: meta for novnc image
       id: meta-novnc

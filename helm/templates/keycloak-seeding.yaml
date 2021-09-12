@@ -15,7 +15,7 @@ spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       initContainers:
       - name: master-keycloak-init
-        image: {{ .Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ .Values.docker.tag }}
+        image: {{ .Values.docker.registry }}/cloud-native-workstation-initializers:{{ .Values.docker.tag }}
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args:
@@ -29,7 +29,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
-        resources: {{- toYaml .Values.components.keycloak.init.resources | nindent 10 }}
+        resources: {{- toYaml .Values.components.initializers.resources | nindent 10 }}
         volumeMounts:
         - name: master-sh
           mountPath: /opt/master.sh
@@ -38,7 +38,7 @@ spec:
           mountPath: /etc/master.json
           subPath: master.json
       - name: client-scopes-keycloak-init
-        image: {{ .Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ .Values.docker.tag }}
+        image: {{ .Values.docker.registry }}/cloud-native-workstation-initializers:{{ .Values.docker.tag }}
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args:
@@ -52,7 +52,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
-        resources: {{- toYaml .Values.components.keycloak.init.resources | nindent 10 }}
+        resources: {{- toYaml .Values.components.initializers.resources | nindent 10 }}
         volumeMounts:
         - name: client-scopes-sh
           mountPath: /opt/client-scopes.sh
@@ -63,7 +63,7 @@ spec:
 {{- $root := . }}
 {{- range .Values.access }}
       - name: {{ .name }}-keycloak-init
-        image: {{ $root.Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ $root.Values.docker.tag }}
+        image: {{ $root.Values.docker.registry }}/cloud-native-workstation-initializers:{{ $root.Values.docker.tag }}
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args:
@@ -76,7 +76,7 @@ spec:
           value: {{ $root.Values.authentication.username }}
         - name: PASSWORD
           value: {{ $root.Values.authentication.password }}
-        resources: {{- toYaml $root.Values.components.keycloak.init.resources | nindent 10 }}
+        resources: {{- toYaml $root.Values.components.initializers.resources | nindent 10 }}
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
@@ -99,12 +99,12 @@ spec:
 {{- end }}
       containers:
       - name: verify
-        image: {{ $root.Values.docker.registry }}/cloud-native-workstation-keycloak-seeding:{{ $root.Values.docker.tag }}
+        image: {{ $root.Values.docker.registry }}/cloud-native-workstation-initializers:{{ $root.Values.docker.tag }}
         command: ["/bin/bash", "-c"]
         args:
         - |
           curl http://keycloak:8080
-        resources: {{- toYaml .Values.components.keycloak.init.resources | nindent 10 }}
+        resources: {{- toYaml .Values.components.initializers.resources | nindent 10 }}
       volumes:
       - name: master-sh
         configMap:

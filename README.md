@@ -178,10 +178,10 @@ REPO=us.gcr.io/my-project/my-repo  # for example
 # Build and push images
 cd docker
 docker build --file DockerfileCodeServer --tag $REPO/cloud-native-workstation-code-server:latest .
-docker build --file DockerfileKeycloakSeeding --tag $REPO/cloud-native-workstation-keycloak-seeding:latest .
+docker build --file DockerfileInitializers --tag $REPO/cloud-native-workstation-initializers:latest .
 docker build --file DockerfileNovnc --tag $REPO/cloud-native-workstation-novnc:latest .
 docker push $REPO/cloud-native-workstation-code-server:latest
-docker push $REPO/cloud-native-workstation-keycloak-seeding:latest
+docker push $REPO/cloud-native-workstation-initializers:latest
 docker push $REPO/cloud-native-workstation-novnc:latest
 cd ..
 ```
