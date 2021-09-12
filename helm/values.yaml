@@ -5,7 +5,7 @@ namespace: cloud-native-workstation
 # Public images on Docker Hub
 docker:
   registry: ndebuhr
-  tag: v0.3.1
+  tag: v0.4.0
 # Certbot details
 certbot:
   # Valid types are "google" and "cloudflare"
