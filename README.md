@@ -49,6 +49,7 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
     - [Keycloak](#keycloak)
     - [Domain](#domain)
     - [Certbot](#certbot)
+    - [Resource requests](#resource-requests)
 - [Installation](#installation)
     - [Open Policy Agent](#open-policy-agent)
     - [Update `vm.max_map_count` (Optional)](#update-`vm.max_map_count`-(optional))
@@ -209,6 +210,10 @@ Set the `domain` value, based on the domain that you would like to run your work
 
 ### Certbot
 The `certbot.email` should be configured if you are using the Certbot option for TLS certificates.
+
+### Resource requests
+
+For portability to low-resource environments like minikube, resource requests are zeroed for all components.  This is just the default configuration.  For production environments, set resource requests equal to approximately one-half of the resource limits.
 
 ## Installation
 

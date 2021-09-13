@@ -29,50 +29,50 @@ policies:
 components:
   keycloak:
     resources:
-      requests: {}
-        # memory: "512Mi"
-        # cpu: "250m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "4Gi"
         cpu: "2"
     postgres:
       resources:
-        requests: {}
-          # memory: "512Mi"
-          # cpu: "250m"
+        requests:
+          memory: 0
+          cpu: 0
         limits:
           memory: "4Gi"
           cpu: "2"
     gatekeepers:
       resources:
-        requests: {}
-          # memory: "128Mi"
-          # cpu: "50m"
+        requests:
+          memory: 0
+          cpu: 0
         limits:
           memory: "1Gi"
           cpu: "500m"
   initializers:
     resources:
-      requests: {}
-        # memory: "128Mi"
-        # cpu: "50m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "256Mi"
         cpu: "125m"
   haproxy:
     resources:
-      requests: {}
-        # memory: "256Mi"
-        # cpu: "100m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "2Gi"
         cpu: "1"
   code:
     enabled: true
     resources:
-      requests: {}
-        # memory: "2Gi"
-        # cpu: "1"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "8Gi"
         cpu: "4"
@@ -80,9 +80,9 @@ components:
       image: docker
       tag: 19-dind
       resources:
-        requests: {}
-          # memory: "1Gi"
-          # cpu: "500m"
+        requests:
+          memory: 0
+          cpu: 0
         limits:
           memory: "4Gi"
           cpu: "2"
@@ -90,36 +90,36 @@ components:
     enabled: false
     novnc:
       resources:
-        requests: {}
-          # memory: "2Gi"
-          # cpu: "1"
+        requests:
+          memory: 0
+          cpu: 0
         limits:
           memory: "4Gi"
           cpu: "2"
   jupyter:
     enabled: false
     resources:
-      requests: {}
-        # memory: "2Gi"
-        # cpu: "500m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "8Gi"
         cpu: "4"
   certbot:
     enabled: true
     resources:
-      requests: {}
-        # memory: "128Mi"
-        # cpu: "50m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "256Mi"
         cpu: "125m"
   landing:
     enabled: false
     resources:
-      requests: {}
-        # memory: "256Mi"
-        # cpu: "125m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "2Gi"
         cpu: "1"
@@ -128,43 +128,43 @@ components:
   guacamole:
     enabled: false
     resources:
-      requests: {}
-        # memory: "2Gi"
-        # cpu: "1"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "4Gi"
         cpu: "1"
     guacd:
       resources:
-        requests: {}
-          # memory: "2Gi"
-          # cpu: "1"
+        requests:
+          memory: 0
+          cpu: 0
         limits:
           memory: "4Gi"
           cpu: "1"
     postgres:
       resources:
-        requests: {}
-          # memory: "1Gi"
-          # cpu: "500m"
+        requests:
+          memory: 0
+          cpu: 0
         limits:
           memory: "4Gi"
           cpu: "2"
   prometheus:
     enabled: true
     resources:
-      requests: {}
-        # memory: "1Gi"
-        # cpu: "250m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "2Gi"
         cpu: "1"
   grafana:
     enabled: true
     resources:
-      requests: {}
-        # memory: "1Gi"
-        # cpu: "250m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "2Gi"
         cpu: "1"
@@ -200,15 +200,18 @@ selenium:
   hub:
     serviceType: ClusterIP
     resources:
-      requests: {}
-        # memory: "512Mi"
-        # cpu: "1"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         cpu: 1
         memory: 2Gi
   chromeDebug:
     enabled: true
     resources:
+      requests:
+        cpu: 0
+        memory: 0
       limits:
         cpu: 2
         memory: 8Gi
@@ -218,16 +221,21 @@ selenium:
 sonarqube:
   initContainers:
     resources:
-      requests: {}
-        # memory: "128Mi"
-        # cpu: "50m"
+      requests:
+        memory: 0
+        cpu: 0
       limits:
         memory: "256Mi"
         cpu: "125m"
+  postgresql:
+    resources:
+      requests:
+        memory: "0"
+        cpu: "0"
   resources:
-    requests: {}
-      # memory: "512Mi"
-      # cpu: "1"
+    requests:
+      memory: 0
+      cpu: 0
     limits:
       cpu: 1
       memory: 2Gi
