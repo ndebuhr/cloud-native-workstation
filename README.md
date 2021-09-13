@@ -30,6 +30,8 @@ Relevant technologies include:
 [![Selenium](images/selenium.png "Selenium")](https://www.selenium.dev/)
 [![SonarQube](images/sonarqube.png "SonarQube")](https://www.sonarqube.org/)
 [![Terraform](images/terraform.png "Terraform")](https://www.terraform.io/)
+[![Prometheus](images/prometheus.png "Prometheus")](https://prometheus.io/)
+[![Grafana](images/grafana.png "Grafana")](https://grafana.com/)
 
 My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
