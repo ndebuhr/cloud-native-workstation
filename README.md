@@ -257,6 +257,8 @@ Access the components that you've enabled in the Helm values (after authenticati
 * YOUR_DOMAIN:8888 for Jupyter data science notebook
 * YOUR_DOMAIN:9000 for SonarQube
 * YOUR_DOMAIN:8081 for Apache Guacamole (default login guacadmin:guacadmin)
+* YOUR_DOMAIN:9090 for Prometheus
+* YOUR_DOMAIN:3030 for Grafana
 
 ## Contributing
 
