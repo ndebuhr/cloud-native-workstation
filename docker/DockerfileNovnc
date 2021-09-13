@@ -1,4 +1,4 @@
-FROM python:3-buster
+FROM python:3-bullseye
 
 USER root
 ENV DEBIAN_FRONTEND noninteractive

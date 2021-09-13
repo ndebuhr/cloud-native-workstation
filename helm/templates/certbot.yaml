@@ -14,7 +14,7 @@ spec:
       serviceAccountName: sa-ssl
       initContainers:
       - name: certbot
-        image: certbot/dns-google:v1.3.0
+        image: certbot/dns-google:v1.19.0
         command: ["/bin/sh", "-c"]
         args:
         - |
@@ -70,7 +70,7 @@ spec:
           serviceAccountName: sa-ssl
           initContainers:
           - name: certbot
-            image: certbot/dns-google:v1.3.0
+            image: certbot/dns-google:v1.19.0
             command: ["/bin/sh", "-c"]
             args:
             - |
@@ -121,7 +121,7 @@ spec:
       serviceAccountName: sa-ssl
       initContainers:
       - name: certbot
-        image: certbot/dns-cloudflare:v1.14.0
+        image: certbot/dns-cloudflare:v1.19.0
         command: ["/bin/sh", "-c"]
         args:
         - |
@@ -175,7 +175,7 @@ spec:
           serviceAccountName: sa-ssl
           initContainers:
           - name: certbot
-            image: certbot/dns-cloudflare:v1.14.0
+            image: certbot/dns-cloudflare:v1.19.0
             command: ["/bin/sh", "-c"]
             args:
             - |

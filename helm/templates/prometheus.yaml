@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: prometheus
-        image: prom/prometheus:v2.28.1
+        image: prom/prometheus:v2.29.2
         args: ["--config.file=/etc/prometheus/prometheus.yml"]
         resources: {{- toYaml .Values.components.prometheus.resources | nindent 10 }}
         volumeMounts:

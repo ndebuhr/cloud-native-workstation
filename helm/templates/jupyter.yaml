@@ -21,7 +21,7 @@ spec:
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       initContainers:
-      - image: jupyter/datascience-notebook:notebook-6.0.3
+      - image: jupyter/datascience-notebook:notebook-6.4.3
         name: permissions
         securityContext:
           runAsUser: 0
@@ -33,7 +33,7 @@ spec:
         - name: jupyter
           mountPath: /home/jovyan/work
       containers:
-      - image: jupyter/datascience-notebook:notebook-6.0.3
+      - image: jupyter/datascience-notebook:notebook-6.4.3
         name: jupyter
         command: ["start.sh"]
         args: ["jupyter", "lab", "--LabApp.token=''", "--LabApp.allow_origin='*'"]
