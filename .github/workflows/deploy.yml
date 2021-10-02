@@ -50,7 +50,7 @@ jobs:
     - name: Install CRDs
       run: |
         ./keycloak/crds.sh
-        ./opa/gatekeeper.sh
+        ./opa/crds.sh
 
     - name: Deploy to GKE
       working-directory: ./helm
