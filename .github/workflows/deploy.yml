@@ -13,8 +13,7 @@ jobs:
     - name: code checkout
       uses: actions/checkout@v2
       with:
-        # Disabling shallow clone is recommended for improving relevancy of reporting
-        fetch-depth: 0
+        submodules: 'true'
 
     - name: Install gcloud cli
       uses: google-github-actions/setup-gcloud@master
@@ -42,16 +41,22 @@ jobs:
         kubectl create namespace cloud-native-workstation
         kubectl config set-context --current --namespace cloud-native-workstation
 
-    - name: Install cluster-level workstation prerequisites
+    - name: Install workstation prerequisites
+      working-directory: ./helm-prerequisites
       run: |
+        helm dep update
+        helm install workstation-prerequisites .
+
+    - name: Install CRDs
+      run: |
+        ./keycloak/crds.sh
         ./opa/gatekeeper.sh
-        kubectl apply -f kubernetes/node-max-map-count.yaml
 
     - name: Deploy to GKE
       working-directory: ./helm
       run: |
         helm dep update
-        helm install cloud-native-workstation . \
+        helm install workstation . \
             --set components.selenium.enabled=true \
             --set components.jupyter.enabled=true \
             --set components.landing.enabled=true \
@@ -61,7 +66,7 @@ jobs:
     - name: Undeploy
       working-directory: ./helm
       run: |
-        helm uninstall cloud-native-workstation
+        helm uninstall workstation
 
     - name: Deprovision
       working-directory: ./terraform

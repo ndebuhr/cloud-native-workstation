@@ -1,12 +1,15 @@
-# Cloud-Native Workstation _(cloud-native-workstation)_
+<div align="center">
+	<img src="https://simrs.com/images/logo.png" width="200" height="200">
+	<h1>Cloud-Native Workstation</h1>
+  <p>A set of development and prototyping tools that can be useful in some cloud-native-centric projects</p>
+  <br>
+</div>
 
 [![Build Workflow](https://github.com/ndebuhr/cloud-native-workstation/workflows/build/badge.svg)](https://github.com/ndebuhr/sim/actions)
 [![Deploy Workflow](https://github.com/ndebuhr/cloud-native-workstation/workflows/deploy/badge.svg)](https://github.com/ndebuhr/sim/actions)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=cloud-native-workstation&metric=alert_status)](https://sonarcloud.io/dashboard?id=cloud-native-workstation)
 [![Readme Standard](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![MIT License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-> A set of development and prototyping tools that can be useful in some cloud-native-centric projects
 
 The components in this project are tailored towards cloud-native application development, delivery, and administration.  Specific use cases include:
 1. Prototyping cloud-native systems
@@ -39,6 +42,7 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
 
 ## Table of Contents
 
+- [Repository preparation](#repository-preparation)
 - [Provisioning (Optional)](#provisioning-(optional))
 - [Configure `kubectl`](#configure-`kubectl`)
 - [Prepare SSL](#prepare-ssl)
@@ -53,12 +57,20 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
     - [Certbot](#certbot)
     - [Resource requests](#resource-requests)
 - [Installation](#installation)
-    - [Open Policy Agent](#open-policy-agent)
-    - [Update `vm.max_map_count` (Optional)](#update-`vm.max_map_count`-(optional))
-    - [Cloud-native development platform](#cloud-native-development-platform)
+    - [Workstation prerequisites installation](#workstation-prerequisites-installation)
+    - [CRDs installation](#crds-installation)
+    - [Workstation installation](#workstation-installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Repository preparation
+
+Pull the repository submodules with the following commands
+```
+git submodule init
+git submodule update
+```
 
 ## Provisioning (Optional)
 
@@ -95,7 +107,7 @@ If you would like to provision a Kubernetes cluster on Google Kubernetes Engine 
 If using Google Kubernetes Engine, execute the commands below.  If you [ran provisioning with the default GCP zone and cluster name](#provisioning-(optional)), then use `cloud-native-workstation` as the cluster name and `us-central1-a` as the cluster zone.  Other cloud vendors should provide a similar cli and commands, for configuring `kubectl`.
 ```
 gcloud init
-gcloud container clusters get-credentials YOUR_CLUSTER --zone YOUR_ZONE
+gcloud container clusters get-credentials cloud-native-workstation --zone us-central1-a
 ```
 
 Next, create a namespace and configure `kubectl` to use that namespace:
@@ -146,7 +158,7 @@ Later, during the installation, be sure `certbot` is `enabled: true` and `certbo
 
 ### Bring your own SSL certificate
 
-Create an `ssl.pem`, as a concatenation of the cert and private key files.  If you need a self-signed certificate, run the following bash commands:
+Create cert and private key files.  If you need a self-signed certificate, run the following bash commands:
 ```
 openssl req -x509 \
     -newkey rsa:2048 \
@@ -156,15 +168,11 @@ openssl req -x509 \
     -keyout example.key
 ```
 
-```
-cat example.crt example.key > ssl.pem
-rm example.crt example.key
-```
-
-Load this up as a generic Kubernetes secret:
-
+Load this up as a TLS Kubernetes secret:
 ```bash
-kubectl create secret generic ssl-pem --from-file ssl.pem
+kubectl create secret tls workstation-tls \
+    --cert=example.crt \
+    --key=example.key
 ```
 
 Later, during the helm installation, be sure `certbot` is `enabled: false`.
@@ -204,7 +212,7 @@ head /dev/urandom | tr -dc A-Za-z0-9 | head -c32
 # To generate a value for the Keycloak encryption key
 head /dev/urandom | tr -dc A-Za-z0-9 | head -c16
 ```
-Use these for the `keycloak.clientSecret` and `keycloak.encryptionKey` Helm values - replacing the defaults for security.
+Use these for the `keycloak.clientSecret` and `keycloak.cookieSecret` Helm values - replacing the defaults for security.
 
 ### Domain
 
@@ -219,33 +227,42 @@ For portability to low-resource environments like minikube, resource requests ar
 
 ## Installation
 
-### Open Policy Agent
+### Workstation prerequisites installation
 
-Open Policy Agent is used for policy-based workstation controls and security.  Install with:
+The following commands install the Nginx Ingress Controller and Open Policy Agent Gatekeeper.
 ```bash
-./opa/gatekeeper.sh
+cd helm-prerequisites
+helm dependency update
+helm install workstation-prerequisites .
+cd ..
 ```
 
-### Update `vm.max_map_count` (Optional)
+### CRDs installation
 
-If your work requires monitoring a large number of files (e.g., continually running a development server as you work on a large application), then you may want to bump vm.max_map_count on the Kubernetes nodes.
-```
-kubectl apply -f kubernetes/node-max-map-count.yaml
+The Keycloak operator underpins OAuth2/OIDC systems.  Install with:
+```bash
+./keycloak/crds.sh
 ```
 
-### Cloud-native development platform
+Constraint templates provide policy-based workstation controls and security.  Install with:
+```bash
+./opa/crds.sh
+```
+
+### Workstation installation
 
 Install the workstation on the Kubernetes cluster with Helm:
-```
+```bash
 cd helm
 helm dependency update
-helm install . --generate-name
+helm install workstation .
 cd ..
 ```
 
 Create a DNS entry to point your domain to the Load Balancer External IP created during the Helm installation.  To see the installed services, including this Load Balancer, run:
-```
-kubectl get service --field-selector=metadata.name=haproxy -o custom-columns=NAME:.metadata.name,TYPE:.spec.type,EXTERNAL-IP:.status.loadBalancer.ingress[0].ip
+```bash
+kubectl get service workstation-prerequisites-ingress-nginx-controller \
+    -o custom-columns=NAME:.metadata.name,TYPE:.spec.type,EXTERNAL-IP:.status.loadBalancer.ingress[0].ip
 ```
 The domain must resolve before the components will work (access by IP only is not possible).
 
@@ -255,17 +272,17 @@ Note that workstation creation can take a few minutes.  The DNS propagation is p
 
 Access the components that you've enabled in the Helm values (after authenticating with the Keycloak proxy):
 
-* YOUR_DOMAIN:1313 for Development web server
-    * e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl YOUR_DOMAIN` in Code Server
-* YOUR_DOMAIN:3000 for Code Server IDE
-* YOUR_DOMAIN:4444 for Selenium Grid hub
-* YOUR_DOMAIN:6080 for Ubuntu+Chrome Selenium node
-* YOUR_DOMAIN:8080 for Keycloak administration
-* YOUR_DOMAIN:8888 for Jupyter data science notebook
-* YOUR_DOMAIN:9000 for SonarQube
-* YOUR_DOMAIN:8081 for Apache Guacamole (default login guacadmin:guacadmin)
-* YOUR_DOMAIN:9090 for Prometheus
-* YOUR_DOMAIN:3030 for Grafana
+* hugo.YOUR_DOMAIN for a Hugo development web server
+    * e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl hugo.YOUR_DOMAIN` in Code Server
+* code.YOUR_DOMAIN for Code Server IDE
+* selenium.YOUR_DOMAIN for Selenium Grid hub
+* novnc.YOUR_DOMAIN for Ubuntu+Chrome Selenium node
+* keycloak.YOUR_DOMAIN for Keycloak administration
+* jupyter.YOUR_DOMAIN for Jupyter data science notebook
+* sonarqube.YOUR_DOMAIN for SonarQube
+* guacamole.YOUR_DOMAIN/guacamole/ for Apache Guacamole (default login guacadmin:guacadmin)
+* prometheus.YOUR_DOMAIN for Prometheus monitoring
+* grafana.YOUR_DOMAIN for Grafana visualization
 
 ## Contributing
 

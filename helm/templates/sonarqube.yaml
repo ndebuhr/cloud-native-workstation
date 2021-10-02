@@ -9,7 +9,8 @@ spec:
   type: ClusterIP
   ports:
   - name: http
-    port: 9000
+    port: 80
+    targetPort: 9000
   selector:
     app: sonarqube
 {{- if eq .Values.policies.enabled true }}
@@ -30,7 +31,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: keycloak-gatekeeper
+          app: ingress-nginx
     - podSelector:
         matchLabels:
           app: code

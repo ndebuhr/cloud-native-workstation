@@ -94,7 +94,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 3030
+  - port: 80
     targetPort: 3000
   selector:
     app: grafana
@@ -116,7 +116,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: keycloak-gatekeeper
+          app: ingress-nginx
     - podSelector:
         matchLabels:
           app: grafana-init

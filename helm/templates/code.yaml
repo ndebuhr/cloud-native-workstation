@@ -10,7 +10,7 @@ spec:
   type: ClusterIP
   ports:
   - name: code
-    port: 3000
+    port: 80
     targetPort: 8080
   selector:
     app: code
@@ -26,7 +26,8 @@ spec:
   type: ClusterIP
   ports:
   - name: hugo
-    port: 1313
+    port: 80
+    targetPort: 1313
   selector:
     app: code
 ---
@@ -125,7 +126,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: keycloak-gatekeeper
+          app: ingress-nginx
   egress:
   - {}
 {{- end }}

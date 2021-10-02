@@ -51,7 +51,7 @@ data:
   seed.sh: |
     #!/bin/bash
     # https://community.grafana.com/t/is-there-an-equivalent-http-api-to-import-a-dashboard-from-grafana-com/9581/2
-    grafana_host="http://grafana:3030"
+    grafana_host="http://grafana"
     grafana_cred="$USERNAME:$PASSWORD"
     grafana_datasource="Prometheus"
 

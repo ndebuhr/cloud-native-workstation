@@ -1,0 +1,26 @@
+ingress-nginx:
+  controller:
+    ingressClassResource:
+      name: workstation-nginx
+    # For the deployment
+    labels:
+      app: ingress-nginx
+    # For the pods
+    podLabels:
+      app: ingress-nginx
+    resources:
+      requests:
+        memory: 0
+        cpu: 0
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+keycloak:
+  operator:
+    resources:
+      requests:
+        memory: 0
+        cpu: 0
+      limits:
+        memory: "1Gi"
+        cpu: "500m"

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.5/deploy/gatekeeper.yaml
-kubectl apply -f kubernetes/constraint-templates.yaml
+kubectl apply -f opa/constraint-templates.yaml
 
 count=0
 echo "Constraint Template CRDs: Creating..."

@@ -66,7 +66,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: keycloak-gatekeeper
+          app: ingress-nginx
   egress:
   - {}
 {{- end }}
@@ -98,6 +98,7 @@ spec:
     app: jupyter
   ports:
   - name: jupyter
-    port: 8888
+    port: 80
+    targetPort: 8888
 ---
 {{- end }}

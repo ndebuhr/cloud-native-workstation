@@ -8,7 +8,8 @@ spec:
   type: ClusterIP
   ports:
   - name: selenium
-    port: 4444
+    port: 80
+    targetPort: 4444
   selector:
     app: {{ .Release.Name }}-selenium-hub
 ---
@@ -28,13 +29,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: chrome
+  name: novnc
   namespace: {{ .Values.namespace }}
 spec:
   type: ClusterIP
   ports:
   - name: novnc
-    port: 6080
+    port: 80
+    targetPort: 6080
   selector:
     app: novnc
 ---
@@ -83,12 +85,9 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: keycloak-gatekeeper
+          app: ingress-nginx
   egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: {{ .Release.Name }}-selenium-chrome-debug
+  - {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

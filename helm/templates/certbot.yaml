@@ -19,8 +19,9 @@ spec:
         args:
         - |
             certbot certonly --dns-google --dns-google-credentials /home/certbot/.secrets/certbot/google.json \
-              -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
-            cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
+              -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
+            cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
+            cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
         resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: google-json
@@ -34,8 +35,10 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
         - |
-            kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
-              --dry-run -o yaml | kubectl apply -f -
+            kubectl create secret tls workstation-tls \
+              --dry-run -o yaml \
+              --cert=/etc/ssl/fullchain.pem \
+              --key=/etc/ssl/privkey.pem | kubectl apply -f -
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
@@ -75,8 +78,9 @@ spec:
             args:
             - |
                 certbot certonly --dns-google --dns-google-credentials /home/certbot/.secrets/certbot/google.json \
-                  -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
-                cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
+                  -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
+                cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
+                cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
             volumeMounts:
             - name: google-json
               mountPath: /home/certbot/.secrets/certbot/
@@ -89,8 +93,10 @@ spec:
             command: ["/bin/sh", "-c"]
             args:
             - |
-                kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
-                  --dry-run -o yaml | kubectl apply -f -
+                kubectl create secret tls workstation-tls \
+                  --dry-run -o yaml \
+                  --cert=/etc/ssl/fullchain.pem \
+                  --key=/etc/ssl/privkey.pem | kubectl apply -f -
             securityContext:
               readOnlyRootFilesystem: true
               runAsNonRoot: true
@@ -126,8 +132,9 @@ spec:
         args:
         - |
             certbot certonly --dns-cloudflare --dns-cloudflare-credentials /home/certbot/.secrets/certbot/cloudflare.ini \
-              -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
-            cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
+              -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
+            cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
+            cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
         volumeMounts:
         - name: cloudflare-ini
           mountPath: /home/certbot/.secrets/certbot/
@@ -140,8 +147,10 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
         - |
-            kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
-              --dry-run -o yaml | kubectl apply -f -
+            kubectl create secret tls workstation-tls \
+              --dry-run -o yaml \
+              --cert=/etc/ssl/fullchain.pem \
+              --key=/etc/ssl/privkey.pem | kubectl apply -f -
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
@@ -180,8 +189,9 @@ spec:
             args:
             - |
                 certbot certonly --dns-cloudflare --dns-cloudflare-credentials /home/certbot/.secrets/certbot/cloudflare.ini \
-                  -d {{ .Values.domain }} --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
-                cat /etc/letsencrypt/live/{{ .Values.domain }}/cert.pem /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/ssl.pem
+                  -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
+                cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
+                cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
             volumeMounts:
             - name: cloudflare-ini
               mountPath: /home/certbot/.secrets/certbot/
@@ -194,8 +204,10 @@ spec:
             command: ["/bin/sh", "-c"]
             args:
             - |
-                kubectl create secret generic ssl-pem --from-file=/etc/ssl/ssl.pem \
-                  --dry-run -o yaml | kubectl apply -f -
+                kubectl create secret tls workstation-tls \
+                  --dry-run -o yaml \
+                  --cert=/etc/ssl/fullchain.pem \
+                  --key=/etc/ssl/privkey.pem | kubectl apply -f -
             securityContext:
               readOnlyRootFilesystem: true
               runAsNonRoot: true

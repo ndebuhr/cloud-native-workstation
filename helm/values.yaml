@@ -16,7 +16,7 @@ keycloak:
   # Change me!
   clientSecret: OkSR7DMXAXzIrZIoWyN8yh0sFkiYrfJd
   # Change me!
-  encryptionKey: 2u2iS0FH7pPjOUUn
+  cookieSecret: 2u2iS0FH7pPjOUUn
 # Authentication for Code Server and Keycloak
 authentication:
   username: workstation
@@ -43,14 +43,6 @@ components:
         limits:
           memory: "4Gi"
           cpu: "2"
-    gatekeepers:
-      resources:
-        requests:
-          memory: 0
-          cpu: 0
-        limits:
-          memory: "1Gi"
-          cpu: "500m"
   initializers:
     resources:
       requests:
@@ -59,7 +51,7 @@ components:
       limits:
         memory: "256Mi"
         cpu: "125m"
-  haproxy:
+  oauth2Proxy:
     resources:
       requests:
         memory: 0
@@ -168,30 +160,18 @@ components:
       limits:
         memory: "2Gi"
         cpu: "1"
-# Ports for the component endpoints
+# Ingress targets
 access:
-- name: keycloak
-  port: 8080
 - name: code
-  port: 3000
 - name: hugo
-  port: 1313
 - name: selenium
-  port: 4444
-- name: chrome
-  port: 6080
+- name: novnc
 - name: jupyter
-  port: 8888
 - name: landing
-  port: 443
 - name: sonarqube
-  port: 9000
 - name: guacamole
-  port: 8081
 - name: prometheus
-  port: 9090
 - name: grafana
-  port: 3030
 podDefaults:
   automountServiceAccountToken: false
   serviceAccountName: workstation-default

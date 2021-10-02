@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth2-proxy
+  labels:
+    app: oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: oauth2-proxy
+    spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
+      containers:
+      - name: oauth2-proxy
+        image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.3
+        imagePullPolicy: Always
+        args:
+        - "--session-cookie-minimal"
+        ports:
+        - containerPort: 4180
+          protocol: TCP
+        resources: {{- toYaml .Values.components.oauth2Proxy.resources | nindent 10 }}
+        env:
+          # OIDC Config
+          - name: "OAUTH2_PROXY_SCOPE"
+            value: "openid profile"
+          - name: "OAUTH2_PROXY_PROVIDER"
+            value: "oidc"
+          - name: "OAUTH2_PROXY_OIDC_ISSUER_URL"
+            value: "https://keycloak.{{ .Values.domain }}/auth/realms/workstation"
+          # - name: "OAUTH2_PROXY_REDIRECT_URL"
+          #   value: "https://oauth2-proxy.{{ .Values.domain }}"
+          - name: "OAUTH2_PROXY_CLIENT_ID"
+            value: workstation
+          - name: "OAUTH2_PROXY_CLIENT_SECRET"
+            value: {{ .Values.keycloak.clientSecret }}
+          # Cookie Config
+          - name: "OAUTH2_PROXY_COOKIE_SECRET"
+            value: "{{ .Values.keycloak.cookieSecret }}"
+          - name: "OAUTH2_PROXY_COOKIE_DOMAINS"
+            value: ".{{ .Values.domain }}"
+          # Proxy config
+          - name: "OAUTH2_PROXY_EMAIL_DOMAINS"
+            value: "*"
+          - name: "OAUTH2_PROXY_WHITELIST_DOMAINS"
+            value: ".{{ .Values.domain }}"
+          - name: "OAUTH2_PROXY_HTTP_ADDRESS"
+            value: "0.0.0.0:4180"
+          - name: "OAUTH2_PROXY_SET_XAUTHREQUEST"
+            value: "true"
+          - name: "OAUTH2_PROXY_UPSTREAMS"
+            value: "file:///dev/null"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oauth2-proxy
+  labels:
+    app: oauth2-proxy
+spec:
+  ports:
+  - name: http
+    port: 4180
+    protocol: TCP
+    targetPort: 4180
+  selector:
+    app: oauth2-proxy
+{{- if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: oauth2-proxy
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: oauth2-proxy
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: ingress-nginx
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: keycloak
+          component: keycloak
+{{- end }}

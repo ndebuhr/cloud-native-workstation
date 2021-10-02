@@ -10,7 +10,7 @@ spec:
   type: ClusterIP
   ports:
   - name: landing
-    port: 443
+    port: 80
     targetPort: {{ .Values.landing.targetPort }}
   selector:
     app: landing
@@ -55,6 +55,6 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: keycloak-gatekeeper
+          app: ingress-nginx
 {{- end }}
 {{- end }}

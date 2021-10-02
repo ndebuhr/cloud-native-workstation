@@ -1,206 +1,108 @@
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: keycloak-postgres
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: keycloak-postgres
-spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: keycloak-postgres
-  template:
-    metadata:
-      labels:
-        app: keycloak-postgres
-    spec:
-      {{ toYaml .Values.podDefaults | nindent 6 }}
-      containers:
-      - image: postgres:9.6
-        name: postgres
-        env:
-        - name: POSTGRES_USER
-          value: {{ .Values.authentication.username }}
-        - name: POSTGRES_PASSWORD
-          value: {{ .Values.authentication.password }}
-        - name: POSTGRES_DB
-          value: keycloak
-        ports:
-        - containerPort: 5432
-          name: postgresql
-        resources: {{- toYaml .Values.components.keycloak.postgres.resources | nindent 10 }}
-        volumeMounts:
-        - name: keycloak-postgres
-          mountPath: /var/lib/postgresql/data
-          subPath: postgres
-      volumes:
-      - name: keycloak-postgres
-        persistentVolumeClaim:
-          claimName: keycloak-postgres-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: keycloak-postgres
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: keycloak-postgres
-spec:
-  ports:
-  - port: 5432
-  selector:
-    app: keycloak-postgres
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: keycloak-postgres-pvc
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: keycloak-postgres
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 32Gi
----
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: keycloak.org/v1alpha1
+kind: Keycloak
 metadata:
   name: keycloak
-  namespace: {{ .Values.namespace }}
   labels:
     app: keycloak
 spec:
-  replicas: 1
-  selector:
+  instances: 1
+  externalAccess:
+    enabled: false
+  keycloakDeploymentSpec:
+    resources: {{- toYaml .Values.components.keycloak.resources | nindent 6 }}
+  postgresDeploymentSpec:
+    resources: {{- toYaml .Values.components.keycloak.postgres.resources | nindent 6 }}
+---
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakRealm
+metadata:
+  name: keycloak-realm
+  labels:
+    app: keycloak-realm
+spec:
+  realm:
+    id: workstation
+    realm: workstation
+    enabled: True
+    displayName: "Workstation Realm"
+    roles:
+      realm:
+      - name: admin
+  instanceSelector:
     matchLabels:
       app: keycloak
-  template:
-    metadata:
-      labels:
-        app: keycloak
-    spec:
-      {{ toYaml .Values.podDefaults | nindent 6 }}
-      containers:
-      - image: jboss/keycloak:7.0.0
-        name: keycloak
-        env:
-        - name: DB_VENDOR
-          value: "postgres"
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_USER
-          value: {{ .Values.authentication.username }}
-        - name: DB_PASSWORD
-          value: {{ .Values.authentication.password }}
-        - name: DB_DATABASE
-          value: "keycloak"
-        - name: DB_ADDR
-          value: "keycloak-postgres"
-        - name: KEYCLOAK_USER
-          value: {{ .Values.authentication.username }}
-        - name: KEYCLOAK_PASSWORD
-          value: {{ .Values.authentication.password }}
-        - name: PROXY_ADDRESS_FORWARDING
-          value: "true"
-        - name: KEYCLOAK_LOGLEVEL
-          value: "DEBUG"
-        securityContext:
-          runAsNonRoot: true
-        resources: {{- toYaml .Values.components.keycloak.resources | nindent 10 }}
-      restartPolicy: Always
 ---
-apiVersion: v1
-kind: Service
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakClient
 metadata:
-  name: keycloak
-  namespace: {{ .Values.namespace }}
+  name: keycloak-client
   labels:
-    app: keycloak
+    app: keycloak-client
 spec:
-  type: ClusterIP
-  ports:
-  - name: keycloak
-    protocol: TCP
-    port: 8080
-  selector:
-    app: keycloak
+  roles:
+  - clientRole: true
+    containerId: workstation
+    name: user
+    composite: false
+  - clientRole: true
+    containerId: workstation
+    name: admin
+    composite: false
+  - clientRole: true
+    containerId: workstation
+    name: manager
+    composite: false
+  client:
+    clientId: workstation
+    secret: {{ .Values.keycloak.clientSecret }}
+    standardFlowEnabled: true
+    redirectUris:
+    - "*"
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - web-origins
+      - role_list
+      - profile
+      - roles
+      - email
+    optionalClientScopes:
+      - address
+      - phone
+      - offline_access
+      - microprofile-jwt
+  realmSelector:
+     matchLabels:
+      app: keycloak-realm
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakUser
 metadata:
-  name: keycloak-gatekeeper
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: keycloak-gatekeeper
+  name: workstation-user
 spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
+  user:
+    username: {{ .Values.authentication.username }}
+    firstName: "Workstation"
+    lastName: "User"
+    email: "admin@{{ .Values.domain }}"
+    enabled: True
+    emailVerified: True
+    credentials:
+    - type: password
+      value: {{ .Values.authentication.password }}
+    clientRoles:
+      account:
+      - manage-account
+      - view-profile
+      workstation:
+      - admin
+      - manager
+      - user
+    realmRoles:
+    - offline_access
+    - uma_authorization
+  realmSelector:
     matchLabels:
-      app: keycloak-gatekeeper
-  template:
-    metadata:
-      labels:
-        app: keycloak-gatekeeper
-    spec:
-      {{ toYaml .Values.podDefaults | nindent 6 }}
-      containers:
-      {{- $root := . }}
-      {{- range .Values.access }}
-      - image: keycloak/keycloak-gatekeeper:7.0.0
-        name: gatekeeper-{{ .name }}
-        ports:
-        - containerPort: {{ .port }}
-          name: listen
-        securityContext:
-          readOnlyRootFilesystem: true
-        resources: {{- toYaml $root.Values.components.keycloak.gatekeepers.resources | nindent 10 }}
-        args:
-        - --listen=:{{ .port }}
-        - --preserve-host=true
-        - --discovery-url=https://{{ $root.Values.domain }}:8080/auth/realms/master
-        - --oauth-uri=/devtools-oath
-        - --upstream-url=http://{{ .name }}:{{ .port }}
-        - --verbose=true
-        - --resources=uri=/*|methods=GET
-        - --skip-openid-provider-tls-verify=true
-        - --encryption-key={{ $root.Values.keycloak.encryptionKey }}
-        - --enable-refresh-tokens=true
-        - --enable-encrypted-token=false
-        - --cookie-refresh-name=kc-refresh-token
-        - --enable-authorization-header=false
-        - --client-id={{ .name }}
-        - --client-secret={{ $root.Values.keycloak.clientSecret }}
-        - --client-auth-method=secret-body
-        - --server-read-timeout=50s
-        - --server-write-timeout=50s
-      {{- end }}
-      restartPolicy: Always
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: keycloak-gatekeeper
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: keycloak-gatekeeper
-spec:
-  type: ClusterIP
-  ports:
-  {{- range .Values.access }}
-  - name: {{ .name }}
-    port: {{ .port }}
-  {{- end }}
-  selector:
-    app: keycloak-gatekeeper
+      app: keycloak-realm
 {{- if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
@@ -211,9 +113,11 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: keycloak-postgres
+      app: keycloak
+      component: database
   policyTypes:
   - Ingress
+  - Egress
   ingress:
   - from:
     - podSelector:
@@ -229,6 +133,7 @@ spec:
   podSelector:
     matchLabels:
       app: keycloak
+      component: keycloak
   policyTypes:
   - Egress
   - Ingress
@@ -236,33 +141,26 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: keycloak-init
-    - podSelector:
-        matchLabels:
-          app: haproxy
+          app: ingress-nginx
   egress:
   - to:
     - podSelector:
         matchLabels:
-          app: keycloak-postgres
+          app: keycloak
+          component: database
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: keycloak-gatekeeper
+  name: keycloak-operator
   namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
-      app: keycloak-gatekeeper
+      app: keycloak-operator
   policyTypes:
-  - Egress
   - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: haproxy
+  - Egress
   egress:
   - {}
 {{- end }}
