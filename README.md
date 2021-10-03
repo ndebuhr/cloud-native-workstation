@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="https://simrs.com/images/logo.png" width="200" height="200">
+	<img src="https://raw.githubusercontent.com/ndebuhr/cloud-native-workstation/master/images/cnw.png" width="200" height="200">
 	<h1>Cloud-Native Workstation</h1>
   <p>A set of development and prototyping tools that can be useful in some cloud-native-centric projects</p>
   <br>
@@ -21,20 +21,22 @@ The components in this project are tailored towards cloud-native application dev
 
 Relevant technologies include:
 
-[![Certbot](images/certbot.png "Certbot")](https://certbot.eff.org/)
 [![Code Server](images/code-server.png "Code Server")](https://github.com/cdr/code-server)
-[![Docker](images/docker.png "Docker")](https://www.docker.com/)
 [![Apache Guacamole](images/guacamole.png "Apache Guacamole")](https://guacamole.apache.org/)
-[![Helm](images/helm.png "Helm")](https://helm.sh/)
 [![Jupyter](images/jupyter.png "Jupyter")](https://jupyter.org/)
-[![Keycloak](images/keycloak.png "Keycloak")](https://www.keycloak.org/)
-[![Kubernetes](images/kubernetes.png "Kubernetes")](https://kubernetes.io/)
-[![Open Policy Agent](images/open-policy-agent.png "Open Policy Agent")](https://www.openpolicyagent.org/)
 [![Selenium](images/selenium.png "Selenium")](https://www.selenium.dev/)
 [![SonarQube](images/sonarqube.png "SonarQube")](https://www.sonarqube.org/)
-[![Terraform](images/terraform.png "Terraform")](https://www.terraform.io/)
+[![Keycloak](images/keycloak.png "Keycloak")](https://www.keycloak.org/)
 [![Prometheus](images/prometheus.png "Prometheus")](https://prometheus.io/)
 [![Grafana](images/grafana.png "Grafana")](https://grafana.com/)
+[![Terraform](images/terraform.png "Terraform")](https://www.terraform.io/)
+[![Helm](images/helm.png "Helm")](https://helm.sh/)
+[![Kubernetes](images/kubernetes.png "Kubernetes")](https://kubernetes.io/)
+[![Docker](images/docker.png "Docker")](https://www.docker.com/)
+[![Certbot](images/certbot.png "Certbot")](https://certbot.eff.org/)
+[![Open Policy Agent](images/open-policy-agent.png "Open Policy Agent")](https://www.openpolicyagent.org/)
+[![OAuth2 Proxy](images/oauth2-proxy.png "OAuth2 Proxy")](https://oauth2-proxy.github.io/oauth2-proxy/)
+[![Nginx](images/nginx.png "Nginx")](https://www.nginx.com/)
 
 My own use and testing is with Google Kubernetes Engine, but folks should find the system reasonably easy to adapt to other Kubernetes environments.
 
