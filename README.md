@@ -229,6 +229,8 @@ For portability to low-resource environments like minikube, resource requests ar
 
 ## Installation
 
+![Installation Architecture](images/installation-architecture.png "Installation Architecture")
+
 ### Workstation prerequisites installation
 
 The following commands install the Nginx Ingress Controller and Open Policy Agent Gatekeeper.
