@@ -46,7 +46,7 @@ data:
       - targets: ['prometheus-kube-state-metrics:8080']
     - job_name: 'grafana'
       static_configs:
-      - targets: ['grafana:3030']
+      - targets: ['grafana']
 ---
 kind: Service
 apiVersion: v1
