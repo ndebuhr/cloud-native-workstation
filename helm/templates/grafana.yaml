@@ -85,7 +85,7 @@ data:
     - name: Prometheus
       type: prometheus
       access: proxy
-      url: http://prometheus:9090
+      url: http://prometheus
 ---
 apiVersion: v1
 kind: Service
