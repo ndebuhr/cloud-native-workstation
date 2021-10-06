@@ -65,7 +65,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: prometheus
-  namespace: cloud-native-workstation
+  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:

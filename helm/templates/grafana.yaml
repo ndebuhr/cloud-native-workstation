@@ -206,7 +206,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: grafana-init
-  namespace: cloud-native-workstation
+  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
@@ -226,7 +226,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: grafana
-  namespace: cloud-native-workstation
+  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:

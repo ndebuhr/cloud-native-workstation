@@ -37,7 +37,7 @@ spec:
       - name: kube-state-metrics
         image: quay.io/coreos/kube-state-metrics:v1.9.8
         args:
-          - '--namespace=cloud-native-workstation'
+          - '--namespace={{ .Values.namespace }}'
         ports:
         - name: http-metrics
           containerPort: 8080
@@ -65,7 +65,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: prometheus-kube-state-metrics
-  namespace: cloud-native-workstation
+  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
