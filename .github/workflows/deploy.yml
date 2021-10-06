@@ -61,7 +61,9 @@ jobs:
             --set components.jupyter.enabled=true \
             --set components.landing.enabled=true \
             --set components.sonarqube.enabled=true \
-            --set components.guacamole.enabled=true
+            --set components.guacamole.enabled=true \
+            --set components.prometheus.enabled=true \
+            --set components.grafana.enabled=true
 
     - name: Undeploy
       working-directory: ./helm
