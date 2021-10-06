@@ -153,6 +153,14 @@ components:
         cpu: "1"
   grafana:
     enabled: true
+    dashboards:
+      prometheus:
+        plugin:
+        - dashboards/prometheus_stats.json
+        - dashboards/prometheus_2_stats.json
+        - dashboards/grafana_stats.json
+        community:
+        - 13332
     resources:
       requests:
         memory: 0
