@@ -1,3 +1,4 @@
+{{- if eq .Values.components.grafana.enabled true }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -253,4 +254,5 @@ spec:
     - ipBlock:
         # grafana.com
         cidr: 34.120.177.193/0
+{{- end }}
 {{- end }}

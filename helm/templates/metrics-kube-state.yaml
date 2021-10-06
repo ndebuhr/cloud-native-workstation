@@ -1,3 +1,4 @@
+{{- if eq .Values.components.prometheus.enabled true }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -82,4 +83,5 @@ spec:
   - to:
     - ipBlock:
         cidr: 0.0.0.0/0
+{{- end }}
 {{- end }}

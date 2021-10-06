@@ -1,3 +1,4 @@
+{{- if eq .Values.components.prometheus.enabled true }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -89,4 +90,5 @@ spec:
     - podSelector:
         matchLabels:
           app: prometheus-kube-state-metrics
+{{- end }}
 {{- end }}
