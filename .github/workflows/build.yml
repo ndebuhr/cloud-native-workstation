@@ -45,3 +45,11 @@ jobs:
         file: ./docker/DockerfileNovnc
         push: false
         tags: ndebuhr/cloud-native-workstation-novnc:latest
+
+    - name: build jupyter image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./docker
+        file: ./docker/DockerfileJupyter
+        push: false
+        tags: ndebuhr/cloud-native-workstation-jupyter:latest

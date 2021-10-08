@@ -68,3 +68,17 @@ jobs:
         file: ./docker/DockerfileNovnc
         push: true
         tags: ${{ steps.meta-novnc.outputs.tags }}
+
+    - name: meta for jupyter image
+      id: meta-jupyter
+      uses: docker/metadata-action@v3
+      with:
+        images: ndebuhr/cloud-native-workstation-jupyter
+
+    - name: build and push jupyter image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./docker
+        file: ./docker/DockerfileJupyter
+        push: true
+        tags: ${{ steps.meta-jupyter.outputs.tags }}

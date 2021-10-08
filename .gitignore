@@ -11,7 +11,7 @@
 # Terrform files
 *.tfstate
 *.tfstate.*
-terraform/.terraform.lock.hcl
+**/.terraform.lock.hcl
 
 # Key files
 google.json

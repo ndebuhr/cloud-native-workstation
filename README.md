@@ -18,6 +18,7 @@ The components in this project are tailored towards cloud-native application dev
 1. Provisioning cloud infrastructure with Terraform
 1. Managing Google Cloud Platform workloads
 1. Handling Helm charts and Kubernetes resources
+1. Working on data science notebooks (including AI/ML)
 
 Relevant technologies include:
 
@@ -76,7 +77,7 @@ git submodule update
 
 ## Provisioning (Optional)
 
-If you would like to provision a Kubernetes cluster on Google Kubernetes Engine to run your workstation:
+If you would like to provision a new Kubernetes cluster on Google Kubernetes Engine to run your workstation, follow the steps below.
 1. Create a Cloud Native Workstation role in Google Cloud Platform with the following permissions:
     1. compute.instanceGroupManagers.get
     1. container.clusters.create
@@ -86,27 +87,33 @@ If you would like to provision a Kubernetes cluster on Google Kubernetes Engine 
     1. container.operations.get
 1. Create a new service account and assign the Cloud Native Workstation and Service Account User roles
 1. Generate a service account key
-1. Set the GCP authentication environment variable `export GOOGLE_APPLICATION_CREDENTIALS=YOUR_KEY_FILE.json`
-1. Set the GCP project environment variable `export GOOGLE_PROJECT=YOUR_PROJECT`
-1. Provision:
-    1. With the default zone (us-central1-a) and cluster name (cloud-native-workstation):
+1. Set the GCP authentication environment variable
+    ```bash
+    export GOOGLE_APPLICATION_CREDENTIALS=YOUR_KEY_FILE.json
+    ```
+1. Set the GCP project environment variable
+    ```bash
+    export GOOGLE_PROJECT=YOUR_PROJECT
+    ```
+1. Navigate to the desired provisioning directory - either [terraform/gke](terraform/gke) or [terraform/gke-with-gpu](terraform/gke-with-gpu).  The [gke](terraform/gke) specification creates a "normal" cluster with a single node pool.  The [gke-with-gpu](terraform/gke-with-gpu) specification adds Nvidia T4 GPU capabilities to the Jupyter component, for AI/ML/GPU workloads.  If you do not want to enable the Jupyter component, or want it but for non-AI/ML/GPU workloads, then use the [gke](terraform/gke) specification.  The [gke](terraform/gke) specification is recommended for most users.  Once you've navigated to the desired infrastructure specification directory, provision with:
+    1. Using the default zone (us-central1-a) and cluster name (cloud-native-workstation):
         ```
-        cd terraform
         terraform init
         terraform apply
-        cd ..
         ```
-    1. With a custom zone or custom cluster name:
+        Or, with a custom zone or custom cluster name:
         ```
-        cd terraform
         terraform init
         terraform apply -var gcp_zone=YOUR_REGION -var gke_cluster_name=YOUR_CLUSTER_NAME
-        cd ..
         ```
+1. Return to the repository root directory
+    ```bash
+    cd ../..
+    ```
 
 ## Configure `kubectl`
 
-If using Google Kubernetes Engine, execute the commands below.  If you [ran provisioning with the default GCP zone and cluster name](#provisioning-(optional)), then use `cloud-native-workstation` as the cluster name and `us-central1-a` as the cluster zone.  Other cloud vendors should provide a similar cli and commands, for configuring `kubectl`.
+If using Google Kubernetes Engine, execute the commands below.  If you [ran provisioning with the default GCP zone and cluster name](#provisioning-(optional)), then use `cloud-native-workstation` as the cluster name and `us-central1-a` as the cluster zone.  Other cloud vendors should provide a similar cli and commands for configuring `kubectl`, if you are not using Google Kubernetes Engine.
 ```
 gcloud init
 gcloud container clusters get-credentials cloud-native-workstation --zone us-central1-a
@@ -193,9 +200,11 @@ cd docker
 docker build --file DockerfileCodeServer --tag $REPO/cloud-native-workstation-code-server:latest .
 docker build --file DockerfileInitializers --tag $REPO/cloud-native-workstation-initializers:latest .
 docker build --file DockerfileNovnc --tag $REPO/cloud-native-workstation-novnc:latest .
+docker build --file DockerfileJupyter --tag $REPO/cloud-native-workstation-jupyter:latest .
 docker push $REPO/cloud-native-workstation-code-server:latest
 docker push $REPO/cloud-native-workstation-initializers:latest
 docker push $REPO/cloud-native-workstation-novnc:latest
+docker push $REPO/cloud-native-workstation-jupyter:latest
 cd ..
 ```
 
@@ -226,6 +235,10 @@ The `certbot.email` should be configured if you are using the Certbot option for
 ### Resource requests
 
 For portability to low-resource environments like minikube, resource requests are zeroed for all components.  This is just the default configuration.  For production environments, set resource requests equal to approximately one-half of the resource limits.
+
+### GPU capabilities
+
+If you provisioned the cluster using the [gke-with-gpu](terraform/gke-with-gpu) specification, ensure `jupyter.enabled` is `true`, set `jupyter.gpu.enabled` to `true`, and uncomment the two `nvidia.com/gpu: 1` resource specification lines.
 
 ## Installation
 

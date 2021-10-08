@@ -90,13 +90,17 @@ components:
           cpu: "2"
   jupyter:
     enabled: false
+    gpu:
+      enabled: false
     resources:
       requests:
         memory: 0
         cpu: 0
+        # nvidia.com/gpu: 1
       limits:
         memory: "8Gi"
         cpu: "4"
+        # nvidia.com/gpu: 1
   certbot:
     enabled: true
     resources:
