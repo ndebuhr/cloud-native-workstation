@@ -109,7 +109,6 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: keycloak-postgres
-  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
@@ -128,7 +127,6 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: keycloak
-  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
@@ -153,7 +151,6 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: keycloak-operator
-  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:

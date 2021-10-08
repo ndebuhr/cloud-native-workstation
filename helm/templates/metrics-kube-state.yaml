@@ -9,11 +9,10 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: prometheus-kube-state-metrics
-  namespace: {{ .Values.namespace }}
 subjects:
 - kind: ServiceAccount
   name: prometheus-kube-state-metrics
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: cluster-admin
@@ -38,7 +37,7 @@ spec:
       - name: kube-state-metrics
         image: quay.io/coreos/kube-state-metrics:v1.9.8
         args:
-          - '--namespace={{ .Values.namespace }}'
+          - '--namespace={{ .Release.Namespace }}'
         ports:
         - name: http-metrics
           containerPort: 8080
@@ -66,7 +65,6 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: prometheus-kube-state-metrics
-  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:

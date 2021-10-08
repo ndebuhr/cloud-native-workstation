@@ -10,7 +10,7 @@ spec:
     - apiGroups: [""]
       kinds: ["Pod"]
     namespaces:
-    - {{ .Values.namespace }}
+    - {{ .Release.Namespace }}
   parameters:
     labels: ["app"]
 {{- end }}

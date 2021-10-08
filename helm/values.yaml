@@ -1,7 +1,5 @@
 # Domain for your workstation
 domain: example.com
-# Kubernetes namespace for your workstation
-namespace: cloud-native-workstation
 # Public images on Docker Hub
 docker:
   registry: ndebuhr

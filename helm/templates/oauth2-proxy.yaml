@@ -76,7 +76,6 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: oauth2-proxy
-  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:

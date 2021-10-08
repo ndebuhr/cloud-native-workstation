@@ -4,7 +4,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jupyter
-  namespace: {{ .Values.namespace }}
   labels:
     app: jupyter
 spec:
@@ -50,7 +49,6 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: jupyter
-  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
@@ -71,7 +69,6 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jupyter-pvc
-  namespace: {{ .Values.namespace }}
   labels:
     app: jupyter
 spec:
@@ -85,7 +82,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: jupyter
-  namespace: {{ .Values.namespace }}
   labels:
     app: jupyter
 spec:
