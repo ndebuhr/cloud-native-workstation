@@ -9,6 +9,7 @@ RUN apt-get update -qqy && \
         apt-transport-https \
         bash-completion \
         dnsutils \
+        file \
         jq \
         libssl-dev \
         lldb \
