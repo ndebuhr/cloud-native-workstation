@@ -26,7 +26,7 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Provision a GKE cluster
-      working-directory: ./terraform
+      working-directory: ./terraform/gke
       run: |
         terraform init
         terraform apply -auto-approve
