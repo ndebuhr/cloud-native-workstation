@@ -29,11 +29,11 @@ jobs:
       working-directory: ./terraform/gke
       run: |
         terraform init
-        terraform apply -auto-approve
+        terraform apply -auto-approve -var gke_cluster_name=cloud-native-workstation-$GITHUB_RUN_NUMBER
 
     - name: Install helm
       run: |
-        gcloud container clusters get-credentials cloud-native-workstation --zone us-central1-a
+        gcloud container clusters get-credentials cloud-native-workstation-$GITHUB_RUN_NUMBER --zone us-central1-a
         alias helm="docker run -ti --rm -v $(pwd):/apps -v ~/.kube:/root/.kube -v ~/.helm:/root/.helm alpine/helm:3.5.4"
 
     - name: Setup kubeconfig
