@@ -71,6 +71,6 @@ jobs:
         helm uninstall workstation
 
     - name: Deprovision
-      working-directory: ./terraform
+      working-directory: ./terraform/gke
       run: |
         terraform destroy -auto-approve
