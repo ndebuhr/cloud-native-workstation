@@ -290,7 +290,7 @@ Note that workstation creation can take a few minutes.  The DNS propagation is p
 Access the components that you've enabled in the Helm values (after authenticating with the Keycloak proxy):
 
 * hugo.YOUR_DOMAIN for a Hugo development web server
-    * e.g. `hugo serve -D --bind 0.0.0.0 --baseUrl hugo.YOUR_DOMAIN --appendPort false` in Code Server
+    * e.g. `hugo serve -D --bind=0.0.0.0 --baseUrl=hugo.YOUR_DOMAIN --appendPort=false` in Code Server
 * code.YOUR_DOMAIN for Code Server IDE
 * selenium.YOUR_DOMAIN for Selenium Grid hub
 * novnc.YOUR_DOMAIN for Ubuntu+Chrome Selenium node
