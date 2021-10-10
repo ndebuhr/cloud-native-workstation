@@ -10,6 +10,7 @@ RUN apt-get update -qqy && \
         bash-completion \
         dnsutils \
         file \
+        golang \
         jq \
         libssl-dev \
         lldb \
@@ -78,12 +79,6 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN cd /root/.cargo/bin && find . -type f | xargs -i install {} /usr/local/bin/
 RUN cargo install --git https://github.com/rustwasm/wasm-pack.git
-
-# skopeo install
-RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
-    wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/Debian_10/Release.key -O- | apt-key add - && \
-    apt-get update -qq && \
-    apt-get -qqy install skopeo
 
 USER coder
 
