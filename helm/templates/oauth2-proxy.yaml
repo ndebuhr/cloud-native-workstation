@@ -33,8 +33,6 @@ spec:
             value: "oidc"
           - name: "OAUTH2_PROXY_OIDC_ISSUER_URL"
             value: "https://keycloak.{{ .Values.domain }}/auth/realms/workstation"
-          # - name: "OAUTH2_PROXY_REDIRECT_URL"
-          #   value: "https://oauth2-proxy.{{ .Values.domain }}"
           - name: "OAUTH2_PROXY_CLIENT_ID"
             value: workstation
           - name: "OAUTH2_PROXY_CLIENT_SECRET"
