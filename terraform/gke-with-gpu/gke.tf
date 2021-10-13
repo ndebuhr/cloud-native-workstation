@@ -45,10 +45,6 @@ resource "google_container_node_pool" "primary_ml" {
   location   = var.gcp_zone
   cluster    = google_container_cluster.primary.name
   node_count = 1
-  autoscaling {
-    min_node_count = 0
-    max_node_count = 4
-  }
   node_config {
     image_type = "COS_CONTAINERD"
     machine_type = "n1-standard-4"
@@ -64,7 +60,7 @@ resource "google_container_node_pool" "primary_ml" {
       node_metadata = "SECURE"
     }
     guest_accelerator {
-      type  = "nvidia-tesla-t4"
+      type  = var.gcp_gpu
       count = 1
     }
   }

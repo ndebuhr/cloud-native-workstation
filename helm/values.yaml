@@ -90,6 +90,9 @@ components:
     enabled: false
     gpu:
       enabled: false
+      # If you are using the provided terraform provisioning, this value
+      # should match the gcp_gpu variable value
+      name: nvidia-tesla-t4
     resources:
       requests:
         memory: 0
