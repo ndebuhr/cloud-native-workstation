@@ -25,31 +25,27 @@ jobs:
     - name: build code server image
       uses: docker/build-push-action@v2
       with:
-        context: ./docker
-        file: ./docker/DockerfileCodeServer
+        context: ./build/code-server/
         push: false
         tags: ndebuhr/cloud-native-workstation-code-server:latest
 
     - name: build keycloak seeding image
       uses: docker/build-push-action@v2
       with:
-        context: ./docker
-        file: ./docker/DockerfileInitializers
+        context: ./build/initializers/
         push: false
         tags: ndebuhr/cloud-native-workstation-initializers:latest
 
     - name: build novnc image
       uses: docker/build-push-action@v2
       with:
-        context: ./docker
-        file: ./docker/DockerfileNovnc
+        context: ./build/novnc/
         push: false
         tags: ndebuhr/cloud-native-workstation-novnc:latest
 
     - name: build jupyter image
       uses: docker/build-push-action@v2
       with:
-        context: ./docker
-        file: ./docker/DockerfileJupyter
+        context: ./build/jupyter/
         push: false
         tags: ndebuhr/cloud-native-workstation-jupyter:latest

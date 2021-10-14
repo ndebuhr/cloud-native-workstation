@@ -26,7 +26,7 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Provision a GKE cluster
-      working-directory: ./terraform/gke
+      working-directory: ./provision/gke/
       run: |
         terraform init
         terraform apply -auto-approve -var gke_cluster_name=cloud-native-workstation-$GITHUB_RUN_NUMBER
@@ -42,18 +42,18 @@ jobs:
         kubectl config set-context --current --namespace cloud-native-workstation
 
     - name: Install workstation prerequisites
-      working-directory: ./helm-prerequisites
+      working-directory: ./prepare/chart/
       run: |
         helm dep update
         helm install workstation-prerequisites .
 
     - name: Install CRDs
       run: |
-        ./keycloak/crds.sh
-        ./opa/crds.sh
+        ./prepare/crds/keycloak.sh
+        ./prepare/crds/opa.sh
 
     - name: Deploy to GKE
-      working-directory: ./helm
+      working-directory: ./deploy/
       run: |
         helm dep update
         helm install workstation . \
@@ -66,11 +66,10 @@ jobs:
             --set components.grafana.enabled=true
 
     - name: Undeploy
-      working-directory: ./helm
       run: |
         helm uninstall workstation
 
     - name: Deprovision
-      working-directory: ./terraform/gke
+      working-directory: ./provision/gke/
       run: |
         terraform destroy -auto-approve

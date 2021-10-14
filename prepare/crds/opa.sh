@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-kubectl apply -f opa/constraint-templates.yaml
+kubectl apply -f ./prepare/crds/constraint-templates.yaml
 
 count=0
 echo "Constraint Template CRDs: Creating..."

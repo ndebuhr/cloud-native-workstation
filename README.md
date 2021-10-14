@@ -95,7 +95,7 @@ If you would like to provision a new Kubernetes cluster on Google Kubernetes Eng
     ```bash
     export GOOGLE_PROJECT=YOUR_PROJECT
     ```
-1. Navigate to the desired provisioning directory - either [terraform/gke](terraform/gke) or [terraform/gke-with-gpu](terraform/gke-with-gpu).  The [gke](terraform/gke) specification creates a "normal" cluster with a single node pool.  The [gke-with-gpu](terraform/gke-with-gpu) specification adds Nvidia T4 GPU capabilities to the Jupyter component, for AI/ML/GPU workloads.  If you do not want to enable the Jupyter component, or want it but for non-AI/ML/GPU workloads, then use the [gke](terraform/gke) specification.  The [gke](terraform/gke) specification is recommended for most users.  Once you've navigated to the desired infrastructure specification directory, provision with:
+1. Navigate to the desired provisioning directory - either [provision/gke](provision/gke) or [provision/gke-with-gpu](provision/gke-with-gpu).  The [gke](provision/gke) specification creates a "normal" cluster with a single node pool.  The [gke-with-gpu](provision/gke-with-gpu) specification adds Nvidia T4 GPU capabilities to the Jupyter component, for AI/ML/GPU workloads.  If you do not want to enable the Jupyter component, or want it but for non-AI/ML/GPU workloads, then use the [gke](provision/gke) specification.  The [gke](provision/gke) specification is recommended for most users.  Once you've navigated to the desired infrastructure specification directory, provision with:
     1. Using the default zone (us-central1-a) and cluster name (cloud-native-workstation):
         ```
         terraform init
@@ -196,11 +196,11 @@ REPO=us.gcr.io/my-project/my-repo  # for example
 ```
 ```
 # Build and push images
-cd docker
-docker build --file DockerfileCodeServer --tag $REPO/cloud-native-workstation-code-server:latest .
-docker build --file DockerfileInitializers --tag $REPO/cloud-native-workstation-initializers:latest .
-docker build --file DockerfileNovnc --tag $REPO/cloud-native-workstation-novnc:latest .
-docker build --file DockerfileJupyter --tag $REPO/cloud-native-workstation-jupyter:latest .
+cd build
+docker build --tag $REPO/cloud-native-workstation-code-server:latest ./code-server
+docker build --tag $REPO/cloud-native-workstation-initializers:latest ./initializers
+docker build --tag $REPO/cloud-native-workstation-novnc:latest ./novnc
+docker build --tag $REPO/cloud-native-workstation-jupyter:latest ./jupyter
 docker push $REPO/cloud-native-workstation-code-server:latest
 docker push $REPO/cloud-native-workstation-initializers:latest
 docker push $REPO/cloud-native-workstation-novnc:latest
@@ -209,7 +209,7 @@ cd ..
 ```
 
 ## Configuration
-Configure [helm values](helm/values.yaml), based on the instructions below.
+Configure [helm values](deploy/values.yaml), based on the instructions below.
 
 ### Docker Registry
 Configure the `docker.registry` and `docker.tag` Helm values if you are not using the public Docker Hub images.
@@ -238,7 +238,7 @@ For portability to low-resource environments like minikube, resource requests ar
 
 ### GPU capabilities
 
-If you provisioned the cluster using the [gke-with-gpu](terraform/gke-with-gpu) specification, ensure `jupyter.enabled` is `true`, set `jupyter.gpu.enabled` to `true`, and uncomment the two `nvidia.com/gpu: 1` resource specification lines.
+If you provisioned the cluster using the [gke-with-gpu](provision/gke-with-gpu) specification, ensure `jupyter.enabled` is `true`, set `jupyter.gpu.enabled` to `true`, and uncomment the two `nvidia.com/gpu: 1` resource specification lines.
 
 ## Installation
 
@@ -248,29 +248,29 @@ If you provisioned the cluster using the [gke-with-gpu](terraform/gke-with-gpu) 
 
 The following commands install the Nginx Ingress Controller and Open Policy Agent Gatekeeper.
 ```bash
-cd helm-prerequisites
+cd prepare/chart
 helm dependency update
 helm install workstation-prerequisites .
-cd ..
+cd ../..
 ```
 
 ### CRDs installation
 
 The Keycloak operator underpins OAuth2/OIDC systems.  Install with:
 ```bash
-./keycloak/crds.sh
+./prepare/crds/keycloak.sh
 ```
 
 Constraint templates provide policy-based workstation controls and security.  Install with:
 ```bash
-./opa/crds.sh
+./prepare/crds/opa.sh
 ```
 
 ### Workstation installation
 
 Install the workstation on the Kubernetes cluster with Helm:
 ```bash
-cd helm
+cd deploy
 helm dependency update
 helm install workstation .
 cd ..
