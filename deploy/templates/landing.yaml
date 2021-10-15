@@ -10,7 +10,7 @@ spec:
   ports:
   - name: landing
     port: 80
-    targetPort: {{ .Values.landing.targetPort }}
+    targetPort: {{ .Values.components.landing.targetPort }}
   selector:
     app: landing
 ---
@@ -33,7 +33,7 @@ spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: landing
-        image: {{ .Values.landing.image }}
+        image: {{ .Values.components.landing.image }}
         resources: {{- toYaml .Values.components.landing.resources | nindent 10 }}
       restartPolicy: Always
 {{- if eq .Values.policies.enabled true }}

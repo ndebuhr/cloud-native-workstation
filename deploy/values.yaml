@@ -121,6 +121,8 @@ components:
         cpu: "125m"
   landing:
     enabled: false
+    image: gcr.io/google-samples/hello-app:2.0
+    targetPort: 8080
     resources:
       requests:
         memory: 0
@@ -193,6 +195,7 @@ access:
 - name: guacamole
 - name: prometheus
 - name: grafana
+# Defaults applied to most pods
 podDefaults:
   automountServiceAccountToken: false
   serviceAccountName: workstation-default
@@ -240,6 +243,3 @@ sonarqube:
     limits:
       cpu: 1
       memory: 2Gi
-landing:
-  image: gcr.io/google-samples/hello-app:2.0
-  targetPort: 8080
