@@ -332,6 +332,7 @@ spec:
     - podSelector:
         matchLabels:
           app: ingress-nginx
+    - namespaceSelector: {}
   egress:
   - to:
     - podSelector:

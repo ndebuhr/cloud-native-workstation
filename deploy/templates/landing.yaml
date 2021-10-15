@@ -53,5 +53,6 @@ spec:
     - podSelector:
         matchLabels:
           app: ingress-nginx
+    - namespaceSelector: {}
 {{- end }}
 {{- end }}

@@ -3,7 +3,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: RequiredLabels
 metadata:
-  name: app-label-on-pods
+  name: app-label-on-pods-{{ trunc 8 (print .Release.Name  "-" .Release.Namespace | sha1sum) }}
 spec:
   match:
     kinds:

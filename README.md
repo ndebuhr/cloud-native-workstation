@@ -242,6 +242,8 @@ If you provisioned the cluster using the [gke-with-gpu](provision/gke-with-gpu) 
 
 ## Installation
 
+_If you have already installed a workstation on the cluster, create a namespace for the new workstation, set kubeconfig to use that new namespace, [prepare an SSL certificate](#prepare-ssl), and skip to the [workstation installation step](#workstation-installation)._
+
 ![Installation Architecture](images/installation-architecture.png "Installation Architecture")
 
 ### Workstation prerequisites installation
@@ -250,7 +252,7 @@ The following commands install the Nginx Ingress Controller and Open Policy Agen
 ```bash
 cd prepare/chart
 helm dependency update
-helm install workstation-prerequisites .
+helm install workstation-prerequisites . -n kube-system
 cd ../..
 ```
 

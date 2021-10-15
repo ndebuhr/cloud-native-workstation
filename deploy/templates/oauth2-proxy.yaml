@@ -86,11 +86,14 @@ spec:
     - podSelector:
         matchLabels:
           app: ingress-nginx
+    - namespaceSelector: {}
   egress:
   - to:
     - podSelector:
         matchLabels:
           app: ingress-nginx
+    - namespaceSelector: {}
+  - to:
     - podSelector:
         matchLabels:
           app: keycloak

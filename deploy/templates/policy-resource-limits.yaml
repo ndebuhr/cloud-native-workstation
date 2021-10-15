@@ -2,7 +2,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: ResourceLimit
 metadata:
-  name: containers-must-have-limits
+  name: containers-must-have-limits-{{ trunc 8 (print .Release.Name  "-" .Release.Namespace | sha1sum) }}
 spec:
   match:
     kinds:
