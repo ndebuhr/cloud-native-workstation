@@ -45,16 +45,31 @@ jobs:
       working-directory: ./prepare/chart/
       run: |
         helm dep update
-        helm install workstation-prerequisites .
+        helm install workstation-prerequisites . -n kube-system
 
     - name: Install CRDs
       run: |
         ./prepare/crds/keycloak.sh
         ./prepare/crds/opa.sh
 
-    - name: Deploy to GKE
+    - name: Deploy a workstation
       working-directory: ./deploy/
       run: |
+        helm dep update
+        helm install workstation . \
+            --set components.selenium.enabled=true \
+            --set components.jupyter.enabled=true \
+            --set components.landing.enabled=true \
+            --set components.sonarqube.enabled=true \
+            --set components.guacamole.enabled=true \
+            --set components.prometheus.enabled=true \
+            --set components.grafana.enabled=true
+
+    - name: Deploy a second workstation
+      working-directory: ./deploy/
+      run: |
+        kubectl create namespace second-workstation-test
+        kubectl config set-context --current --namespace second-workstation-test
         helm dep update
         helm install workstation . \
             --set components.selenium.enabled=true \
