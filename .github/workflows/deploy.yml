@@ -57,6 +57,7 @@ jobs:
       run: |
         helm dep update
         helm install workstation . \
+            --set domain=a.example.com \
             --set components.selenium.enabled=true \
             --set components.jupyter.enabled=true \
             --set components.landing.enabled=true \
@@ -72,6 +73,7 @@ jobs:
         kubectl config set-context --current --namespace second-workstation-test
         helm dep update
         helm install workstation . \
+            --set domain=b.example.com \
             --set components.selenium.enabled=true \
             --set components.jupyter.enabled=true \
             --set components.landing.enabled=true \
