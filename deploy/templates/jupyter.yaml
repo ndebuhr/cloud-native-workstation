@@ -77,7 +77,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 32Gi
+      storage: {{ .Values.components.jupyter.storage }}
 ---
 apiVersion: v1
 kind: Service

@@ -118,7 +118,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 32Gi
+      storage: {{ .Values.components.guacamole.postgres.storage }}
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -67,6 +67,7 @@ components:
         cpu: "1"
   code:
     enabled: true
+    storage: 32Gi
     resources:
       requests:
         memory: 0
@@ -77,6 +78,7 @@ components:
     dind:
       image: docker
       tag: 19-dind
+      storage: 16Gi
       resources:
         requests:
           memory: 0
@@ -96,6 +98,7 @@ components:
           cpu: "2"
   jupyter:
     enabled: false
+    storage: 32Gi
     gpu:
       enabled: false
       # If you are using the provided terraform provisioning, this value
@@ -150,6 +153,7 @@ components:
           memory: "4Gi"
           cpu: "1"
     postgres:
+      storage: 16Gi
       resources:
         requests:
           memory: 0
@@ -176,6 +180,7 @@ components:
         - dashboards/grafana_stats.json
         community:
         - 13332
+    storage: 8Gi
     resources:
       requests:
         memory: 0

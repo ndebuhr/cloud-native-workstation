@@ -73,7 +73,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 16Gi
+      storage: {{ .Values.components.grafana.storage }}
 ---
 apiVersion: v1
 kind: ConfigMap

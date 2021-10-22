@@ -139,7 +139,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 64Gi
+      storage: {{ .Values.components.code.storage }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -150,5 +150,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 32Gi
+      storage: {{ .Values.components.code.dind.storage }}
 {{- end }}
