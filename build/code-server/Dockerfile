@@ -41,7 +41,15 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update -qqy && apt-get install -qqy google-cloud-sdk
 
-RUN pip3 install black boto3 docker-compose numpy
+RUN pip3 install \
+    black \
+    boto3 \
+    docker-compose \
+    google-cloud-pubsub \
+    google-cloud-vision \
+    numpy \
+    requests \
+    selenium
 
 RUN usermod -aG docker coder
 
