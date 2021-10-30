@@ -88,6 +88,10 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN cd /root/.cargo/bin && find . -type f | xargs -i install {} /usr/local/bin/
 RUN cargo install --git https://github.com/rustwasm/wasm-pack.git
 
+# install golang
+RUN wget https://golang.org/dl/go1.17.2.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.17.2.linux-amd64.tar.gz
+
 USER coder
 
 # bash completion - kubernetes and helm
