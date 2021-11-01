@@ -68,7 +68,7 @@ spec:
         name: code
         ports:
         - name: ide
-          containerPort: 3000
+          containerPort: 8080
         - name: hugo
           containerPort: 1313
         env:
