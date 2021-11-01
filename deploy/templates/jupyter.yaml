@@ -32,8 +32,11 @@ spec:
         name: jupyter
         command: ["start.sh"]
         args: ["jupyter", "lab", "--LabApp.token=''", "--LabApp.allow_origin='*'"]
+        env:
+        - name: GRANT_SUDO
+          value: "yes"
         securityContext:
-          runAsNonRoot: true
+          runAsUser: 0
         resources: {{- toYaml .Values.components.jupyter.resources | nindent 10 }}
         volumeMounts:
         - name: jupyter
