@@ -49,3 +49,10 @@ jobs:
         context: ./build/jupyter/
         push: false
         tags: ndebuhr/cloud-native-workstation-jupyter:latest
+
+    - name: build pgweb image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./build/pgweb/
+        push: false
+        tags: ndebuhr/cloud-native-workstation-pgweb:latest

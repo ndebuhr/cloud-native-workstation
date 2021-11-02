@@ -58,6 +58,7 @@ jobs:
         helm dep update
         helm install workstation . \
             --set domain=a.example.com \
+            --set components.pgweb.enabled=true \
             --set components.selenium.enabled=true \
             --set components.jupyter.enabled=true \
             --set components.landing.enabled=true \
@@ -74,6 +75,7 @@ jobs:
         helm dep update
         helm install workstation . \
             --set domain=b.example.com \
+            --set components.pgweb.enabled=true \
             --set components.selenium.enabled=true \
             --set components.jupyter.enabled=true \
             --set components.landing.enabled=true \

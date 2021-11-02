@@ -294,6 +294,7 @@ Access the components that you've enabled in the Helm values (after authenticati
 * hugo.YOUR_DOMAIN for a Hugo development web server
     * e.g. `hugo serve -D --bind=0.0.0.0 --baseUrl=hugo.YOUR_DOMAIN --appendPort=false` in Code Server
 * code.YOUR_DOMAIN for Code Server IDE
+* pgweb.YOUR_DOMAIN for Pgweb (`kubectl exec` and then `openvpn --config /etc/client.ovpn`)
 * selenium.YOUR_DOMAIN for Selenium Grid hub
 * novnc.YOUR_DOMAIN for Ubuntu+Chrome Selenium node
 * keycloak.YOUR_DOMAIN for Keycloak administration

@@ -78,3 +78,16 @@ jobs:
         context: ./build/jupyter/
         push: true
         tags: ${{ steps.meta-jupyter.outputs.tags }}
+
+    - name: meta for pgweb image
+      id: meta-pgweb
+      uses: docker/metadata-action@v3
+      with:
+        images: ndebuhr/cloud-native-workstation-pgweb
+
+    - name: build and push pgweb image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./build/pgweb/
+        push: true
+        tags: ${{ steps.meta-pgweb.outputs.tags }}
