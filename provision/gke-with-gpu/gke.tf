@@ -35,7 +35,7 @@ resource "google_container_node_pool" "primary_core" {
       "https://www.googleapis.com/auth/devstorage.read_only"
     ]
     workload_metadata_config {
-      mode = "UNSPECIFIED"
+      mode = "MODE_UNSPECIFIED"
     }
   }
 }
@@ -57,7 +57,7 @@ resource "google_container_node_pool" "primary_ml" {
       "https://www.googleapis.com/auth/devstorage.read_only"
     ]
     workload_metadata_config {
-      mode = "UNSPECIFIED"
+      mode = "MODE_UNSPECIFIED"
     }
     guest_accelerator {
       type  = var.gcp_gpu
