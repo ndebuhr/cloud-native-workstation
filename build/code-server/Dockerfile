@@ -12,6 +12,7 @@ RUN apt-get update -qqy && \
         file \
         golang \
         jq \
+        lcdf-typetools \
         libssl-dev \
         lldb \
         lsb-release \
@@ -82,6 +83,10 @@ RUN wget https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz && \
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install
+
+# install eksctl
+RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
+    mv /tmp/eksctl /usr/local/bin
 
 # install rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
