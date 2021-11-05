@@ -35,7 +35,7 @@ resource "google_container_node_pool" "primary_core" {
       "https://www.googleapis.com/auth/devstorage.read_only"
     ]
     workload_metadata_config {
-      node_metadata = "SECURE"
+      mode = "UNSPECIFIED"
     }
   }
 }
