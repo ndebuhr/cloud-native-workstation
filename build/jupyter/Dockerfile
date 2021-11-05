@@ -8,7 +8,9 @@ RUN apt-get update -qqy && \
         cmake \
         libboost-all-dev \
         libpq-dev \
+        openvpn \
         pkg-config \
+        postgresql \
         poppler-utils
 
 USER jovyan
