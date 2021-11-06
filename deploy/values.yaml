@@ -3,7 +3,7 @@ domain: example.com
 # Public images on Docker Hub
 docker:
   registry: ndebuhr
-  tag: v0.8.0
+  tag: v0.8.1
 # Certbot details
 certbot:
   # Valid types are "google" and "cloudflare"
