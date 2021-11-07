@@ -47,7 +47,7 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
 
 - [Repository preparation](#repository-preparation)
 - [Provisioning (Optional)](#provisioning-optional)
-- [Configure `kubectl`](#configure-`kubectl`)
+- [Configure `kubectl`](#configure-kubectl)
 - [Prepare SSL](#prepare-ssl)
     - [Certbot with Google Cloud Platform DNS](#certbot-with-google-cloud-platform-dns)
     - [Certbot with Cloudflare DNS](#certbot-with-cloudflare-dns)
