@@ -4,9 +4,11 @@ domain: example.com
 docker:
   registry: ndebuhr
   tag: v0.8.1
+aws:
+  efs: false
 # Certbot details
 certbot:
-  # Valid types are "google" and "cloudflare"
+  # Valid types are "google", "aws", and "cloudflare"
   type: google
   email: admin@example.com
 # Keycloak security

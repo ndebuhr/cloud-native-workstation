@@ -12,8 +12,10 @@
 *.tfstate
 *.tfstate.*
 **/.terraform.lock.hcl
+provision/**/kubeconfig*
 
 # Key files
 google.json
 cloudflare.ini
+config
 client.ovpn

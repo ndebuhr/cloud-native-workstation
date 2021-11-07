@@ -77,6 +77,8 @@ git submodule update
 
 ## Provisioning (Optional)
 
+### Google Kubernetes Service
+
 If you would like to provision a new Kubernetes cluster on Google Kubernetes Engine to run your workstation, follow the steps below.
 1. Create a Cloud Native Workstation role in Google Cloud Platform with the following permissions:
     1. compute.instanceGroupManagers.get
@@ -111,7 +113,54 @@ If you would like to provision a new Kubernetes cluster on Google Kubernetes Eng
     cd ../..
     ```
 
+### Elastic Kubernetes Service (AWS)
+
+If you would like to provision a new Kubernetes cluster on Elastic Kubernetes Service to run your workstation, follow the steps below.
+1. Create a Cloud Native Workstation policy in Amazon Web Services with the following permissions:
+    1. iam:CreateRole
+    1. iam:GetRole
+    1. iam:ListRolePolicies
+    1. iam:ListAttachedRolePolicies
+    1. iam:ListInstanceProfilesForRole
+    1. iam:DeleteRole
+    1. iam:AttachRolePolicy
+    1. iam:DetachRolePolicy
+    1. logs:CreateLogGroup
+    1. logs:PutRetentionPolicy
+    1. logs:DescribeLogGroups
+    1. logs:ListTagsLogGroup
+    1. logs:DeleteLogGroup
+    1. ec2:*
+    1. eks:*
+    1. autoscaling:CreateLaunchConfiguration
+    1. autoscaling:DescribeLaunchConfigurations
+    1. autoscaling:CreateAutoScalingGroup
+    1. autoscaling:DescribeAutoScalingGroups
+    1. autoscaling:DescribeScalingActivities
+    1. autoscaling:SuspendProcesses
+    1. autoscaling:UpdateAutoScalingGroup
+    1. autoscaling:*
+    1. cloudformation:ListStacks
+1. Create a new user and assign the Cloud Native Workstation and IAMFullAccess policies
+1. Create a key and set the AWS authentication environment variables
+    ```bash
+    export AWS_ACCESS_KEY_ID=YOURVALUEHERE
+    export AWS_SECRET_ACCESS_KEY=YOURVALUEHERE
+    ```
+1. Navigate to the [EKS provisioning directory](provision/eks), then provision with:
+    ```
+    terraform init
+    terraform apply
+    ```
+1. Note the output values for efs_fs_id and efs_role_arn, as you will need them later
+1. Return to the repository root directory
+    ```bash
+    cd ../..
+    ```
+
 ## Configure `kubectl`
+
+### Google Kubernetes Engine
 
 If using Google Kubernetes Engine, execute the commands below.  If you [ran provisioning with the default GCP zone and cluster name](#provisioning-(optional)), then use `cloud-native-workstation` as the cluster name and `us-central1-a` as the cluster zone.  Other cloud vendors should provide a similar cli and commands for configuring `kubectl`, if you are not using Google Kubernetes Engine.
 ```
@@ -121,6 +170,14 @@ gcloud container clusters get-credentials cloud-native-workstation --zone us-cen
 
 Next, create a namespace and configure `kubectl` to use that namespace:
 ```bash
+kubectl create namespace cloud-native-workstation
+kubectl config set-context --current --namespace cloud-native-workstation
+```
+
+### Elastic Kubernetes Service (AWS)
+
+```bash
+aws eks update-kubeconfig --region us-east-1 --name cloud-native-workstation
 kubectl create namespace cloud-native-workstation
 kubectl config set-context --current --namespace cloud-native-workstation
 ```
@@ -164,6 +221,28 @@ Once you have created the `cloudflare.ini` file, run:
 kubectl create secret generic cloudflare-ini --from-file cloudflare.ini
 ```
 Later, during the installation, be sure `certbot` is `enabled: true` and `certbot.type` is `cloudflare` in the Helm values
+
+### Route53 (AWS)
+
+1. In AWS, create a Route 53 DNS zone for your domain
+1. In your domain name registrar, ensure the domain nameservers are set to the values from AWS
+1. In AWS, create a Cloud Native Workstation Certbot user with the following permissions:
+    1. route53:ListHostedZones
+    1. route53:GetChange
+    1. route53:ChangeResourceRecordSets
+
+Create a credentials file called `config`, with the following contents.  Use the Access Key ID and Secret Access Key for the account that you just setup.
+```
+[default]
+aws_access_key_id=AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+```
+
+Add this file to Kubernetes as a secret:
+```bash
+kubectl create secret generic aws-config --from-file config
+```
+Later, during the installation, be sure `certbot` is `enabled: true` and `certbot.type` is `aws` in the Helm values
 
 ### Bring your own SSL certificate
 
@@ -248,7 +327,7 @@ _If you have already installed a workstation on the cluster, create a namespace 
 
 ### Workstation prerequisites installation
 
-The following commands install the Nginx Ingress Controller and Open Policy Agent Gatekeeper.
+The following commands install the Nginx Ingress Controller and Open Policy Agent Gatekeeper.  If you would like the ability (but not the obligation) to use EFS-backed persistent volume claims on Elastic Kubernetes Serice (AWS), update the [cluster preparation chart values](prepare/chart/values.yaml) before running the Helm install.  Specifically, set `aws-efs-csi-driver.enabled=true`, `aws-efs-csi-driver.controller.serviceAccount.annotations.eks.amazonaws.com/role-arn` to the provisioning output value that you noted earlier, and `aws-efs-csi-driver.storageClasses[0].parameters.fileSystemId` to the provisioning output value that you noted earlier.
 ```bash
 cd prepare/chart
 helm dependency update
@@ -278,10 +357,11 @@ helm install workstation .
 cd ..
 ```
 
-Create a DNS entry to point your domain to the Load Balancer External IP created during the Helm installation.  To see the installed services, including this Load Balancer, run:
+Create a DNS entry (A record) that points `*.YOURDOMAIN` to the Load Balancer External IP created during the Helm installation.  If using EKS, the A record should be an alias to the AWS ELB domain.  To see the installed services, including this Load Balancer, run:
 ```bash
 kubectl get service workstation-prerequisites-ingress-nginx-controller \
-    -o custom-columns=NAME:.metadata.name,TYPE:.spec.type,EXTERNAL-IP:.status.loadBalancer.ingress[0].ip
+    -n kube-system \
+    -o custom-columns=NAME:.metadata.name,TYPE:.spec.type,EXTERNAL-IP:.status.loadBalancer.ingress[0].ip,EXTERNAL-HOSTNAME:.status.loadBalancer.ingress[0].hostname
 ```
 The domain must resolve before the components will work (access by IP only is not possible).
 

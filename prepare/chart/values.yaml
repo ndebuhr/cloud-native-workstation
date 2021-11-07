@@ -1,3 +1,15 @@
+aws-efs-csi-driver:
+  enabled: false
+  controller:
+    serviceAccount:
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::1234567890:role/workstation-eks-efs
+  storageClasses:
+  - name: efs-sc
+    parameters:
+      provisioningMode: efs-ap
+      fileSystemId: fs-00000000000000000
+      directoryPerms: "777"
 ingress-nginx:
   controller:
     ingressClassResource:

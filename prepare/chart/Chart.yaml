@@ -8,3 +8,7 @@ dependencies:
 - name: gatekeeper
   version: 3.6.0
   repository: https://open-policy-agent.github.io/gatekeeper/charts
+- name: aws-efs-csi-driver
+  version: 2.2.0
+  repository: https://kubernetes-sigs.github.io/aws-efs-csi-driver/
+  condition: aws-efs-csi-driver.enabled

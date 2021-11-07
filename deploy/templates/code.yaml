@@ -135,8 +135,15 @@ metadata:
   labels:
     app: code
 spec:
+{{- if eq .Values.aws.efs false }}
   accessModes:
     - ReadWriteOnce
+{{- end }}
+{{- if eq .Values.aws.efs true }}
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+{{- end }}
   resources:
     requests:
       storage: {{ .Values.components.code.storage }}
@@ -146,8 +153,15 @@ kind: PersistentVolumeClaim
 metadata:
   name: code-dind-pvc
 spec:
+{{- if eq .Values.aws.efs false }}
   accessModes:
     - ReadWriteOnce
+{{- end }}
+{{- if eq .Values.aws.efs true }}
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+{{- end }}
   resources:
     requests:
       storage: {{ .Values.components.code.dind.storage }}

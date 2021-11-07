@@ -28,7 +28,7 @@ spec:
         cloud.google.com/gke-accelerator: {{ .Values.components.jupyter.gpu.name }}
       {{- end }}
       containers:
-      - image: ndebuhr/cloud-native-workstation-jupyter:{{ .Values.docker.tag }}
+      - image: {{ .Values.docker.registry }}/cloud-native-workstation-jupyter:{{ .Values.docker.tag }}
         name: jupyter
         command: ["start.sh"]
         args: ["jupyter", "lab", "--LabApp.token=''", "--LabApp.allow_origin='*'"]
@@ -36,6 +36,7 @@ spec:
         - name: GRANT_SUDO
           value: "yes"
         securityContext:
+          privileged: true
           runAsUser: 0
         resources: {{- toYaml .Values.components.jupyter.resources | nindent 10 }}
         volumeMounts:
@@ -76,8 +77,15 @@ metadata:
   labels:
     app: jupyter
 spec:
+{{- if eq .Values.aws.efs false }}
   accessModes:
     - ReadWriteOnce
+{{- end }}
+{{- if eq .Values.aws.efs true }}
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+{{- end }}
   resources:
     requests:
       storage: {{ .Values.components.jupyter.storage }}
