@@ -79,6 +79,7 @@ spec:
                   -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
+            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: google-json
               mountPath: /home/certbot/.secrets/certbot/
@@ -98,6 +99,7 @@ spec:
             securityContext:
               readOnlyRootFilesystem: true
               runAsNonRoot: true
+            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: ssl
               mountPath: /etc/ssl
@@ -132,6 +134,7 @@ spec:
               -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
+        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: cloudflare-ini
           mountPath: /home/certbot/.secrets/certbot/
@@ -151,6 +154,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: ssl
           mountPath: /etc/ssl
@@ -188,6 +192,7 @@ spec:
                   -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
+            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: cloudflare-ini
               mountPath: /home/certbot/.secrets/certbot/
@@ -207,6 +212,7 @@ spec:
             securityContext:
               readOnlyRootFilesystem: true
               runAsNonRoot: true
+            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: ssl
               mountPath: /etc/ssl
@@ -305,7 +311,7 @@ spec:
                   -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
-            resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
+            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: aws-config
               mountPath: /home/certbot/.secrets/certbot/
@@ -325,7 +331,7 @@ spec:
             securityContext:
               readOnlyRootFilesystem: true
               runAsNonRoot: true
-            resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
+            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: ssl
               mountPath: /etc/ssl
