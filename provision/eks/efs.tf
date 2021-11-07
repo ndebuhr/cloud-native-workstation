@@ -1,5 +1,6 @@
 resource "aws_efs_file_system" "cloud_native_workstation" {
   creation_token = "cloud-native-workstation"
+  encrypted      = true
   tags           = var.aws_tags
 }
 
