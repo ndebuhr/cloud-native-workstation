@@ -46,13 +46,14 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
 ## Table of Contents
 
 - [Repository preparation](#repository-preparation)
-- [Provisioning (Optional)](#provisioning-(optional))
+- [Provisioning (Optional)](#provisioning-optional)
 - [Configure `kubectl`](#configure-`kubectl`)
 - [Prepare SSL](#prepare-ssl)
     - [Certbot with Google Cloud Platform DNS](#certbot-with-google-cloud-platform-dns)
     - [Certbot with Cloudflare DNS](#certbot-with-cloudflare-dns)
+    - [Certbot with Route 53 (AWS) DNS](#certbot-with-route-53-aws-dns)
     - [Bring your own SSL certificate](#bring-your-own-ssl-certificate)
-- [Build (Optional)](#build-(optional))
+- [Build (Optional)](#build-optional)
 - [Configuration](#configuration)
     - [Docker Registry](#docker-registry)
     - [Keycloak](#keycloak)
@@ -222,7 +223,7 @@ kubectl create secret generic cloudflare-ini --from-file cloudflare.ini
 ```
 Later, during the installation, be sure `certbot` is `enabled: true` and `certbot.type` is `cloudflare` in the Helm values
 
-### Route53 (AWS)
+### Certbot with Route 53 (AWS) DNS
 
 1. In AWS, create a Route 53 DNS zone for your domain
 1. In your domain name registrar, ensure the domain nameservers are set to the values from AWS
