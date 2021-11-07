@@ -88,6 +88,11 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
     mv /tmp/eksctl /usr/local/bin
 
+# install saml2aws
+RUN wget https://github.com/Versent/saml2aws/releases/download/v2.33.0/saml2aws_2.33.0_linux_amd64.tar.gz && \
+    tar -xvzf saml2aws_2.33.0_linux_amd64.tar.gz && \
+    mv saml2aws /usr/local/bin
+
 # install rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN cd /root/.cargo/bin && find . -type f | xargs -i install {} /usr/local/bin/
