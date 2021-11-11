@@ -19,6 +19,7 @@ RUN apt-get update -qqy && \
         nodejs \
         npm \
         openjdk-11-jdk \
+        openvpn \
         pkg-config \
         python3 \
         python3-pip \

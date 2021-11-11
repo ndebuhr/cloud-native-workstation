@@ -42,10 +42,21 @@ spec:
         volumeMounts:
         - name: jupyter
           mountPath: /home/jovyan/work
+        {{- if eq .Values.components.jupyter.ovpn true }}
+        - name: client-ovpn
+          mountPath: /etc/client.ovpn
+          subPath: client.ovpn
+        {{- end }}
       volumes:
       - name: jupyter
         persistentVolumeClaim:
           claimName: jupyter-pvc
+      {{- if eq .Values.components.jupyter.ovpn true }}
+      - name: client-ovpn
+        secret:
+          secretName: client-ovpn
+          defaultMode: 0400
+      {{- end }}
       restartPolicy: Always
 {{- if eq .Values.policies.enabled true }}
 ---

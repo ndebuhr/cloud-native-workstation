@@ -85,6 +85,11 @@ spec:
         - name: coder
           mountPath: /home/coder
           subPath: home/coder
+        {{- if eq .Values.components.code.ovpn true }}
+        - name: client-ovpn
+          mountPath: /etc/client.ovpn
+          subPath: client.ovpn
+        {{- end }}
       - name: dind-daemon
         image: {{ .Values.components.code.dind.image }}:{{ .Values.components.code.dind.tag }}
         env:
@@ -104,6 +109,12 @@ spec:
       - name: code-dind-pv
         persistentVolumeClaim:
           claimName: code-dind-pvc
+      {{- if eq .Values.components.code.ovpn true }}
+      - name: client-ovpn
+        secret:
+          secretName: client-ovpn
+          defaultMode: 0400
+      {{- end }}
       restartPolicy: Always
 {{- if eq .Values.policies.enabled true }}
 ---

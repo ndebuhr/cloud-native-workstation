@@ -69,6 +69,9 @@ components:
         cpu: "1"
   code:
     enabled: true
+    # For accessing cloud resources over VPN, set ovpn=true and:
+    # kubectl create secret generic client-ovpn --from-file=client.ovpn
+    ovpn: false
     storage: 32Gi
     resources:
       requests:
@@ -112,6 +115,9 @@ components:
           cpu: "2"
   jupyter:
     enabled: false
+    # For accessing cloud resources over VPN, set ovpn=true and:
+    # kubectl create secret generic client-ovpn --from-file=client.ovpn
+    ovpn: false
     storage: 32Gi
     gpu:
       enabled: false
