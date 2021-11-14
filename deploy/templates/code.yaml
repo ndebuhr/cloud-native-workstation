@@ -48,20 +48,8 @@ spec:
         app: code
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      initContainers:
-      - image: {{ .Values.docker.registry }}/cloud-native-workstation-code-server:{{ .Values.docker.tag }}
-        imagePullPolicy: Always
-        name: permissions
-        securityContext:
-          runAsUser: 0
-        resources: {{- toYaml .Values.components.code.resources | nindent 10 }}
-        command: ["/bin/bash", "-c"]
-        args:
-        - "chown -R coder: /home/coder"
-        volumeMounts:
-        - name: coder
-          mountPath: /home/coder
-          subPath: home/coder
+      securityContext:
+        fsGroup: 1000
       containers:
       - image: {{ .Values.docker.registry }}/cloud-native-workstation-code-server:{{ .Values.docker.tag }}
         imagePullPolicy: Always

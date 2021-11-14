@@ -17,20 +17,8 @@ spec:
         app: grafana
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      initContainers:
-      - name: take-data-dir-ownership
-        image: alpine:3.13
-        # Give `grafana` user (id 472) permissions a mounted volume
-        # https://github.com/grafana/grafana-docker/blob/master/Dockerfile
-        command:
-        - chown
-        - -R
-        - 472:472
-        - /var/lib/grafana
-        resources: {{- toYaml .Values.components.grafana.resources | nindent 10 }}
-        volumeMounts:
-        - name: grafana-storage
-          mountPath: /var/lib/grafana
+      securityContext:
+        fsGroup: 472
       containers:
       - name: grafana
         image: grafana/grafana:8.1.3
