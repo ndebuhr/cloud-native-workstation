@@ -71,13 +71,13 @@ RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     install hugo /usr/local/bin/
 
 # install terraform
-RUN wget https://releases.hashicorp.com/terraform/1.0.8/terraform_1.0.8_linux_amd64.zip && \
-    unzip terraform_1.0.8_linux_amd64.zip && \
+RUN wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip && \
+    unzip terraform_1.0.11_linux_amd64.zip && \
     install terraform /usr/local/bin/
 
 # install helm
-RUN wget https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz && \
-    tar xfvz helm-v3.5.4-linux-amd64.tar.gz linux-amd64/helm && \
+RUN wget https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz && \
+    tar xfvz helm-v3.7.1-linux-amd64.tar.gz linux-amd64/helm && \
     install linux-amd64/helm /usr/local/bin/
 
 # install aws cli
@@ -100,8 +100,8 @@ RUN cd /root/.cargo/bin && find . -type f | xargs -i install {} /usr/local/bin/
 RUN cargo install --git https://github.com/rustwasm/wasm-pack.git
 
 # install golang
-RUN wget https://golang.org/dl/go1.17.2.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.17.2.linux-amd64.tar.gz
+RUN wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
 
 USER coder
 
