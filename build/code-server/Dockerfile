@@ -16,6 +16,8 @@ RUN apt-get update -qqy && \
         libssl-dev \
         lldb \
         lsb-release \
+        iputils-ping \
+        nmap \
         nodejs \
         npm \
         openjdk-11-jdk \
