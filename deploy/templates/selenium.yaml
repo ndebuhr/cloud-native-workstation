@@ -2,77 +2,107 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: selenium
+  name: selenium-hub
+  labels:
+    name: selenium-hub
 spec:
-  type: ClusterIP
+  selector:
+    app: selenium-hub
   ports:
-  - name: selenium
+  - name: web
+    protocol: TCP
     port: 80
     targetPort: 4444
-  selector:
-    app: {{ .Release.Name }}-selenium-hub
+  - name: tests
+    protocol: TCP
+    port: 4444
+    targetPort: 4444
+  - name: event-bus-publish
+    protocol: TCP
+    port: 4442
+    targetPort: 4442
+  - name: event-bus-subscribe
+    protocol: TCP
+    port: 4443
+    targetPort: 4443
 ---
-apiVersion: v1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: chrome-vnc
+  name: selenium-hub
+  labels:
+    app: selenium-hub
+    name: selenium-hub
 spec:
-  type: ClusterIP
-  ports:
-  - name: vnc
-    port: 5900
+  replicas: 1
   selector:
-    app: {{ .Release.Name }}-selenium-chrome-debug
+    matchLabels:
+      app: selenium-hub
+  template:
+    metadata:
+      labels:
+        app: selenium-hub
+    spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
+      containers:
+      - name: selenium-hub
+        image: {{ .Values.components.selenium.hub.image }}
+        resources: {{- toYaml .Values.components.selenium.hub.resources | nindent 10 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium-chrome
+  labels:
+    app: selenium-chrome
+    name: selenium-chrome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: selenium-chrome
+  template:
+    metadata:
+      labels:
+        app: selenium-chrome
+    spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
+      containers:
+      - name: selenium-chrome
+        image: {{ .Values.components.selenium.chrome.image }}
+        env:
+        - name: SE_EVENT_BUS_HOST
+          value: "selenium-hub"
+        - name: SE_EVENT_BUS_PUBLISH_PORT
+          value: "4442"
+        - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+          value: "4443"
+        - name: VNC_NO_PASSWORD
+          value: "1"
+        resources: {{- toYaml .Values.components.selenium.chrome.resources | nindent 10 }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: novnc
+  name: selenium-chrome
 spec:
   type: ClusterIP
   ports:
   - name: novnc
     port: 80
-    targetPort: 6080
+    targetPort: 7900
   selector:
-    app: novnc
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: novnc
-  labels:
-    app: novnc
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: novnc
-  template:
-    metadata:
-      labels:
-        app: novnc
-    spec:
-      {{ toYaml .Values.podDefaults | nindent 6 }}
-      containers:
-      - image: {{ .Values.docker.registry }}/cloud-native-workstation-novnc:{{ .Values.docker.tag }}
-        imagePullPolicy: Always
-        name: novnc
-        command: ["/bin/bash", "-c"]
-        args:
-        - "bash /opt/novnc/utils/novnc_proxy --vnc chrome-vnc:5900"
-        resources: {{- toYaml .Values.components.selenium.novnc.resources | nindent 10 }}
-      restartPolicy: Always
+    app: selenium-chrome
 {{- if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: novnc
+  name: selenium-chrome
 spec:
   podSelector:
     matchLabels:
-      app: novnc
+      app: selenium-chrome
   policyTypes:
   - Egress
   - Ingress
@@ -81,6 +111,9 @@ spec:
     - podSelector:
         matchLabels:
           app: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: selenium-hub
     - namespaceSelector: {}
   egress:
   - {}
@@ -88,11 +121,11 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: selenium
+  name: selenium-hub
 spec:
   podSelector:
     matchLabels:
-      app: {{ .Release.Name }}-selenium-hub
+      app: selenium-hub
   policyTypes:
   - Egress
   - Ingress
@@ -102,28 +135,6 @@ spec:
   - to:
     - podSelector:
         matchLabels:
-          app: {{ .Release.Name }}-selenium-chrome-debug
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: chrome-vnc
-spec:
-  podSelector:
-    matchLabels:
-      app: {{ .Release.Name }}-selenium-chrome-debug
-  policyTypes:
-  - Egress
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: {{ .Release.Name }}-selenium-hub
-    - podSelector:
-        matchLabels:
-          app: novnc
-  egress:
-  - {}
+          app: selenium-chrome
 {{- end }}
 {{- end }}

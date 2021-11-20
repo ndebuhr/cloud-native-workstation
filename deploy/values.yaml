@@ -105,7 +105,17 @@ components:
         cpu: 2
   selenium:
     enabled: false
-    novnc:
+    hub:
+      image: selenium/hub:4.1
+      resources:
+        requests:
+          memory: 0
+          cpu: 0
+        limits:
+          memory: "4Gi"
+          cpu: "2"
+    chrome:
+      image: selenium/node-chrome:4.1
       resources:
         requests:
           memory: 0
@@ -213,8 +223,8 @@ access:
 - name: code
 - name: hugo
 - name: pgweb
-- name: selenium
-- name: novnc
+- name: selenium-hub
+- name: selenium-chrome
 - name: jupyter
 - name: landing
 - name: sonarqube
@@ -240,28 +250,6 @@ redis:
       limits:
         cpu: 1
         memory: 2Gi
-selenium:
-  hub:
-    serviceType: ClusterIP
-    resources:
-      requests:
-        memory: 0
-        cpu: 0
-      limits:
-        cpu: 1
-        memory: 2Gi
-  chromeDebug:
-    enabled: true
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 2
-        memory: 8Gi
-    extraEnvs:
-    - name: VNC_NO_PASSWORD
-      value: "1"
 sonarqube:
   initContainers:
     resources:
