@@ -21,6 +21,8 @@ spec:
         imagePullPolicy: Always
         args:
         - "--session-cookie-minimal"
+        - "--session-store-type=redis"
+        - "--redis-connection-url=redis://{{ .Release.Name }}-redis-master:6379"
         ports:
         - containerPort: 4180
           protocol: TCP

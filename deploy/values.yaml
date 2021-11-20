@@ -226,6 +226,20 @@ podDefaults:
   automountServiceAccountToken: false
   serviceAccountName: workstation-default
 # Additional component-specific configuration
+redis:
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    podLabels:
+      app: redis-master
+    resources:
+      requests:
+        memory: 0
+        cpu: 0
+      limits:
+        cpu: 1
+        memory: 2Gi
 selenium:
   hub:
     serviceType: ClusterIP

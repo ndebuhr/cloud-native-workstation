@@ -10,3 +10,6 @@ dependencies:
   version: 9.8.2
   repository: https://oteemo.github.io/charts/
   condition: components.sonarqube.enabled
+- name: redis
+  version: 15.5.5
+  repository: https://charts.bitnami.com/bitnami/

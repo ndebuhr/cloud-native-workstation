@@ -1,0 +1,19 @@
+{{- if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-master
+spec:
+  podSelector:
+    matchLabels:
+      app: redis-master
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: oauth2-proxy
+{{- end }}
