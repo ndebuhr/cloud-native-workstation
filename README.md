@@ -382,6 +382,7 @@ Access the components that you've enabled in the Helm values (after authenticati
 * jupyter.YOUR_DOMAIN for Jupyter data science notebook
 * sonarqube.YOUR_DOMAIN for SonarQube
 * guacamole.YOUR_DOMAIN/guacamole/ for Apache Guacamole (default login guacadmin:guacadmin)
+* kanboard.YOUR_DOMAIN for Kanboard (default login admin:admin)
 * prometheus.YOUR_DOMAIN for Prometheus monitoring
 * grafana.YOUR_DOMAIN for Grafana visualization
 

@@ -191,6 +191,17 @@ components:
         limits:
           memory: "4Gi"
           cpu: "2"
+  kanboard:
+    enabled: false
+    image: kanboard/kanboard:v1.2.20
+    storage: 128Gi
+    resources:
+      requests:
+        memory: 0
+        cpu: 0
+      limits:
+        memory: 8Gi
+        cpu: 2
   prometheus:
     enabled: false
     resources:
@@ -231,6 +242,7 @@ access:
 - name: guacamole
 - name: prometheus
 - name: grafana
+- name: kanboard
 # Defaults applied to most pods
 podDefaults:
   automountServiceAccountToken: false

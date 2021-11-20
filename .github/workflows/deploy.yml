@@ -64,6 +64,7 @@ jobs:
             --set components.landing.enabled=true \
             --set components.sonarqube.enabled=true \
             --set components.guacamole.enabled=true \
+            --set components.kanboard.enabled=true \
             --set components.prometheus.enabled=true \
             --set components.grafana.enabled=true
 
@@ -81,6 +82,7 @@ jobs:
             --set components.landing.enabled=true \
             --set components.sonarqube.enabled=true \
             --set components.guacamole.enabled=true \
+            --set components.kanboard.enabled=true \
             --set components.prometheus.enabled=true \
             --set components.grafana.enabled=true
 

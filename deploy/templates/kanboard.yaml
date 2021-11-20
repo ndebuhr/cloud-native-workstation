@@ -1,0 +1,344 @@
+{{- if eq .Values.components.kanboard.enabled true }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kanboard
+  name: kanboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kanboard
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kanboard
+    spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
+      containers:
+      - name: kanboard
+        image: {{ .Values.components.kanboard.image }}
+        resources: {{- toYaml .Values.components.kanboard.resources | nindent 10 }}
+        volumeMounts:
+        - name: kanboard-data
+          mountPath: /var/www/app/data
+        - name: kanboard-plugins
+          mountPath: /var/www/app/plugins
+        - name: local-ini
+          mountPath: /etc/php7/conf.d/local.ini
+          subPath: local.ini
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: kanboard-data
+        persistentVolumeClaim:
+          claimName: kanboard-data-pvc
+      - name: kanboard-plugins
+        persistentVolumeClaim:
+          claimName: kanboard-plugins-pvc
+      - name: local-ini
+        configMap:
+          name: local-ini
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kanboard
+spec:
+  type: ClusterIP
+  selector:
+    app: kanboard
+  ports:
+  - name: http
+    port: 80
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kanboard-data-pvc
+  labels:
+    app: kanboard
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.components.kanboard.storage }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kanboard-plugins-pvc
+  labels:
+    app: kanboard
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-ini
+data:
+  local.ini: |
+    [PHP]
+    engine = On
+    short_open_tag = Off
+    precision = 14
+    output_buffering = 4096
+    zlib.output_compression = Off
+    implicit_flush = Off
+    unserialize_callback_func =
+    serialize_precision = -1
+    disable_functions =
+    disable_classes =
+    zend.enable_gc = On
+    expose_php = On
+    max_execution_time = 30
+    max_input_time = 60
+    memory_limit = 256M
+    error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
+    display_errors = Off
+    display_startup_errors = Off
+    log_errors = On
+    log_errors_max_len = 1024
+    ignore_repeated_errors = Off
+    ignore_repeated_source = Off
+    report_memleaks = On
+    html_errors = On
+    variables_order = "GPCS"
+    request_order = "GP"
+    register_argc_argv = Off
+    auto_globals_jit = On
+    post_max_size = 1G
+    auto_prepend_file =
+    auto_append_file =
+    default_mimetype = "text/html"
+    default_charset = "UTF-8"
+    include_path = ".:/usr/share/php7"
+    doc_root =
+    user_dir =
+    enable_dl = Off
+    file_uploads = On
+    upload_max_filesize = 1G
+    max_file_uploads = 32
+    allow_url_fopen = On
+    allow_url_include = Off
+    default_socket_timeout = 60
+    [CLI Server]
+    cli_server.color = On
+    [Date]
+    [filter]
+    [iconv]
+    [imap]
+    [intl]
+    [sqlite3]
+    [Pcre]
+    [Pdo]
+    [Pdo_mysql]
+    pdo_mysql.default_socket=
+    [Phar]
+    [mail function]
+    SMTP = localhost
+    smtp_port = 25
+    mail.add_x_header = Off
+    [ODBC]
+    odbc.allow_persistent = On
+    odbc.check_persistent = On
+    odbc.max_persistent = -1
+    odbc.max_links = -1
+    odbc.defaultlrl = 4096
+    odbc.defaultbinmode = 1
+    [Interbase]
+    ibase.allow_persistent = 1
+    ibase.max_persistent = -1
+    ibase.max_links = -1
+    ibase.timestampformat = "%Y-%m-%d %H:%M:%S"
+    ibase.dateformat = "%Y-%m-%d"
+    ibase.timeformat = "%H:%M:%S"
+    [MySQLi]
+    mysqli.max_persistent = -1
+    mysqli.allow_persistent = On
+    mysqli.max_links = -1
+    mysqli.default_port = 3306
+    mysqli.default_socket =
+    mysqli.default_host =
+    mysqli.default_user =
+    mysqli.default_pw =
+    mysqli.reconnect = Off
+    [mysqlnd]
+    mysqlnd.collect_statistics = On
+    mysqlnd.collect_memory_statistics = Off
+    [OCI8]
+    [PostgreSQL]
+    pgsql.allow_persistent = On
+    pgsql.auto_reset_persistent = Off
+    pgsql.max_persistent = -1
+    pgsql.max_links = -1
+    pgsql.ignore_notice = 0
+    pgsql.log_notice = 0
+    [bcmath]
+    bcmath.scale = 0
+    [browscap]
+    [Session]
+    session.save_handler = files
+    session.use_strict_mode = 0
+    session.use_cookies = 1
+    session.use_only_cookies = 1
+    session.name = PHPSESSID
+    session.auto_start = 0
+    session.cookie_lifetime = 0
+    session.cookie_path = /
+    session.cookie_domain =
+    session.cookie_httponly =
+    session.cookie_samesite =
+    session.serialize_handler = php
+    session.gc_probability = 1
+    session.gc_divisor = 1000
+    session.gc_maxlifetime = 1440
+    session.referer_check =
+    session.cache_limiter = nocache
+    session.cache_expire = 180
+    session.use_trans_sid = 0
+    session.sid_length = 26
+    session.trans_sid_tags = "a=href,area=href,frame=src,form="
+    session.sid_bits_per_character = 5
+    [Assertion]
+    zend.assertions = -1
+    [COM]
+    [mbstring]
+    [gd]
+    [exif]
+    [Tidy]
+    tidy.clean_output = Off
+    [soap]
+    soap.wsdl_cache_enabled=1
+    soap.wsdl_cache_dir="/tmp"
+    soap.wsdl_cache_ttl=86400
+    soap.wsdl_cache_limit = 5
+    [sysvshm]
+    [ldap]
+    ldap.max_links = -1
+    [dba]
+    [opcache]
+    [curl]
+    [openssl]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  nginx.conf: |
+    user nginx;
+    worker_processes 1;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include       mime.types;
+        default_type  application/octet-stream;
+
+        sendfile           on;
+        tcp_nopush         on;
+        tcp_nodelay        on;
+        keepalive_timeout  65;
+        server_tokens      off;
+        access_log         off;
+        error_log          /dev/stderr;
+
+        fastcgi_buffers 16 16k;
+        fastcgi_buffer_size 32k;
+
+        server {
+            listen       80;
+            listen       443 ssl http2;
+            ssl_certificate /etc/nginx/ssl/kanboard.crt;
+            ssl_certificate_key /etc/nginx/ssl/kanboard.key;
+            server_name  localhost;
+            index        index.php;
+            root         /var/www/app;
+            client_max_body_size 1G;
+
+            location / {
+                try_files $uri $uri/ /index.php$is_args$args;
+            }
+
+            location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                fastcgi_pass unix:/var/run/php-fpm.sock;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                fastcgi_index index.php;
+                include fastcgi_params;
+            }
+
+            location ~ /data {
+                return 404;
+            }
+
+            location ~* ^.+\.(log|sqlite)$ {
+                return 404;
+            }
+
+            location ~ /\.ht {
+                return 404;
+            }
+
+            location ~* ^.+\.(ico|jpg|gif|png|css|js|svg|eot|ttf|woff|woff2|otf)$ {
+                log_not_found off;
+                expires 7d;
+                etag on;
+            }
+
+            gzip on;
+            gzip_comp_level 3;
+            gzip_disable "msie6";
+            gzip_vary on;
+            gzip_types
+                text/javascript
+                application/javascript
+                application/json
+                text/xml
+                application/xml
+                application/rss+xml
+                text/css
+                text/plain;
+        }
+    }
+{{- if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kanboard
+spec:
+  podSelector:
+    matchLabels:
+      app: kanboard
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: ingress-nginx
+    - namespaceSelector: {}
+{{- end }}
+{{- end }}
