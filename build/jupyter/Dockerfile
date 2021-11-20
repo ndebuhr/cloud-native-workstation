@@ -6,8 +6,10 @@ USER root
 RUN apt-get update -qqy && \
     apt-get install -qqy \
         cmake \
+        gnupg \
         libboost-all-dev \
         libpq-dev \
+        lsb-release \
         openvpn \
         pkg-config \
         postgresql \
