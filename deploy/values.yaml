@@ -30,43 +30,43 @@ components:
   keycloak:
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "4Gi"
-        cpu: "2"
+        cpu: 2
+        memory: 4Gi
     operator:
       resources:
         requests:
-          memory: 0
           cpu: 0
+          memory: 0
         limits:
-          memory: "1Gi"
-          cpu: "500m"
+          cpu: 500m
+          memory: 1Gi
     postgres:
       resources:
         requests:
           memory: 0
           cpu: 0
         limits:
-          memory: "4Gi"
-          cpu: "2"
+          cpu: 2
+          memory: 4Gi
   initializers:
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "256Mi"
-        cpu: "125m"
+        cpu: 125m
+        memory: 256Mi
   oauth2Proxy:
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "2Gi"
-        cpu: "1"
+        cpu: 1
+        memory: 2Gi
   code:
     enabled: true
     # For accessing cloud resources over VPN, set ovpn=true and:
@@ -75,22 +75,22 @@ components:
     storage: 32Gi
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "8Gi"
-        cpu: "4"
+        cpu: 4
+        memory: 8Gi
     dind:
       image: docker
       tag: 19-dind
       storage: 16Gi
       resources:
         requests:
-          memory: 0
           cpu: 0
+          memory: 0
         limits:
-          memory: "4Gi"
-          cpu: "2"
+          cpu: 2
+          memory: 4Gi
   pgweb:
     enabled: false
     # For accessing databases over VPN, set ovpn=true and:
@@ -98,22 +98,22 @@ components:
     ovpn: false
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: 8Gi
         cpu: 2
+        memory: 8Gi
   selenium:
     enabled: false
     hub:
       image: selenium/hub:4.1
       resources:
         requests:
-          memory: 0
           cpu: 0
+          memory: 0
         limits:
-          memory: "4Gi"
-          cpu: "2"
+          cpu: 2
+          memory: 4Gi
     chrome:
       image: selenium/node-chrome:4.1
       resources:
@@ -121,8 +121,8 @@ components:
           memory: 0
           cpu: 0
         limits:
-          memory: "4Gi"
-          cpu: "2"
+          cpu: 2
+          memory: 4Gi
   jupyter:
     enabled: false
     # For accessing cloud resources over VPN, set ovpn=true and:
@@ -136,81 +136,81 @@ components:
       name: nvidia-tesla-t4
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
         # nvidia.com/gpu: 1
       limits:
-        memory: "8Gi"
-        cpu: "4"
+        cpu: 4
+        memory: 8Gi
         # nvidia.com/gpu: 1
   certbot:
     enabled: true
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "256Mi"
-        cpu: "125m"
+        cpu: 125m
+        memory: 256Mi
   landing:
     enabled: false
     image: gcr.io/google-samples/hello-app:2.0
     targetPort: 8080
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "2Gi"
-        cpu: "1"
+        cpu: 1
+        memory: 2Gi
   sonarqube:
     enabled: false
   guacamole:
     enabled: false
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "4Gi"
-        cpu: "1"
+        cpu: 1
+        memory: 4Gi
     guacd:
       resources:
         requests:
-          memory: 0
           cpu: 0
+          memory: 0
         limits:
-          memory: "4Gi"
-          cpu: "1"
+          cpu: 1
+          memory: 4Gi
     postgres:
       storage: 16Gi
       resources:
         requests:
-          memory: 0
           cpu: 0
+          memory: 0
         limits:
-          memory: "4Gi"
-          cpu: "2"
+          cpu: 2
+          memory: 4Gi
   kanboard:
     enabled: false
     image: kanboard/kanboard:v1.2.20
     storage: 128Gi
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: 8Gi
         cpu: 2
+        memory: 8Gi
   prometheus:
     enabled: false
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "2Gi"
-        cpu: "1"
+        cpu: 1
+        memory: 2Gi
   grafana:
     enabled: false
     dashboards:
@@ -224,11 +224,11 @@ components:
     storage: 8Gi
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "2Gi"
-        cpu: "1"
+        cpu: 1
+        memory: 2Gi
 # Ingress targets
 access:
 - name: code
@@ -257,8 +257,8 @@ redis:
       app: redis-master
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
         cpu: 1
         memory: 2Gi
@@ -266,20 +266,23 @@ sonarqube:
   initContainers:
     resources:
       requests:
-        memory: 0
         cpu: 0
+        memory: 0
       limits:
-        memory: "256Mi"
-        cpu: "125m"
+        cpu: 125m
+        memory: 256Mi
   postgresql:
     resources:
       requests:
-        memory: "0"
         cpu: "0"
+        memory: "0"
+      limits:
+        cpu: "1"
+        memory: "2Gi"
   resources:
     requests:
-      memory: 0
       cpu: 0
+      memory: 0
     limits:
       cpu: 1
       memory: 2Gi
