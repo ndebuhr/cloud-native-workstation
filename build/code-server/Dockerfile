@@ -12,6 +12,7 @@ RUN apt-get update -qqy && \
         file \
         golang \
         jq \
+        jsonnet \
         lcdf-typetools \
         libssl-dev \
         lldb \
