@@ -1,4 +1,4 @@
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 # By default, deny everything except DNS
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -16,4 +16,4 @@ spec:
       protocol: TCP
     - port: 53
       protocol: UDP
-{{- end }}
+{{ end }}

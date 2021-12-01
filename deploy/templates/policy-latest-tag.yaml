@@ -1,4 +1,4 @@
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: DisallowedTags
 metadata:
@@ -12,4 +12,4 @@ spec:
     - {{ .Release.Namespace }}
   parameters:
     tags: ["latest"]
-{{- end }}
+{{ end }}

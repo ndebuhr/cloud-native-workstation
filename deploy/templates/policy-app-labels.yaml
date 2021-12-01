@@ -1,4 +1,4 @@
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: RequiredLabels
@@ -13,4 +13,4 @@ spec:
     - {{ .Release.Namespace }}
   parameters:
     labels: ["app"]
-{{- end }}
+{{ end }}

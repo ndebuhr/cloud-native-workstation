@@ -1,4 +1,4 @@
-{{- if eq .Values.components.prometheus.enabled true }}
+{{ if eq .Values.prometheus.enabled true }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -23,9 +23,9 @@ spec:
         fsGroup: 65534
       containers:
       - name: prometheus
-        image: prom/prometheus:v2.29.2
+        image: {{ .Values.prometheus.image }}
         args: ["--config.file=/etc/prometheus/prometheus.yml"]
-        resources: {{- toYaml .Values.components.prometheus.resources | nindent 10 }}
+        resources: {{ toYaml .Values.prometheus.resources | nindent 10 }}
         volumeMounts:
         - name: prometheus-yml
           mountPath: /etc/prometheus/prometheus.yml
@@ -52,21 +52,23 @@ data:
     - job_name: 'prometheus'
       static_configs:
       - targets: ['localhost:9090']
+{{ if eq .Values.prometheus.kubeStateMetrics.enabled true }}
     - job_name: 'kube-state-metrics'
       static_configs:
       - targets: ['prometheus-kube-state-metrics:8080']
-{{- if eq .Values.components.grafana.enabled true }}
+{{ end }}
+{{ if eq .Values.grafana.enabled true }}
     - job_name: 'grafana'
       static_configs:
       - targets: ['grafana']
-{{- end }}
-{{- if eq .Values.components.jupyter.enabled true }}
+{{ end }}
+{{ if eq .Values.jupyter.enabled true }}
     - job_name: 'jupyterhub'
       scheme: http
       metrics_path: '/metrics'
       static_configs:
       - targets: ['jupyter']
-{{- end }}
+{{ end }}
 ---
 kind: Service
 apiVersion: v1
@@ -91,8 +93,8 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.components.prometheus.storage }}
-{{- if eq .Values.policies.enabled true }}
+      storage: {{ .Values.prometheus.storage }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -123,5 +125,5 @@ spec:
     - podSelector:
         matchLabels:
           app: prometheus-kube-state-metrics
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}

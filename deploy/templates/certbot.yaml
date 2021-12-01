@@ -1,4 +1,4 @@
-{{- if eq .Values.components.certbot.enabled true }}
+{{ if eq .Values.certbot.enabled true }}
 {{ if eq .Values.certbot.type "google" }}
 apiVersion: batch/v1
 kind: Job
@@ -21,7 +21,7 @@ spec:
               -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
-        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
+        resources: {{ toYaml .Values.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: google-json
           mountPath: /home/certbot/.secrets/certbot/
@@ -41,7 +41,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
-        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
+        resources: {{ toYaml .Values.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: ssl
           mountPath: /etc/ssl
@@ -79,7 +79,7 @@ spec:
                   -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
-            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
+            resources: {{ toYaml .Values.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: google-json
               mountPath: /home/certbot/.secrets/certbot/
@@ -99,7 +99,7 @@ spec:
             securityContext:
               readOnlyRootFilesystem: true
               runAsNonRoot: true
-            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
+            resources: {{ toYaml .Values.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: ssl
               mountPath: /etc/ssl
@@ -111,7 +111,7 @@ spec:
           - name: ssl
             emptyDir: {}
           restartPolicy: OnFailure
-{{- end }}
+{{ end }}
 {{ if eq .Values.certbot.type "cloudflare" }}
 apiVersion: batch/v1
 kind: Job
@@ -134,7 +134,7 @@ spec:
               -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
-        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
+        resources: {{ toYaml .Values.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: cloudflare-ini
           mountPath: /home/certbot/.secrets/certbot/
@@ -154,7 +154,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
-        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
+        resources: {{ toYaml .Values.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: ssl
           mountPath: /etc/ssl
@@ -192,7 +192,7 @@ spec:
                   -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
-            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
+            resources: {{ toYaml .Values.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: cloudflare-ini
               mountPath: /home/certbot/.secrets/certbot/
@@ -212,7 +212,7 @@ spec:
             securityContext:
               readOnlyRootFilesystem: true
               runAsNonRoot: true
-            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
+            resources: {{ toYaml .Values.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: ssl
               mountPath: /etc/ssl
@@ -224,7 +224,7 @@ spec:
           - name: ssl
             emptyDir: {}
           restartPolicy: OnFailure
-{{- end }}
+{{ end }}
 {{ if eq .Values.certbot.type "aws" }}
 apiVersion: batch/v1
 kind: Job
@@ -250,7 +250,7 @@ spec:
               -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
             cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
-        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
+        resources: {{ toYaml .Values.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: aws-config
           mountPath: /home/certbot/.secrets/certbot/
@@ -270,7 +270,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
-        resources: {{- toYaml .Values.components.certbot.resources | nindent 10 }}
+        resources: {{ toYaml .Values.certbot.resources | nindent 10 }}
         volumeMounts:
         - name: ssl
           mountPath: /etc/ssl
@@ -311,7 +311,7 @@ spec:
                   -d '*.{{ .Values.domain }}' --non-interactive --agree-tos -m {{ .Values.certbot.email }} && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/fullchain.pem > /etc/ssl/fullchain.pem && \
                 cat /etc/letsencrypt/live/{{ .Values.domain }}/privkey.pem > /etc/ssl/privkey.pem
-            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
+            resources: {{ toYaml .Values.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: aws-config
               mountPath: /home/certbot/.secrets/certbot/
@@ -331,7 +331,7 @@ spec:
             securityContext:
               readOnlyRootFilesystem: true
               runAsNonRoot: true
-            resources: {{- toYaml .Values.components.certbot.resources | nindent 14 }}
+            resources: {{ toYaml .Values.certbot.resources | nindent 14 }}
             volumeMounts:
             - name: ssl
               mountPath: /etc/ssl
@@ -343,8 +343,8 @@ spec:
           - name: ssl
             emptyDir: {}
           restartPolicy: OnFailure
-{{- end }}
-{{- if eq .Values.policies.enabled true }}
+{{ end }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -358,7 +358,7 @@ spec:
   - Egress
   egress:
   - {}
-{{- end }}
+{{ end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -391,4 +391,4 @@ rules:
   - create
   - apply
   - patch
-{{- end }}
+{{ end }}

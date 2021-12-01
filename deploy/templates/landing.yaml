@@ -1,4 +1,4 @@
-{{- if eq .Values.components.landing.enabled true }}
+{{ if eq .Values.landing.enabled true }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -10,7 +10,7 @@ spec:
   ports:
   - name: landing
     port: 80
-    targetPort: {{ .Values.components.landing.targetPort }}
+    targetPort: {{ .Values.landing.targetPort }}
   selector:
     app: landing
 ---
@@ -33,10 +33,10 @@ spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: landing
-        image: {{ .Values.components.landing.image }}
-        resources: {{- toYaml .Values.components.landing.resources | nindent 10 }}
+        image: {{ .Values.landing.image }}
+        resources: {{ toYaml .Values.landing.resources | nindent 10 }}
       restartPolicy: Always
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -54,5 +54,5 @@ spec:
         matchLabels:
           app: ingress-nginx
     - namespaceSelector: {}
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}

@@ -1,269 +1,194 @@
 # Domain for your workstation
 domain: example.com
-# Public images on Docker Hub
-docker:
-  registry: ndebuhr
-  tag: v0.11.0
+
+# Values based on provisioning mechanism
 aws:
   efs: false
-# Certbot details
+
+# Authentication (used across subsystems)
+authentication:
+  username: workstation
+  # Change me!
+  password: M@inz!DE
+
+# Network policies and OPA constraint templates
+policies:
+  enabled: true
+
+# Defaults applied to most pods
+podDefaults:
+  automountServiceAccountToken: false
+  serviceAccountName: workstation-default
+
+# Certbot for automated TLS certificate provisioning
 certbot:
+  enabled: true
   # Valid types are "google", "aws", and "cloudflare"
   type: google
   email: admin@example.com
-# Keycloak security
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 125m
+      memory: 256Mi
+
+# For various seeding and initialization jobs
+initializers:
+  image: ndebuhr/cloud-native-workstation-initializers:v0.11.0
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 125m
+      memory: 256Mi
+
+# Keycloak
 keycloak:
   # Change me!
   clientSecret: OkSR7DMXAXzIrZIoWyN8yh0sFkiYrfJd
   # Change me!
   cookieSecret: 2u2iS0FH7pPjOUUn
-# Authentication for Code Server and Keycloak
-authentication:
-  username: workstation
-  # Change me!
-  password: M@inz!DE
-# Network policies and OPA constraint templates
-policies:
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 2
+      memory: 4Gi
+  operator:
+    image: quay.io/keycloak/keycloak-operator:15.0.2
+    resources:
+      requests:
+        cpu: 0
+        memory: 0
+      limits:
+        cpu: 500m
+        memory: 1Gi
+  postgres:
+    resources:
+      requests:
+        memory: 0
+        cpu: 0
+      limits:
+        cpu: 2
+        memory: 4Gi
+
+# For protecting oauth2 proxied subsystems
+oauth2Proxy:
+  image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.3
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+# Code Server
+code:
   enabled: true
-# Components included in the workstation
-components:
-  keycloak:
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 2
-        memory: 4Gi
-    operator:
-      resources:
-        requests:
-          cpu: 0
-          memory: 0
-        limits:
-          cpu: 500m
-          memory: 1Gi
-    postgres:
-      resources:
-        requests:
-          memory: 0
-          cpu: 0
-        limits:
-          cpu: 2
-          memory: 4Gi
-  initializers:
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 125m
-        memory: 256Mi
-  oauth2Proxy:
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 1
-        memory: 2Gi
-  code:
-    enabled: true
-    # For accessing cloud resources over VPN, set ovpn=true and:
-    # kubectl create secret generic client-ovpn --from-file=client.ovpn
-    ovpn: false
-    storage: 32Gi
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 4
-        memory: 8Gi
-    dind:
-      image: docker
-      tag: 19-dind
-      storage: 16Gi
-      resources:
-        requests:
-          cpu: 0
-          memory: 0
-        limits:
-          cpu: 2
-          memory: 4Gi
-  pgweb:
-    enabled: false
-    # For accessing databases over VPN, set ovpn=true and:
-    # kubectl create secret generic client-ovpn --from-file=client.ovpn
-    ovpn: false
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 2
-        memory: 8Gi
-  selenium:
-    enabled: false
-    hub:
-      image: selenium/hub:4.1
-      resources:
-        requests:
-          cpu: 0
-          memory: 0
-        limits:
-          cpu: 2
-          memory: 4Gi
-    chrome:
-      image: selenium/node-chrome:4.1
-      resources:
-        requests:
-          memory: 0
-          cpu: 0
-        limits:
-          cpu: 2
-          memory: 4Gi
-  jupyter:
-    enabled: false
-    # For accessing cloud resources over VPN, set ovpn=true and:
-    # kubectl create secret generic client-ovpn --from-file=client.ovpn
-    ovpn: false
-    storage: 32Gi
-    gpu:
-      enabled: false
-      # If you are using the provided terraform provisioning, this value
-      # should match the gcp_gpu variable value
-      name: nvidia-tesla-t4
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-        # nvidia.com/gpu: 1
-      limits:
-        cpu: 4
-        memory: 8Gi
-        # nvidia.com/gpu: 1
-  certbot:
-    enabled: true
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 125m
-        memory: 256Mi
-  landing:
-    enabled: false
-    image: gcr.io/google-samples/hello-app:2.0
-    targetPort: 8080
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 1
-        memory: 2Gi
-  sonarqube:
-    enabled: false
-  guacamole:
-    enabled: false
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 1
-        memory: 4Gi
-    guacd:
-      resources:
-        requests:
-          cpu: 0
-          memory: 0
-        limits:
-          cpu: 1
-          memory: 4Gi
-    postgres:
-      storage: 16Gi
-      resources:
-        requests:
-          cpu: 0
-          memory: 0
-        limits:
-          cpu: 2
-          memory: 4Gi
-  kanboard:
-    enabled: false
-    image: kanboard/kanboard:v1.2.20
-    storage: 128Gi
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 2
-        memory: 8Gi
-  prometheus:
-    enabled: false
+  image: ndebuhr/cloud-native-workstation-code-server:v0.11.0
+  # For accessing cloud resources over VPN, set ovpn=true and:
+  # kubectl create secret generic client-ovpn --from-file=client.ovpn
+  ovpn: false
+  storage: 32Gi
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 4
+      memory: 8Gi
+  dind:
+    image: docker:19-dind
     storage: 16Gi
     resources:
       requests:
         cpu: 0
         memory: 0
       limits:
-        cpu: 1
-        memory: 2Gi
-  grafana:
-    enabled: false
-    dashboards:
-      prometheus:
-        plugin:
-        - dashboards/prometheus_stats.json
-        - dashboards/prometheus_2_stats.json
-        - dashboards/grafana_stats.json
-        community:
-        - 13332
-    storage: 8Gi
+        cpu: 2
+        memory: 4Gi
+
+# PgWeb
+pgweb:
+  enabled: false
+  image: ndebuhr/cloud-native-workstation-pgweb:v0.11.0
+  # For accessing databases over VPN, set ovpn=true and:
+  # kubectl create secret generic client-ovpn --from-file=client.ovpn
+  ovpn: false
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 2
+      memory: 8Gi
+
+# Selenium Grid
+selenium:
+  enabled: false
+  hub:
+    image: selenium/hub:4.1
     resources:
       requests:
         cpu: 0
         memory: 0
       limits:
-        cpu: 1
-        memory: 2Gi
-# Ingress targets
-access:
-- name: code
-- name: hugo
-- name: pgweb
-- name: selenium-hub
-- name: selenium-chrome
-- name: jupyter
-- name: landing
-- name: sonarqube
-- name: guacamole
-- name: prometheus
-- name: grafana
-- name: kanboard
-# Defaults applied to most pods
-podDefaults:
-  automountServiceAccountToken: false
-  serviceAccountName: workstation-default
-# Additional component-specific configuration
-redis:
-  architecture: standalone
-  auth:
-    enabled: false
-  master:
-    podLabels:
-      app: redis-master
+        cpu: 2
+        memory: 4Gi
+  chrome:
+    image: selenium/node-chrome:4.1
     resources:
       requests:
-        cpu: 0
         memory: 0
+        cpu: 0
       limits:
-        cpu: 1
-        memory: 2Gi
+        cpu: 2
+        memory: 4Gi
+
+# Jupyter notebook
+jupyter:
+  enabled: false
+  image: ndebuhr/cloud-native-workstation-jupyter:v0.11.0
+  # For accessing cloud resources over VPN, set ovpn=true and:
+  # kubectl create secret generic client-ovpn --from-file=client.ovpn
+  ovpn: false
+  storage: 32Gi
+  gpu:
+    enabled: false
+    # If you are using the provided terraform provisioning, this value
+    # should match the gcp_gpu variable value
+    name: nvidia-tesla-t4
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+      # nvidia.com/gpu: 1
+    limits:
+      cpu: 4
+      memory: 8Gi
+      # nvidia.com/gpu: 1
+
+# Landing page
+landing:
+  enabled: false
+  image: gcr.io/google-samples/hello-app:2.0
+  targetPort: 8080
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+# SonarQube
 sonarqube:
+  enabled: false
   initContainers:
     resources:
       requests:
@@ -287,3 +212,107 @@ sonarqube:
     limits:
       cpu: 1
       memory: 2Gi
+
+# Apache Guacamole
+guacamole:
+  enabled: false
+  image: guacamole/guacamole:1.3.0
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 1
+      memory: 4Gi
+  guacd:
+    image: guacamole/guacd:1.3.0
+    resources:
+      requests:
+        cpu: 0
+        memory: 0
+      limits:
+        cpu: 1
+        memory: 4Gi
+  postgres:
+    image: postgres:9.6
+    storage: 16Gi
+    resources:
+      requests:
+        cpu: 0
+        memory: 0
+      limits:
+        cpu: 2
+        memory: 4Gi
+
+# Kanboard
+kanboard:
+  enabled: false
+  image: kanboard/kanboard:v1.2.20
+  storage: 128Gi
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 2
+      memory: 8Gi
+
+# Prometheus
+prometheus:
+  enabled: false
+  image: prom/prometheus:v2.29.2
+  storage: 16Gi
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 1
+      memory: 2Gi
+  kubeStateMetrics:
+    enabled: false
+    image: quay.io/coreos/kube-state-metrics:v1.9.8
+    resources:
+      requests:
+        cpu: 0
+        memory: 0
+      limits:
+        cpu: 1
+        memory: 2Gi
+
+# Grafana
+grafana:
+  enabled: false
+  image: grafana/grafana:8.1.3
+  dashboards:
+    prometheus:
+      plugin:
+      - dashboards/prometheus_stats.json
+      - dashboards/prometheus_2_stats.json
+      - dashboards/grafana_stats.json
+      community:
+      - 13332
+  storage: 8Gi
+  resources:
+    requests:
+      cpu: 0
+      memory: 0
+    limits:
+      cpu: 1
+      memory: 2Gi
+
+# Redis for OAuth2 Proxy session storage
+redis:
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    podLabels:
+      app: redis-master
+    resources:
+      requests:
+        cpu: 0
+        memory: 0
+      limits:
+        cpu: 1
+        memory: 2Gi

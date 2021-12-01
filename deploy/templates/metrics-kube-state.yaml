@@ -1,4 +1,4 @@
-{{- if eq .Values.components.prometheus.enabled true }}
+{{ if eq .Values.prometheus.kubeStateMetrics.enabled true }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -35,13 +35,13 @@ spec:
       serviceAccountName: prometheus-kube-state-metrics
       containers:
       - name: kube-state-metrics
-        image: quay.io/coreos/kube-state-metrics:v1.9.8
+        image: {{ .Values.prometheus.kubeStateMetrics.image }}
         args:
           - '--namespace={{ .Release.Namespace }}'
         ports:
         - name: http-metrics
           containerPort: 8080
-        resources: {{- toYaml .Values.components.prometheus.resources | nindent 10 }}
+        resources: {{ toYaml .Values.prometheus.kubeStateMetrics.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /healthz
@@ -59,7 +59,7 @@ spec:
     app: prometheus-kube-state-metrics
   ports:
   - port: 8080
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -81,5 +81,5 @@ spec:
   - to:
     - ipBlock:
         cidr: 0.0.0.0/0
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}

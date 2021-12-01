@@ -207,7 +207,7 @@ Generate a json key file for the service account and add it to Kubernetes as a s
 ```bash
 kubectl create secret generic google-json --from-file google.json
 ```
-Later, during the installation, be sure `certbot` is `enabled: true` and `certbot.type` is `google` in the Helm values
+Later, during the installation, be sure `certbot.enabled` is `true` and `certbot.type` is `google` in the Helm values
 
 ### Certbot with Cloudflare DNS
 
@@ -221,7 +221,7 @@ Once you have created the `cloudflare.ini` file, run:
 ```bash
 kubectl create secret generic cloudflare-ini --from-file cloudflare.ini
 ```
-Later, during the installation, be sure `certbot` is `enabled: true` and `certbot.type` is `cloudflare` in the Helm values
+Later, during the installation, be sure `certbot.enabled` is `true` and `certbot.type` is `cloudflare` in the Helm values
 
 ### Certbot with Route 53 (AWS) DNS
 
@@ -243,7 +243,7 @@ Add this file to Kubernetes as a secret:
 ```bash
 kubectl create secret generic aws-config --from-file config
 ```
-Later, during the installation, be sure `certbot` is `enabled: true` and `certbot.type` is `aws` in the Helm values
+Later, during the installation, be sure `certbot.enabled` is `true` and `certbot.type` is `aws` in the Helm values
 
 ### Bring your own SSL certificate
 
@@ -264,7 +264,7 @@ kubectl create secret tls workstation-tls \
     --key=example.key
 ```
 
-Later, during the helm installation, be sure `certbot` is `enabled: false`.
+Later, during the helm installation, be sure `certbot.enabled` is `false`.
 
 ## Build (Optional)
 
@@ -290,9 +290,6 @@ cd ..
 
 ## Configuration
 Configure [helm values](deploy/values.yaml), based on the instructions below.
-
-### Docker Registry
-Configure the `docker.registry` and `docker.tag` Helm values if you are not using the public Docker Hub images.
 
 ### Keycloak
 ```
@@ -328,7 +325,7 @@ _If you have already installed a workstation on the cluster, create a namespace 
 
 ### Workstation prerequisites installation
 
-The following commands install the Nginx Ingress Controller and Open Policy Agent Gatekeeper.  If you would like the ability (but not the obligation) to use EFS-backed persistent volume claims on Elastic Kubernetes Serice (AWS), update the [cluster preparation chart values](prepare/chart/values.yaml) before running the Helm install.  Specifically, set `aws-efs-csi-driver.enabled=true`, `aws-efs-csi-driver.controller.serviceAccount.annotations.eks.amazonaws.com/role-arn` to the provisioning output value that you noted earlier, and `aws-efs-csi-driver.storageClasses[0].parameters.fileSystemId` to the provisioning output value that you noted earlier.
+The following commands install the Nginx Ingress Controller and Open Policy Agent Gatekeeper.  If you would like the ability (but not the obligation) to use EFS-backed persistent volume claims on Elastic Kubernetes Serice (AWS), update the [cluster preparation chart values](prepare/chart/values.yaml) before running the Helm install.  Specifically, set `aws-efs-csi-driver.enabled` to `true`, `aws-efs-csi-driver.controller.serviceAccount.annotations.eks.amazonaws.com/role-arn` to the provisioning output value that you noted earlier, and `aws-efs-csi-driver.storageClasses[0].parameters.fileSystemId` to the provisioning output value that you noted earlier.
 ```bash
 cd prepare/chart
 helm dependency update
@@ -372,19 +369,19 @@ Note that workstation creation can take a few minutes.  The DNS propagation is p
 
 Access the components that you've enabled in the Helm values (after authenticating with the Keycloak proxy):
 
-* hugo.YOUR_DOMAIN for a Hugo development web server
-    * e.g. `hugo serve -D --bind=0.0.0.0 --baseUrl=hugo.YOUR_DOMAIN --appendPort=false` in Code Server
 * code.YOUR_DOMAIN for Code Server IDE
-* pgweb.YOUR_DOMAIN for Pgweb (`kubectl exec` and then `openvpn --config /etc/client.ovpn`)
+* code-dev-server.YOUR_DOMAIN for a development web server
+    * e.g. `hugo serve -D --bind=0.0.0.0 --baseUrl=hugo.YOUR_DOMAIN --appendPort=false` in Code Server
+* pgweb.YOUR_DOMAIN for Pgweb (for VPN initialization, `kubectl exec` and then `openvpn --config /etc/client.ovpn`)
 * selenium-hub.YOUR_DOMAIN for Selenium Grid hub
 * selenium-chrome.YOUR_DOMAIN for Selenium node (Chrome)
-* keycloak.YOUR_DOMAIN for Keycloak administration
 * jupyter.YOUR_DOMAIN for Jupyter data science notebook
 * sonarqube.YOUR_DOMAIN for SonarQube
 * guacamole.YOUR_DOMAIN/guacamole/ for Apache Guacamole (default login guacadmin:guacadmin)
 * kanboard.YOUR_DOMAIN for Kanboard (default login admin:admin)
 * prometheus.YOUR_DOMAIN for Prometheus monitoring
 * grafana.YOUR_DOMAIN for Grafana visualization
+* keycloak.YOUR_DOMAIN for Keycloak administration
 
 ## Contributing
 

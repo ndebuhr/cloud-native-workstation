@@ -1,4 +1,4 @@
-{{- if eq .Values.components.selenium.enabled true }}
+{{ if eq .Values.selenium.enabled true }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -46,8 +46,8 @@ spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: selenium-hub
-        image: {{ .Values.components.selenium.hub.image }}
-        resources: {{- toYaml .Values.components.selenium.hub.resources | nindent 10 }}
+        image: {{ .Values.selenium.hub.image }}
+        resources: {{ toYaml .Values.selenium.hub.resources | nindent 10 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -69,7 +69,7 @@ spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: selenium-chrome
-        image: {{ .Values.components.selenium.chrome.image }}
+        image: {{ .Values.selenium.chrome.image }}
         env:
         - name: SE_EVENT_BUS_HOST
           value: "selenium-hub"
@@ -79,7 +79,7 @@ spec:
           value: "4443"
         - name: VNC_NO_PASSWORD
           value: "1"
-        resources: {{- toYaml .Values.components.selenium.chrome.resources | nindent 10 }}
+        resources: {{ toYaml .Values.selenium.chrome.resources | nindent 10 }}
 ---
 apiVersion: v1
 kind: Service
@@ -93,7 +93,7 @@ spec:
     targetPort: 7900
   selector:
     app: selenium-chrome
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -136,5 +136,5 @@ spec:
     - podSelector:
         matchLabels:
           app: selenium-chrome
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}

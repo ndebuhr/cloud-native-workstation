@@ -1,4 +1,4 @@
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: ResourceLimit
 metadata:
@@ -10,4 +10,4 @@ spec:
       kinds: ["Pod"]
     namespaces:
     - {{ .Release.Namespace }}
-{{- end }}
+{{ end }}

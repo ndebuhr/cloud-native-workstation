@@ -1,3 +1,5 @@
+{{ $root := . }}
+{{ $backends := include "backends" . | split "," }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -10,25 +12,23 @@ spec:
   ingressClassName: workstation-nginx
   tls:
   - hosts:
-    {{- $root := . }}
-    {{- range .Values.access }}
-    - {{ .name }}.{{ $root.Values.domain }}
-    {{- end }}
+    {{ range $backend := $backends }}
+    - "{{ $backend }}.{{ $root.Values.domain }}"
+    {{ end }}
     secretName: workstation-tls
   rules:
-  {{- $root := . }}
-  {{- range .Values.access }}
-  - host: {{ .name }}.{{ $root.Values.domain }}
+  {{ range $backend := $backends }}
+  - host: "{{ $backend }}.{{ $root.Values.domain }}"
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: {{ .name }}
+            name: "{{ $backend }}"
             port:
               number: 80
-  {{- end }}
+  {{ end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -36,7 +36,7 @@ metadata:
   name: keycloak
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/proxy-ssl-verify: 'off'
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "off"
 spec:
   ingressClassName: workstation-nginx
   tls:
@@ -76,7 +76,7 @@ spec:
             name: oauth2-proxy
             port:
               number: 4180
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -93,4 +93,4 @@ spec:
   - {}
   egress:
   - {}
-{{- end }}
+{{ end }}

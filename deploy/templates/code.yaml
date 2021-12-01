@@ -1,4 +1,4 @@
-{{- if eq .Values.components.code.enabled true }}
+{{ if eq .Values.code.enabled true }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -17,13 +17,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hugo
+  name: code-dev-server
   labels:
     app: code
 spec:
   type: ClusterIP
   ports:
-  - name: hugo
+  - name: http
     port: 80
     targetPort: 1313
   selector:
@@ -51,7 +51,7 @@ spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - image: {{ .Values.docker.registry }}/cloud-native-workstation-code-server:{{ .Values.docker.tag }}
+      - image: {{ .Values.code.image }}
         imagePullPolicy: Always
         name: code
         ports:
@@ -68,24 +68,24 @@ spec:
           value: "{{ .Values.authentication.password }}"
         securityContext:
           privileged: true
-        resources: {{- toYaml .Values.components.code.resources | nindent 10 }}
+        resources: {{ toYaml .Values.code.resources | nindent 10 }}
         volumeMounts:
         - name: coder
           mountPath: /home/coder
           subPath: home/coder
-        {{- if eq .Values.components.code.ovpn true }}
+        {{ if eq .Values.code.ovpn true }}
         - name: client-ovpn
           mountPath: /etc/client.ovpn
           subPath: client.ovpn
-        {{- end }}
+        {{ end }}
       - name: dind-daemon
-        image: {{ .Values.components.code.dind.image }}:{{ .Values.components.code.dind.tag }}
+        image: {{ .Values.code.dind.image }}
         env:
         - name: DOCKER_TLS_CERTDIR
           value: ""
         securityContext:
           privileged: true
-        resources: {{- toYaml .Values.components.code.dind.resources | nindent 10 }}
+        resources: {{ toYaml .Values.code.dind.resources | nindent 10 }}
         volumeMounts:
           - name: code-dind-pv
             mountPath: /var/lib/docker
@@ -97,14 +97,14 @@ spec:
       - name: code-dind-pv
         persistentVolumeClaim:
           claimName: code-dind-pvc
-      {{- if eq .Values.components.code.ovpn true }}
+      {{ if eq .Values.code.ovpn true }}
       - name: client-ovpn
         secret:
           secretName: client-ovpn
           defaultMode: 0400
-      {{- end }}
+      {{ end }}
       restartPolicy: Always
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -125,7 +125,7 @@ spec:
     - namespaceSelector: {}
   egress:
   - {}
-{{- end }}
+{{ end }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -134,34 +134,34 @@ metadata:
   labels:
     app: code
 spec:
-{{- if eq .Values.aws.efs false }}
+{{ if eq .Values.aws.efs false }}
   accessModes:
     - ReadWriteOnce
-{{- end }}
-{{- if eq .Values.aws.efs true }}
+{{ end }}
+{{ if eq .Values.aws.efs true }}
   accessModes:
     - ReadWriteMany
   storageClassName: efs-sc
-{{- end }}
+{{ end }}
   resources:
     requests:
-      storage: {{ .Values.components.code.storage }}
+      storage: {{ .Values.code.storage }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: code-dind-pvc
 spec:
-{{- if eq .Values.aws.efs false }}
+{{ if eq .Values.aws.efs false }}
   accessModes:
     - ReadWriteOnce
-{{- end }}
-{{- if eq .Values.aws.efs true }}
+{{ end }}
+{{ if eq .Values.aws.efs true }}
   accessModes:
     - ReadWriteMany
   storageClassName: efs-sc
-{{- end }}
+{{ end }}
   resources:
     requests:
-      storage: {{ .Values.components.code.dind.storage }}
-{{- end }}
+      storage: {{ .Values.code.dind.storage }}
+{{ end }}

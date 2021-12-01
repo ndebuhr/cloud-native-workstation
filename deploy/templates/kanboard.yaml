@@ -1,4 +1,4 @@
-{{- if eq .Values.components.kanboard.enabled true }}
+{{ if eq .Values.kanboard.enabled true }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -21,8 +21,8 @@ spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: kanboard
-        image: {{ .Values.components.kanboard.image }}
-        resources: {{- toYaml .Values.components.kanboard.resources | nindent 10 }}
+        image: {{ .Values.kanboard.image }}
+        resources: {{ toYaml .Values.kanboard.resources | nindent 10 }}
         volumeMounts:
         - name: kanboard-data
           mountPath: /var/www/app/data
@@ -72,7 +72,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.components.kanboard.storage }}
+      storage: {{ .Values.kanboard.storage }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -321,7 +321,7 @@ data:
                 text/plain;
         }
     }
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -340,5 +340,5 @@ spec:
         matchLabels:
           app: ingress-nginx
     - namespaceSelector: {}
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}

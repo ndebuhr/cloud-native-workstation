@@ -1,4 +1,4 @@
-{{- if eq .Values.components.pgweb.enabled true }}
+{{ if eq .Values.pgweb.enabled true }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -33,11 +33,11 @@ spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: pgweb
-        image: {{ .Values.docker.registry }}/cloud-native-workstation-pgweb:{{ .Values.docker.tag }}
+        image: {{ .Values.pgweb.image }}
         securityContext:
           privileged: true
-        resources: {{- toYaml .Values.components.pgweb.resources | nindent 10 }}
-        {{- if eq .Values.components.pgweb.ovpn true }}
+        resources: {{ toYaml .Values.pgweb.resources | nindent 10 }}
+        {{ if eq .Values.pgweb.ovpn true }}
         volumeMounts:
         - name: client-ovpn
           mountPath: /etc/client.ovpn
@@ -47,9 +47,9 @@ spec:
         secret:
           secretName: client-ovpn
           defaultMode: 0400
-      {{- end }}
+      {{ end }}
       restartPolicy: Always
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -70,5 +70,5 @@ spec:
     - namespaceSelector: {}
   egress:
   - {}
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}

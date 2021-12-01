@@ -1,4 +1,4 @@
-{{- if eq .Values.components.grafana.enabled true }}
+{{ if eq .Values.grafana.enabled true }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -21,7 +21,7 @@ spec:
         fsGroup: 472
       containers:
       - name: grafana
-        image: grafana/grafana:8.1.3
+        image: {{ .Values.grafana.image }}
         ports:
         - containerPort: 3000
         env:
@@ -33,7 +33,7 @@ spec:
           value: {{ .Values.authentication.password }}
         - name: GF_INSTALL_PLUGINS
           value: "grafana-kubernetes-app"
-        resources: {{- toYaml .Values.components.grafana.resources | nindent 10 }}
+        resources: {{ toYaml .Values.grafana.resources | nindent 10 }}
         volumeMounts:
         - name: grafana-storage
           mountPath: /var/lib/grafana
@@ -61,7 +61,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.components.grafana.storage }}
+      storage: {{ .Values.grafana.storage }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -103,7 +103,7 @@ spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
       containers:
       - name: seed
-        image: {{ .Values.docker.registry }}/cloud-native-workstation-initializers:{{ .Values.docker.tag }}
+        image: {{ .Values.initializers.image }}
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args:
@@ -117,7 +117,7 @@ spec:
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
-        resources: {{- toYaml .Values.components.initializers.resources | nindent 10 }}
+        resources: {{ toYaml .Values.initializers.resources | nindent 10 }}
         volumeMounts:
         - name: grafana-seed-sh
           mountPath: /opt/seed.sh
@@ -142,7 +142,7 @@ data:
     grafana_cred="$USERNAME:$PASSWORD"
     grafana_datasource="Prometheus"
 
-    paths=({{ join " " .Values.components.grafana.dashboards.prometheus.plugin }} )
+    paths=({{ join " " .Values.grafana.dashboards.prometheus.plugin }} )
     for path in "${paths[@]}"; do
       echo "Processing $path: "
       curl -s -k -u "$grafana_cred" -XPOST -H "Accept: application/json" \
@@ -162,7 +162,7 @@ data:
       echo ""
     done
 
-    ds=({{ join " " .Values.components.grafana.dashboards.prometheus.community }} )
+    ds=({{ join " " .Values.grafana.dashboards.prometheus.community }} )
     for d in "${ds[@]}"; do
       echo "Processing $d: "
       j=$(curl -s -k -u "$grafana_cred" $grafana_host/api/gnet/dashboards/$d | jq .json)
@@ -187,7 +187,7 @@ data:
         }" \
         $grafana_host/api/dashboards/import; echo ""
     done
-{{- if eq .Values.policies.enabled true }}
+{{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -240,5 +240,5 @@ spec:
     - ipBlock:
         # grafana.com
         cidr: 34.120.177.193/0
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}
