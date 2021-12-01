@@ -52,7 +52,6 @@ spec:
         fsGroup: 1000
       containers:
       - image: {{ .Values.code.image }}
-        imagePullPolicy: Always
         name: code
         ports:
         - name: ide
@@ -103,7 +102,6 @@ spec:
           secretName: client-ovpn
           defaultMode: 0400
       {{ end }}
-      restartPolicy: Always
 {{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1

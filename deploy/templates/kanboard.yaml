@@ -47,7 +47,6 @@ spec:
       - name: nginx-conf
         configMap:
           name: nginx-conf
-      restartPolicy: Always
 ---
 kind: Service
 apiVersion: v1

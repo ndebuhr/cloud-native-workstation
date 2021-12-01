@@ -18,7 +18,6 @@ spec:
       containers:
       - name: oauth2-proxy
         image: {{ .Values.oauth2Proxy.image }}
-        imagePullPolicy: Always
         args:
         - "--session-cookie-minimal"
         - "--session-store-type=redis"

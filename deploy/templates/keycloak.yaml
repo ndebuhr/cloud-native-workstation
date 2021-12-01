@@ -125,7 +125,6 @@ spec:
         image: {{ .Values.keycloak.operator.image }}
         command:
         - keycloak-operator
-        imagePullPolicy: Always
         resources: {{ toYaml .Values.keycloak.operator.resources | nindent 10 }}
         env:
           - name: WATCH_NAMESPACE

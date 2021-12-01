@@ -40,7 +40,6 @@ spec:
       - name: prometheus-data
         persistentVolumeClaim:
           claimName: prometheus-pvc
-      restartPolicy: Always
 ---
 apiVersion: v1
 kind: ConfigMap

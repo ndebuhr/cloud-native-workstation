@@ -104,7 +104,6 @@ spec:
       containers:
       - name: seed
         image: {{ .Values.initializers.image }}
-        imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args:
         - |
