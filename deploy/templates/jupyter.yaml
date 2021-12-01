@@ -31,7 +31,12 @@ spec:
       - image: {{ .Values.docker.registry }}/cloud-native-workstation-jupyter:{{ .Values.docker.tag }}
         name: jupyter
         command: ["start.sh"]
-        args: ["jupyter", "lab", "--LabApp.token=''", "--LabApp.allow_origin='*'"]
+        args:
+        - "jupyter"
+        - "lab"
+        - "--LabApp.token=''"
+        - "--LabApp.allow_origin='*'"
+        - "--NotebookApp.authenticate_prometheus=False"
         env:
         - name: GRANT_SUDO
           value: "yes"

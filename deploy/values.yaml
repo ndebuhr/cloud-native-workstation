@@ -204,6 +204,7 @@ components:
         memory: 8Gi
   prometheus:
     enabled: false
+    storage: 16Gi
     resources:
       requests:
         cpu: 0
