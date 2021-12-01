@@ -3,7 +3,7 @@ domain: example.com
 # Public images on Docker Hub
 docker:
   registry: ndebuhr
-  tag: v0.10.0
+  tag: v0.11.0
 aws:
   efs: false
 # Certbot details
