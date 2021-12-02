@@ -1,6 +1,7 @@
 apiVersion: v2
 name: cloud-native-workstation-prerequisites
 version: 0.11.1
+icon: https://raw.githubusercontent.com/ndebuhr/cloud-native-workstation/master/images/cnw.png
 dependencies:
 - name: ingress-nginx
   version: 4.0.3
