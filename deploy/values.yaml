@@ -26,24 +26,12 @@ certbot:
   # Valid types are "google", "aws", and "cloudflare"
   type: google
   email: admin@example.com
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 125m
-      memory: 256Mi
+  resources: {}
 
 # For various seeding and initialization jobs
 initializers:
   image: ndebuhr/cloud-native-workstation-initializers:v0.11.1
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 125m
-      memory: 256Mi
+  resources: {}
 
 # Keycloak
 keycloak:
@@ -51,41 +39,17 @@ keycloak:
   clientSecret: OkSR7DMXAXzIrZIoWyN8yh0sFkiYrfJd
   # Change me!
   cookieSecret: 2u2iS0FH7pPjOUUn
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 2
-      memory: 4Gi
+  resources: {}
   operator:
     image: quay.io/keycloak/keycloak-operator:15.0.2
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 500m
-        memory: 1Gi
+    resources: {}
   postgres:
-    resources:
-      requests:
-        memory: 0
-        cpu: 0
-      limits:
-        cpu: 2
-        memory: 4Gi
+    resources: {}
 
 # For protecting oauth2 proxied subsystems
 oauth2Proxy:
   image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.3
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 1
-      memory: 2Gi
+  resources: {}
 
 # Code Server
 code:
@@ -95,23 +59,11 @@ code:
   # kubectl create secret generic client-ovpn --from-file=client.ovpn
   ovpn: false
   storage: 32Gi
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 4
-      memory: 8Gi
+  resources: {}
   dind:
     image: docker:19-dind
     storage: 16Gi
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 2
-        memory: 4Gi
+    resources: {}
 
 # PgWeb
 pgweb:
@@ -120,35 +72,18 @@ pgweb:
   # For accessing databases over VPN, set ovpn=true and:
   # kubectl create secret generic client-ovpn --from-file=client.ovpn
   ovpn: false
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 2
-      memory: 8Gi
+  resources: {}
 
 # Selenium Grid
 selenium:
   enabled: false
   hub:
     image: selenium/hub:4.1
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 2
-        memory: 4Gi
+    resources: {}
   chrome:
     image: selenium/node-chrome:4.1
     resources:
-      requests:
-        memory: 0
-        cpu: 0
-      limits:
-        cpu: 2
-        memory: 4Gi
+      requests: {}
 
 # Jupyter notebook
 jupyter:
@@ -163,122 +98,62 @@ jupyter:
     # If you are using the provided terraform provisioning, this value
     # should match the gcp_gpu variable value
     name: nvidia-tesla-t4
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-      # nvidia.com/gpu: 1
-    limits:
-      cpu: 4
-      memory: 8Gi
-      # nvidia.com/gpu: 1
+  resources: {}
+    # requests:
+    #   cpu: 0
+    #   memory: 0
+    #   nvidia.com/gpu: 1
+    # limits:
+    #   cpu: 4
+    #   memory: 8Gi
+    #   nvidia.com/gpu: 1
 
 # Landing page
 landing:
   enabled: false
   image: gcr.io/google-samples/hello-app:2.0
   targetPort: 8080
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 1
-      memory: 2Gi
+  resources: {}
 
 # SonarQube
 sonarqube:
   enabled: false
   initContainers:
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 125m
-        memory: 256Mi
+    resources: {}
   postgresql:
-    resources:
-      requests:
-        cpu: "0"
-        memory: "0"
-      limits:
-        cpu: "1"
-        memory: "2Gi"
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 1
-      memory: 2Gi
+    resources: {}
+  resources: {}
 
 # Apache Guacamole
 guacamole:
   enabled: false
   image: guacamole/guacamole:1.3.0
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 1
-      memory: 4Gi
+  resources: {}
   guacd:
     image: guacamole/guacd:1.3.0
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 1
-        memory: 4Gi
+    resources: {}
   postgres:
     image: postgres:9.6
     storage: 16Gi
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 2
-        memory: 4Gi
+    resources: {}
 
 # Kanboard
 kanboard:
   enabled: false
   image: kanboard/kanboard:v1.2.20
   storage: 128Gi
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 2
-      memory: 8Gi
+  resources: {}
 
 # Prometheus
 prometheus:
   enabled: false
   image: prom/prometheus:v2.29.2
   storage: 16Gi
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 1
-      memory: 2Gi
+  resources: {}
   kubeStateMetrics:
     enabled: false
     image: quay.io/coreos/kube-state-metrics:v1.9.8
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 1
-        memory: 2Gi
+    resources: {}
 
 # Grafana
 grafana:
@@ -293,13 +168,7 @@ grafana:
       community:
       - 13332
   storage: 8Gi
-  resources:
-    requests:
-      cpu: 0
-      memory: 0
-    limits:
-      cpu: 1
-      memory: 2Gi
+  resources: {}
 
 # Redis for OAuth2 Proxy session storage
 redis:
@@ -309,10 +178,4 @@ redis:
   master:
     podLabels:
       app: redis-master
-    resources:
-      requests:
-        cpu: 0
-        memory: 0
-      limits:
-        cpu: 1
-        memory: 2Gi
+    resources: {}
