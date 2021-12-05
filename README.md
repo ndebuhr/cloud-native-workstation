@@ -27,6 +27,7 @@ Relevant technologies include:
 [![Jupyter](images/jupyter.png "Jupyter")](https://jupyter.org/)
 [![Selenium](images/selenium.png "Selenium")](https://www.selenium.dev/)
 [![SonarQube](images/sonarqube.png "SonarQube")](https://www.sonarqube.org/)
+[![Kanboard](images/kanboard.png "Kanboard")](https://kanboard.org/)
 [![Keycloak](images/keycloak.png "Keycloak")](https://www.keycloak.org/)
 [![Prometheus](images/prometheus.png "Prometheus")](https://prometheus.io/)
 [![Grafana](images/grafana.png "Grafana")](https://grafana.com/)
