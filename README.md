@@ -23,6 +23,7 @@ The components in this project are tailored towards cloud-native application dev
 Relevant technologies include:
 
 [![Code Server](images/code-server.png "Code Server")](https://github.com/cdr/code-server)
+[![Pgweb](images/pgweb.png "Pgweb")](https://sosedoff.github.io/pgweb/)
 [![Apache Guacamole](images/guacamole.png "Apache Guacamole")](https://guacamole.apache.org/)
 [![Jupyter](images/jupyter.png "Jupyter")](https://jupyter.org/)
 [![Selenium](images/selenium.png "Selenium")](https://www.selenium.dev/)
