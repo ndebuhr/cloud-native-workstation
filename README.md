@@ -281,11 +281,9 @@ REPO=us.gcr.io/my-project/my-repo  # for example
 cd build
 docker build --tag $REPO/cloud-native-workstation-code-server:latest ./code-server
 docker build --tag $REPO/cloud-native-workstation-initializers:latest ./initializers
-docker build --tag $REPO/cloud-native-workstation-novnc:latest ./novnc
 docker build --tag $REPO/cloud-native-workstation-jupyter:latest ./jupyter
 docker push $REPO/cloud-native-workstation-code-server:latest
 docker push $REPO/cloud-native-workstation-initializers:latest
-docker push $REPO/cloud-native-workstation-novnc:latest
 docker push $REPO/cloud-native-workstation-jupyter:latest
 cd ..
 ```
