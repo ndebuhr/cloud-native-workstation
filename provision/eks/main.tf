@@ -52,6 +52,7 @@ module "eks" {
   cluster_service_ipv4_cidr = "172.18.0.0/16"
   enable_irsa               = true
   tags                      = var.aws_tags
+  manage_aws_auth           = false
 
   node_groups_defaults = {
     ami_type  = "AL2_x86_64"

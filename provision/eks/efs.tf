@@ -1,5 +1,5 @@
 resource "aws_efs_file_system" "cloud_native_workstation" {
-  creation_token = "cloud-native-workstation"
+  creation_token = "${var.eks_cluster_name}"
   encrypted      = true
   tags           = var.aws_tags
 }
@@ -24,7 +24,7 @@ resource "aws_efs_mount_target" "mount1" {
 
 resource "aws_iam_role" "eks_efs" {
   # https://stackoverflow.com/questions/66405794/not-authorized-to-perform-stsassumerolewithwebidentity-403
-  name = "workstation-eks-efs"
+  name = "${var.eks_cluster_name}-eks-efs"
   tags = var.aws_tags
 
   assume_role_policy = jsonencode({
@@ -60,7 +60,7 @@ resource "aws_iam_role" "eks_efs" {
 }
 
 resource "aws_iam_policy" "efs" {
-  name = "workstation-eks-efs"
+  name = "${var.eks_cluster_name}-eks-efs"
   tags = var.aws_tags
 
   policy = <<EOF
