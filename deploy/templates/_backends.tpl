@@ -13,7 +13,14 @@
 
 {{- if eq .Values.selenium.enabled true -}}
 {{- $backends = append $backends "selenium-hub" -}}
+{{- end -}}
+
+{{- if eq .Values.selenium.chrome.enabled true -}}
 {{- $backends = append $backends "selenium-chrome" -}}
+{{- end -}}
+
+{{- if eq .Values.selenium.firefox.enabled true -}}
+{{- $backends = append $backends "selenium-firefox" -}}
 {{- end -}}
 
 {{- if eq .Values.jupyter.enabled true -}}

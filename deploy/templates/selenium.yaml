@@ -48,6 +48,7 @@ spec:
       - name: selenium-hub
         image: {{ .Values.selenium.hub.image }}
         resources: {{ toYaml .Values.selenium.hub.resources | nindent 10 }}
+{{ if eq .Values.selenium.chrome.enabled true }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -93,6 +94,54 @@ spec:
     targetPort: 7900
   selector:
     app: selenium-chrome
+{{ end }}
+{{ if eq .Values.selenium.firefox.enabled true }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium-firefox
+  labels:
+    app: selenium-firefox
+    name: selenium-firefox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: selenium-firefox
+  template:
+    metadata:
+      labels:
+        app: selenium-firefox
+    spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
+      containers:
+      - name: selenium-firefox
+        image: {{ .Values.selenium.firefox.image }}
+        env:
+        - name: SE_EVENT_BUS_HOST
+          value: "selenium-hub"
+        - name: SE_EVENT_BUS_PUBLISH_PORT
+          value: "4442"
+        - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+          value: "4443"
+        - name: VNC_NO_PASSWORD
+          value: "1"
+        resources: {{ toYaml .Values.selenium.firefox.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-firefox
+spec:
+  type: ClusterIP
+  ports:
+  - name: novnc
+    port: 80
+    targetPort: 7900
+  selector:
+    app: selenium-firefox
+{{ end }}
 {{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1

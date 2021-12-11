@@ -81,9 +81,13 @@ selenium:
     image: selenium/hub:4.1
     resources: {}
   chrome:
+    enabled: false
     image: selenium/node-chrome:4.1
-    resources:
-      requests: {}
+    resources: {}
+  firefox:
+    enabled: false
+    image: selenium/node-firefox:4.1
+    resources: {}
 
 # Jupyter notebook
 jupyter:
