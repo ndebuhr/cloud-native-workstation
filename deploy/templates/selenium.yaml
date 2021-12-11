@@ -170,6 +170,29 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  name: selenium-firefox
+spec:
+  podSelector:
+    matchLabels:
+      app: selenium-firefox
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: selenium-hub
+    - namespaceSelector: {}
+  egress:
+  - {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: selenium-hub
 spec:
   podSelector:
@@ -185,5 +208,8 @@ spec:
     - podSelector:
         matchLabels:
           app: selenium-chrome
+    - podSelector:
+        matchLabels:
+          app: selenium-firefox
 {{ end }}
 {{ end }}
