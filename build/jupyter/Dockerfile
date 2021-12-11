@@ -4,7 +4,7 @@ USER root
 
 # install apt packages
 RUN apt-get update -qqy && \
-    apt-get install -qqy \
+    apt-get install -qqy --no-install-recommends \
         cmake \
         gnupg \
         libboost-all-dev \
@@ -13,7 +13,9 @@ RUN apt-get update -qqy && \
         openvpn \
         pkg-config \
         postgresql \
-        poppler-utils
+        poppler-utils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 USER jovyan
 

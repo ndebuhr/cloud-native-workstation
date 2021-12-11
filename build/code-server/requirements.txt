@@ -1,0 +1,8 @@
+black~=21.11b1
+boto3~=1.20
+docker-compose~=1.29
+google-cloud-pubsub~=2.9
+google-cloud-vision~=2.6
+numpy~=1.21
+requests~=2.26
+selenium~=4.0
