@@ -59,7 +59,10 @@ jobs:
         helm install workstation . \
             --set domain=a.example.com \
             --set pgweb.enabled=true \
+            --set sftp.enabled=true \
             --set selenium.enabled=true \
+            --set selenium.chrome.enabled=true \
+            --set selenium.firefox.enabled=true \
             --set jupyter.enabled=true \
             --set landing.enabled=true \
             --set sonarqube.enabled=true \
@@ -77,7 +80,10 @@ jobs:
         helm install workstation . \
             --set domain=b.example.com \
             --set pgweb.enabled=true \
+            --set sftp.enabled=true \
             --set selenium.enabled=true \
+            --set selenium.chrome.enabled=true \
+            --set selenium.firefox.enabled=true \
             --set jupyter.enabled=true \
             --set landing.enabled=true \
             --set sonarqube.enabled=true \
