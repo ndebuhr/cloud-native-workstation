@@ -74,6 +74,13 @@ pgweb:
   ovpn: false
   resources: {}
 
+# SFTP server
+sftp:
+  enabled: false
+  image: atmoz/sftp:debian
+  storage: 32Gi
+  resources: {}
+
 # Selenium Grid
 selenium:
   enabled: false

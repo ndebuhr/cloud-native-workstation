@@ -1,0 +1,86 @@
+{{ if eq .Values.sftp.enabled true }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: sftp
+  labels:
+    app: sftp
+spec:
+  type: ClusterIP
+  ports:
+  - name: sftp
+    port: 22
+    targetPort: 22
+  selector:
+    app: sftp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sftp
+  labels:
+    app: sftp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sftp
+  template:
+    metadata:
+      labels:
+        app: sftp
+    spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
+      securityContext:
+        fsGroup: 100
+      containers:
+      - name: sftp
+        image: {{ .Values.sftp.image }}
+        args: ["{{ .Values.authentication.username }}:{{ .Values.authentication.password }}:1001:100"]
+        securityContext:
+          privileged: true
+        resources: {{ toYaml .Values.sftp.resources | nindent 10 }}
+        volumeMounts:
+        - name: sftp
+          mountPath: /home/{{ .Values.authentication.username }}/share
+          subPath: share
+      volumes:
+      - name: sftp
+        persistentVolumeClaim:
+          claimName: sftp-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sftp-pvc
+  labels:
+    app: sftp
+spec:
+{{ if eq .Values.aws.efs false }}
+  accessModes:
+    - ReadWriteOnce
+{{ end }}
+{{ if eq .Values.aws.efs true }}
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+{{ end }}
+  resources:
+    requests:
+      storage: {{ .Values.sftp.storage }}
+{{ if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sftp
+spec:
+  podSelector:
+    matchLabels:
+      app: sftp
+  policyTypes:
+  - Ingress
+  ingress:
+  - {}
+{{ end }}
+{{ end }}
