@@ -26,6 +26,7 @@ resource "google_container_node_pool" "primary_core" {
   node_config {
     image_type = "COS_CONTAINERD"
     machine_type = "e2-standard-8"
+    disk_size_gb = 64
     metadata = {
       disable-legacy-endpoints = "true"
     }

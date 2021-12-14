@@ -56,7 +56,7 @@ module "eks" {
 
   node_groups_defaults = {
     ami_type  = "AL2_x86_64"
-    disk_size = 20
+    disk_size = 64
   }
 
   node_groups = {
