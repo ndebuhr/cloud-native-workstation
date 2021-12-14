@@ -4,6 +4,6 @@ output "efs_fs_id" {
 }
 
 output "efs_role_arn" {
-    value       = aws_iam_role.eks_efs.arn
-    description = "AWS ARN for EFS management"
+  value       = aws_iam_role.eks_efs.arn
+  description = "AWS ARN for EFS management"
 }

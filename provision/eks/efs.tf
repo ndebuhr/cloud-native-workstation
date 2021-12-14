@@ -1,5 +1,5 @@
 resource "aws_efs_file_system" "cloud_native_workstation" {
-  creation_token = "${var.eks_cluster_name}"
+  creation_token = var.eks_cluster_name
   encrypted      = true
   tags           = var.aws_tags
 }
@@ -28,12 +28,12 @@ resource "aws_iam_role" "eks_efs" {
   tags = var.aws_tags
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Effect": "Allow",
-        "Principal": {
-          "Federated": format(
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : format(
             "arn:aws:iam::${data.aws_caller_identity.current.account_id}:%s",
             replace(
               "${module.eks.cluster_oidc_issuer_url}",
@@ -42,16 +42,16 @@ resource "aws_iam_role" "eks_efs" {
             )
           )
         },
-        "Action": "sts:AssumeRoleWithWebIdentity",
-        "Condition": {
-          "StringEquals": {
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
             format(
               "%s:sub",
               trimprefix(
                 "${module.eks.cluster_oidc_issuer_url}",
                 "https://"
               )
-            ): "system:serviceaccount:kube-system:efs-csi-controller-sa"
+            ) : "system:serviceaccount:kube-system:efs-csi-controller-sa"
           }
         }
       }
