@@ -95,6 +95,10 @@ selenium:
     enabled: false
     image: selenium/node-firefox:4.1
     resources: {}
+  edge:
+    enabled: false
+    image: selenium/node-edge:4.1
+    resources: {}
 
 # Jupyter notebook
 jupyter:

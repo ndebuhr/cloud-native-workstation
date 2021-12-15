@@ -23,6 +23,10 @@
 {{- $backends = append $backends "selenium-firefox" -}}
 {{- end -}}
 
+{{- if eq .Values.selenium.edge.enabled true -}}
+{{- $backends = append $backends "selenium-edge" -}}
+{{- end -}}
+
 {{- if eq .Values.jupyter.enabled true -}}
 {{- $backends = append $backends "jupyter" -}}
 {{- end -}}

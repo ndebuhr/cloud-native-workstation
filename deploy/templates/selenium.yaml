@@ -142,6 +142,53 @@ spec:
   selector:
     app: selenium-firefox
 {{ end }}
+{{ if eq .Values.selenium.edge.enabled true }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium-edge
+  labels:
+    app: selenium-edge
+    name: selenium-edge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: selenium-edge
+  template:
+    metadata:
+      labels:
+        app: selenium-edge
+    spec:
+      {{ toYaml .Values.podDefaults | nindent 6 }}
+      containers:
+      - name: selenium-edge
+        image: {{ .Values.selenium.edge.image }}
+        env:
+        - name: SE_EVENT_BUS_HOST
+          value: "selenium-hub"
+        - name: SE_EVENT_BUS_PUBLISH_PORT
+          value: "4442"
+        - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+          value: "4443"
+        - name: VNC_NO_PASSWORD
+          value: "1"
+        resources: {{ toYaml .Values.selenium.edge.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-edge
+spec:
+  type: ClusterIP
+  ports:
+  - name: novnc
+    port: 80
+    targetPort: 7900
+  selector:
+    app: selenium-edge
+{{ end }}
 {{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
@@ -193,6 +240,29 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  name: selenium-edge
+spec:
+  podSelector:
+    matchLabels:
+      app: selenium-edge
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: selenium-hub
+    - namespaceSelector: {}
+  egress:
+  - {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: selenium-hub
 spec:
   podSelector:
@@ -211,5 +281,8 @@ spec:
     - podSelector:
         matchLabels:
           app: selenium-firefox
+    - podSelector:
+        matchLabels:
+          app: selenium-edge
 {{ end }}
 {{ end }}

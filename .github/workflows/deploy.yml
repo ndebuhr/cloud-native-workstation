@@ -63,6 +63,7 @@ jobs:
             --set selenium.enabled=true \
             --set selenium.chrome.enabled=true \
             --set selenium.firefox.enabled=true \
+            --set selenium.edge.enabled=true \
             --set jupyter.enabled=true \
             --set landing.enabled=true \
             --set sonarqube.enabled=true \
@@ -84,6 +85,7 @@ jobs:
             --set selenium.enabled=true \
             --set selenium.chrome.enabled=true \
             --set selenium.firefox.enabled=true \
+            --set selenium.edge.enabled=true \
             --set jupyter.enabled=true \
             --set landing.enabled=true \
             --set sonarqube.enabled=true \
