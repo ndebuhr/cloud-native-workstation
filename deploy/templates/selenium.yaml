@@ -48,6 +48,39 @@ spec:
       - name: selenium-hub
         image: {{ .Values.selenium.hub.image }}
         resources: {{ toYaml .Values.selenium.hub.resources | nindent 10 }}
+{{ if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: selenium-hub
+spec:
+  podSelector:
+    matchLabels:
+      app: selenium-hub
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - {}
+  egress:
+  - to:
+{{ if eq .Values.selenium.chrome.enabled true }}
+    - podSelector:
+        matchLabels:
+          app: selenium-chrome
+{{ end }}
+{{ if eq .Values.selenium.firefox.enabled true }}
+    - podSelector:
+        matchLabels:
+          app: selenium-firefox
+{{ end }}
+{{ if eq .Values.selenium.edge.enabled true }}
+    - podSelector:
+        matchLabels:
+          app: selenium-edge
+{{ end }}
+{{ end }}
 {{ if eq .Values.selenium.chrome.enabled true }}
 ---
 apiVersion: apps/v1
@@ -94,6 +127,31 @@ spec:
     targetPort: 7900
   selector:
     app: selenium-chrome
+{{ if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: selenium-chrome
+spec:
+  podSelector:
+    matchLabels:
+      app: selenium-chrome
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: selenium-hub
+    - namespaceSelector: {}
+  egress:
+  - {}
+{{ end }}
 {{ end }}
 {{ if eq .Values.selenium.firefox.enabled true }}
 ---
@@ -141,6 +199,31 @@ spec:
     targetPort: 7900
   selector:
     app: selenium-firefox
+{{ if eq .Values.policies.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: selenium-firefox
+spec:
+  podSelector:
+    matchLabels:
+      app: selenium-firefox
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: selenium-hub
+    - namespaceSelector: {}
+  egress:
+  - {}
+{{ end }}
 {{ end }}
 {{ if eq .Values.selenium.edge.enabled true }}
 ---
@@ -188,54 +271,7 @@ spec:
     targetPort: 7900
   selector:
     app: selenium-edge
-{{ end }}
 {{ if eq .Values.policies.enabled true }}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: selenium-chrome
-spec:
-  podSelector:
-    matchLabels:
-      app: selenium-chrome
-  policyTypes:
-  - Egress
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: ingress-nginx
-    - podSelector:
-        matchLabels:
-          app: selenium-hub
-    - namespaceSelector: {}
-  egress:
-  - {}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: selenium-firefox
-spec:
-  podSelector:
-    matchLabels:
-      app: selenium-firefox
-  policyTypes:
-  - Egress
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: ingress-nginx
-    - podSelector:
-        matchLabels:
-          app: selenium-hub
-    - namespaceSelector: {}
-  egress:
-  - {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -259,30 +295,6 @@ spec:
     - namespaceSelector: {}
   egress:
   - {}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: selenium-hub
-spec:
-  podSelector:
-    matchLabels:
-      app: selenium-hub
-  policyTypes:
-  - Egress
-  - Ingress
-  ingress:
-  - {}
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: selenium-chrome
-    - podSelector:
-        matchLabels:
-          app: selenium-firefox
-    - podSelector:
-        matchLabels:
-          app: selenium-edge
+{{ end }}
 {{ end }}
 {{ end }}
