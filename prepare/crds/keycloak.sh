@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-kubectl apply -f keycloak-operator/deploy/crds/
+script_dir=$( echo $BASH_SOURCE | egrep -o '^.*\/' )
+kubectl apply -f $script_dir/../../keycloak-operator/deploy/crds/
 
 count=0
 echo "Keycloak Operator CRDs: Creating..."

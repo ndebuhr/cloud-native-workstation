@@ -48,9 +48,10 @@ jobs:
         helm install workstation-prerequisites . -n kube-system
 
     - name: Install CRDs
+      working-directory: ./prepare/crds/
       run: |
-        ./prepare/crds/keycloak.sh
-        ./prepare/crds/opa.sh
+        ./keycloak.sh
+        ./opa.sh
 
     - name: Deploy a workstation
       working-directory: ./deploy/

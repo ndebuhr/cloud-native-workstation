@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-kubectl apply -f ./prepare/crds/constraint-templates.yaml
+script_dir=$( echo $BASH_SOURCE | egrep -o '^.*\/' )
+kubectl apply -f $script_dir/../../prepare/crds/constraint-templates.yaml
 
 count=0
 echo "Constraint Template CRDs: Creating..."
