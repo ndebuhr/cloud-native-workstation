@@ -282,9 +282,11 @@ cd build
 docker build --tag $REPO/cloud-native-workstation-code-server:latest ./code-server
 docker build --tag $REPO/cloud-native-workstation-initializers:latest ./initializers
 docker build --tag $REPO/cloud-native-workstation-jupyter:latest ./jupyter
+docker build --tag $REPO/cloud-native-workstation-pgweb:latest ./pgweb
 docker push $REPO/cloud-native-workstation-code-server:latest
 docker push $REPO/cloud-native-workstation-initializers:latest
 docker push $REPO/cloud-native-workstation-jupyter:latest
+docker push $REPO/cloud-native-workstation-pgweb:latest
 cd ..
 ```
 
@@ -375,6 +377,8 @@ Access the components that you've enabled in the Helm values (after authenticati
 * pgweb.YOUR_DOMAIN for Pgweb (for VPN initialization, `kubectl exec` and then `openvpn --config /etc/client.ovpn`)
 * selenium-hub.YOUR_DOMAIN for Selenium Grid hub
 * selenium-chrome.YOUR_DOMAIN for Selenium node (Chrome)
+* selenium-firefox.YOUR_DOMAIN for Selenium node (Firefox)
+* selenium-edge.YOUR_DOMAIN for Selenium node (Edge)
 * jupyter.YOUR_DOMAIN for Jupyter data science notebook
 * sonarqube.YOUR_DOMAIN for SonarQube
 * guacamole.YOUR_DOMAIN/guacamole/ for Apache Guacamole (default login guacadmin:guacadmin)
