@@ -61,7 +61,7 @@ code:
   storage: 32Gi
   resources: {}
   dind:
-    image: docker:19-dind
+    image: docker:20-dind
     storage: 16Gi
     resources: {}
 
