@@ -41,14 +41,14 @@ keycloak:
   cookieSecret: 2u2iS0FH7pPjOUUn
   resources: {}
   operator:
-    image: quay.io/keycloak/keycloak-operator:15.0.2
+    image: quay.io/keycloak/keycloak-operator:16.1.0
     resources: {}
   postgres:
     resources: {}
 
 # For protecting oauth2 proxied subsystems
 oauth2Proxy:
-  image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.3
+  image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.1
   resources: {}
 
 # Code Server
@@ -162,7 +162,7 @@ kanboard:
 # Prometheus
 prometheus:
   enabled: false
-  image: prom/prometheus:v2.29.2
+  image: prom/prometheus:v2.32.1
   storage: 16Gi
   resources: {}
   kubeStateMetrics:
@@ -173,7 +173,7 @@ prometheus:
 # Grafana
 grafana:
   enabled: false
-  image: grafana/grafana:8.1.3
+  image: grafana/grafana:8.3.3
   dashboards:
     prometheus:
       plugin:
