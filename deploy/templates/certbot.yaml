@@ -13,7 +13,7 @@ spec:
       serviceAccountName: sa-ssl
       initContainers:
       - name: certbot
-        image: certbot/dns-google:v1.19.0
+        image: certbot/dns-google:v1.22.0
         command: ["/bin/sh", "-c"]
         args:
         - |
@@ -71,7 +71,7 @@ spec:
           serviceAccountName: sa-ssl
           initContainers:
           - name: certbot
-            image: certbot/dns-google:v1.19.0
+            image: certbot/dns-google:v1.22.0
             command: ["/bin/sh", "-c"]
             args:
             - |
@@ -126,7 +126,7 @@ spec:
       serviceAccountName: sa-ssl
       initContainers:
       - name: certbot
-        image: certbot/dns-cloudflare:v1.19.0
+        image: certbot/dns-cloudflare:v1.22.0
         command: ["/bin/sh", "-c"]
         args:
         - |
@@ -184,7 +184,7 @@ spec:
           serviceAccountName: sa-ssl
           initContainers:
           - name: certbot
-            image: certbot/dns-cloudflare:v1.19.0
+            image: certbot/dns-cloudflare:v1.22.0
             command: ["/bin/sh", "-c"]
             args:
             - |
@@ -239,7 +239,7 @@ spec:
       serviceAccountName: sa-ssl
       initContainers:
       - name: certbot
-        image: certbot/dns-route53:v1.20.0
+        image: certbot/dns-route53:v1.22.0
         command: ["/bin/sh", "-c"]
         env:
         - name: AWS_CONFIG_FILE
@@ -300,7 +300,7 @@ spec:
           serviceAccountName: sa-ssl
           initContainers:
           - name: certbot
-            image: certbot/dns-route53:v1.20.0
+            image: certbot/dns-route53:v1.22.0
             command: ["/bin/sh", "-c"]
             env:
             - name: AWS_CONFIG_FILE
