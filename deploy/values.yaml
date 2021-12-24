@@ -30,7 +30,7 @@ certbot:
 
 # For various seeding and initialization jobs
 initializers:
-  image: ndebuhr/cloud-native-workstation-initializers:v0.13.0
+  image: ndebuhr/cloud-native-workstation-initializers:v0.13.1
   resources: {}
 
 # Keycloak
@@ -54,7 +54,7 @@ oauth2Proxy:
 # Code Server
 code:
   enabled: true
-  image: ndebuhr/cloud-native-workstation-code-server:v0.13.0
+  image: ndebuhr/cloud-native-workstation-code-server:v0.13.1
   # For accessing cloud resources over VPN, set ovpn=true and:
   # kubectl create secret generic client-ovpn --from-file=client.ovpn
   ovpn: false
@@ -68,7 +68,7 @@ code:
 # PgWeb
 pgweb:
   enabled: false
-  image: ndebuhr/cloud-native-workstation-pgweb:v0.13.0
+  image: ndebuhr/cloud-native-workstation-pgweb:v0.13.1
   # For accessing databases over VPN, set ovpn=true and:
   # kubectl create secret generic client-ovpn --from-file=client.ovpn
   ovpn: false
@@ -103,7 +103,7 @@ selenium:
 # Jupyter notebook
 jupyter:
   enabled: false
-  image: ndebuhr/cloud-native-workstation-jupyter:v0.13.0
+  image: ndebuhr/cloud-native-workstation-jupyter:v0.13.1
   # For accessing cloud resources over VPN, set ovpn=true and:
   # kubectl create secret generic client-ovpn --from-file=client.ovpn
   ovpn: false
