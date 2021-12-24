@@ -13,7 +13,6 @@ RUN apt-get update -qqy && \
         dnsutils \
         file \
         gnupg \
-        golang \
         jq \
         jsonnet \
         lcdf-typetools \
@@ -111,6 +110,8 @@ RUN wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
 
 USER coder
+
+WORKDIR /home/coder
 
 # bash completion - kubernetes and helm
 RUN echo "source /etc/bash_completion" >> ~/.bashrc && \
