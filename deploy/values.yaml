@@ -155,7 +155,7 @@ guacamole:
 # Kanboard
 kanboard:
   enabled: false
-  image: kanboard/kanboard:v1.2.20
+  image: kanboard/kanboard:v1.2.21
   storage: 128Gi
   resources: {}
 
