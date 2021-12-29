@@ -13,7 +13,8 @@ RUN apt-get update -qqy && \
         openvpn \
         pkg-config \
         postgresql \
-        poppler-utils && \
+        poppler-utils \
+        zip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
