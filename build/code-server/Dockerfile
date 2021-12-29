@@ -49,6 +49,13 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     rm -rf /var/lib/apt/lists/* && \
     usermod -aG docker coder
 
+# Install git-lfs using apt
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash && \
+    apt-get update -qqy && \
+    apt-get install -qqy --no-install-recommends git-lfs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install gcloud cli
 RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
