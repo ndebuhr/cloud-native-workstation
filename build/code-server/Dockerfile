@@ -4,34 +4,19 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive
 SHELL ["/bin/bash", "-c"]
 
-# install apt packages
+# apt install system prerequisite packages
 RUN apt-get update -qqy && \
     apt-get install -qqy --no-install-recommends \
         apt-transport-https \
-        bash-completion \
         build-essential \
-        dnsutils \
-        file \
         gnupg \
         jq \
-        jsonnet \
-        lcdf-typetools \
         libssl-dev \
-        lldb \
         lsb-release \
-        iputils-ping \
-        nmap \
-        nodejs \
-        npm \
-        openjdk-11-jdk \
-        openvpn \
         pkg-config \
         python3 \
         python3-pip \
-        ruby-dev \
         software-properties-common \
-        texlive-latex-base \
-        texlive-xetex \
         unzip \
         wget && \
     apt-get clean && \
@@ -49,23 +34,20 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     rm -rf /var/lib/apt/lists/* && \
     usermod -aG docker coder
 
-# Install git-lfs using apt
+# apt install git lfs
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash && \
     apt-get update -qqy && \
     apt-get install -qqy --no-install-recommends git-lfs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install gcloud cli
+# install gcloud cli
 RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update -qqy && \
     apt-get install -qqy --no-install-recommends google-cloud-sdk && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
 
 # install kubectl, kubeadm, and kubelet
 RUN RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)" && \
@@ -116,6 +98,32 @@ RUN find . -type f -exec install {} /usr/local/bin/ \; && \
 RUN wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
 
+# apt install utility packages
+RUN apt-get update -qqy && \
+    apt-get install -qqy --no-install-recommends \
+        bash-completion \
+        dnsutils \
+        file \
+        imagemagick \
+        iputils-ping \
+        jsonnet \
+        lcdf-typetools \
+        lldb \
+        nmap \
+        nodejs \
+        npm \
+        openjdk-11-jdk \
+        openvpn \
+        ruby-dev \
+        texlive-latex-base \
+        texlive-xetex && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# install key python packages
+COPY requirements.txt requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
+
 USER coder
 
 WORKDIR /home/coder
@@ -125,7 +133,7 @@ RUN echo "source /etc/bash_completion" >> ~/.bashrc && \
     echo "source <(kubectl completion bash)" >> ~/.bashrc && \
     echo "source <(helm completion bash)" >> ~/.bashrc
 
-# install code-server extensions
+# install code server extensions
 RUN code-server --install-extension bungcip.better-toml && \
     code-server --install-extension rust-lang.rust && \
     code-server --install-extension james-yu.latex-workshop && \
