@@ -3,13 +3,14 @@ provider "google-beta" {}
 data "google_project" "project" {}
 
 resource "google_container_cluster" "primary" {
-  provider                 = google-beta
-  name                     = var.gke_cluster_name
-  project                  = data.google_project.project.number
-  location                 = var.gcp_zone
-  remove_default_node_pool = true
-  initial_node_count       = 1
-  enable_shielded_nodes    = true
+  provider                  = google-beta
+  name                      = var.gke_cluster_name
+  project                   = data.google_project.project.number
+  location                  = var.gcp_zone
+  remove_default_node_pool  = true
+  initial_node_count        = 1
+  enable_shielded_nodes     = true
+  default_max_pods_per_node = 64
   vertical_pod_autoscaling {
     enabled = true
   }
