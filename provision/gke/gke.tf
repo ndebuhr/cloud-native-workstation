@@ -3,13 +3,12 @@ provider "google" {}
 data "google_project" "project" {}
 
 resource "google_container_cluster" "primary" {
-  name                      = var.gke_cluster_name
-  project                   = data.google_project.project.number
-  location                  = var.gcp_zone
-  remove_default_node_pool  = true
-  initial_node_count        = 1
-  enable_shielded_nodes     = true
-  default_max_pods_per_node = 64
+  name                     = var.gke_cluster_name
+  project                  = data.google_project.project.number
+  location                 = var.gcp_zone
+  remove_default_node_pool = true
+  initial_node_count       = 1
+  enable_shielded_nodes    = true
   network_policy {
     enabled = true
   }
