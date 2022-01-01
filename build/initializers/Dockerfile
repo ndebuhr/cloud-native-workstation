@@ -1,15 +1,5 @@
-FROM debian:10-slim
+FROM alpine:3.15
 
-USER root
-ENV DEBIAN_FRONTEND noninteractive
+RUN apk add --no-cache bash curl jq tini
 
-RUN apt-get update -qqy && \
-    apt-get install -qqy --no-install-recommends \
-        curl \
-        jq && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN useradd -m -u 1000 seeder
-
-USER 1000
+USER 65534
