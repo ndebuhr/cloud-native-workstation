@@ -65,8 +65,8 @@ RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     install hugo /usr/local/bin/
 
 # install terraform
-RUN wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip && \
-    unzip terraform_1.0.11_linux_amd64.zip && \
+RUN wget https://releases.hashicorp.com/terraform/1.1.2/terraform_1.1.2_linux_amd64.zip && \
+    unzip terraform_1.1.2_linux_amd64.zip && \
     install terraform /usr/local/bin/
 
 # install helm
