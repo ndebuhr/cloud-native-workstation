@@ -34,6 +34,11 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     rm -rf /var/lib/apt/lists/* && \
     usermod -aG docker coder
 
+# install conftest
+RUN wget https://github.com/open-policy-agent/conftest/releases/download/v0.28.3/conftest_0.28.3_Linux_x86_64.tar.gz && \
+    tar xzf conftest_0.28.3_Linux_x86_64.tar.gz && \
+    install conftest /usr/local/bin
+
 # apt install git lfs
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash && \
     apt-get update -qqy && \
