@@ -30,8 +30,8 @@ spec:
       containers:
       - image: {{ .Values.jupyter.image }}
         name: jupyter
-        command: ["start.sh"]
         args:
+        - "start.sh"
         - "jupyter"
         - "lab"
         - "--LabApp.token=''"
