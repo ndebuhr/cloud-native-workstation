@@ -104,10 +104,8 @@ spec:
       containers:
       - name: seed
         image: {{ .Values.initializers.image }}
-        command: ["/bin/bash", "-c"]
-        args:
-        - |
-          /opt/seed.sh || exit $?
+        command: ["/sbin/tini", "-g", "--"]
+        args: ["bash", "/opt/seed.sh"]
         env:
         - name: USERNAME
           value: {{ .Values.authentication.username }}
