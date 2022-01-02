@@ -34,20 +34,7 @@ spec:
       containers:
       - name: pgweb
         image: {{ .Values.pgweb.image }}
-        securityContext:
-          privileged: true
         resources: {{ toYaml .Values.pgweb.resources | nindent 10 }}
-        {{ if eq .Values.pgweb.ovpn true }}
-        volumeMounts:
-        - name: client-ovpn
-          mountPath: /etc/client.ovpn
-          subPath: client.ovpn
-      volumes:
-      - name: client-ovpn
-        secret:
-          secretName: client-ovpn
-          defaultMode: 0400
-      {{ end }}
 {{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1

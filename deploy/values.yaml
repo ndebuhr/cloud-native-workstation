@@ -55,9 +55,6 @@ oauth2Proxy:
 code:
   enabled: true
   image: ndebuhr/cloud-native-workstation-code-server:v0.13.1
-  # For accessing cloud resources over VPN, set ovpn=true and:
-  # kubectl create secret generic client-ovpn --from-file=client.ovpn
-  ovpn: false
   storage: 32Gi
   resources: {}
   dind:
@@ -69,9 +66,6 @@ code:
 pgweb:
   enabled: false
   image: ndebuhr/cloud-native-workstation-pgweb:v0.13.1
-  # For accessing databases over VPN, set ovpn=true and:
-  # kubectl create secret generic client-ovpn --from-file=client.ovpn
-  ovpn: false
   resources: {}
 
 # SFTP server
@@ -104,9 +98,6 @@ selenium:
 jupyter:
   enabled: false
   image: ndebuhr/cloud-native-workstation-jupyter:v0.13.1
-  # For accessing cloud resources over VPN, set ovpn=true and:
-  # kubectl create secret generic client-ovpn --from-file=client.ovpn
-  ovpn: false
   storage: 32Gi
   gpu:
     enabled: false

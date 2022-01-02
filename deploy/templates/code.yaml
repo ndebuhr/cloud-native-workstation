@@ -64,7 +64,8 @@ spec:
         - name: PASSWORD
           value: "{{ .Values.authentication.password }}"
         securityContext:
-          privileged: true
+          capabilities:
+            add: ["NET_ADMIN"]
         resources: {{ toYaml .Values.code.resources | nindent 10 }}
         volumeMounts:
         - name: coder
@@ -73,11 +74,6 @@ spec:
         - name: coder-profile
           mountPath: /home/coder/.profile
           subPath: .profile
-        {{ if eq .Values.code.ovpn true }}
-        - name: client-ovpn
-          mountPath: /etc/client.ovpn
-          subPath: client.ovpn
-        {{ end }}
       - name: dind-daemon
         image: {{ .Values.code.dind.image }}
         env:
@@ -101,12 +97,6 @@ spec:
         configMap:
           name: coder-profile-v1
           defaultMode: 0644
-      {{ if eq .Values.code.ovpn true }}
-      - name: client-ovpn
-        secret:
-          secretName: client-ovpn
-          defaultMode: 0400
-      {{ end }}
 {{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1

@@ -41,27 +41,15 @@ spec:
         - name: GRANT_SUDO
           value: "yes"
         securityContext:
-          privileged: true
           runAsUser: 0
         resources: {{ toYaml .Values.jupyter.resources | nindent 10 }}
         volumeMounts:
         - name: jupyter
           mountPath: /home/jovyan/work
-        {{ if eq .Values.jupyter.ovpn true }}
-        - name: client-ovpn
-          mountPath: /etc/client.ovpn
-          subPath: client.ovpn
-        {{ end }}
       volumes:
       - name: jupyter
         persistentVolumeClaim:
           claimName: jupyter-pvc
-      {{ if eq .Values.jupyter.ovpn true }}
-      - name: client-ovpn
-        secret:
-          secretName: client-ovpn
-          defaultMode: 0400
-      {{ end }}
 {{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1

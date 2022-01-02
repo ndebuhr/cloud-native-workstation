@@ -37,8 +37,6 @@ spec:
       - name: sftp
         image: {{ .Values.sftp.image }}
         args: ["{{ .Values.authentication.username }}:{{ .Values.authentication.password }}:1001:100"]
-        securityContext:
-          privileged: true
         resources: {{ toYaml .Values.sftp.resources | nindent 10 }}
         volumeMounts:
         - name: sftp
