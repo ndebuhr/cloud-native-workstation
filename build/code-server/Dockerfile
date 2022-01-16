@@ -144,4 +144,5 @@ RUN code-server --install-extension bungcip.better-toml && \
     code-server --install-extension james-yu.latex-workshop && \
     code-server --install-extension redhat.vscode-yaml && \
     code-server --install-extension tsandall.opa && \
-    code-server --install-extension hashicorp.terraform
+    code-server --install-extension hashicorp.terraform && \
+    code-server --install-extension angular.ng-template
