@@ -293,17 +293,6 @@ cd ..
 ## Configuration
 Configure [helm values](deploy/values.yaml), based on the instructions below.
 
-### Keycloak
-```
-# Generate a client secret and encryption key for keycloak (or provide your own)
-
-# To generate a value for the Keycloak client secret
-head /dev/urandom | tr -dc A-Za-z0-9 | head -c32
-# To generate a value for the Keycloak encryption key
-head /dev/urandom | tr -dc A-Za-z0-9 | head -c16
-```
-Use these for the `keycloak.clientSecret` and `keycloak.cookieSecret` Helm values - replacing the defaults for security.
-
 ### Domain
 
 Set the `domain` value, based on the domain that you would like to run your workstation on.

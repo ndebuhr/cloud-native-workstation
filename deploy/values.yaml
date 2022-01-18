@@ -35,10 +35,6 @@ initializers:
 
 # Keycloak
 keycloak:
-  # Change me!
-  clientSecret: OkSR7DMXAXzIrZIoWyN8yh0sFkiYrfJd
-  # Change me!
-  cookieSecret: 2u2iS0FH7pPjOUUn
   resources: {}
   operator:
     image: quay.io/keycloak/keycloak-operator:16.1.0
