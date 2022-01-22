@@ -9,7 +9,7 @@ resource "google_container_cluster" "primary" {
   remove_default_node_pool = true
   initial_node_count       = 1
   enable_shielded_nodes    = true
-  resource_labels = var.gcp_labels
+  resource_labels          = var.gcp_labels
   network_policy {
     enabled = true
   }
