@@ -58,7 +58,6 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
 - [Build (Optional)](#build-optional)
 - [Configuration](#configuration)
     - [Docker Registry](#docker-registry)
-    - [Keycloak](#keycloak)
     - [Domain](#domain)
     - [Certbot](#certbot)
     - [Resource requests](#resource-requests)
