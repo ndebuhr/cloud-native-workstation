@@ -12,3 +12,10 @@ variable "gcp_gpu" {
   description = "GCP name for the GPU to use"
   default     = "nvidia-tesla-t4"
 }
+
+variable "gcp_labels" {
+  description = "Resource labels to add to GCE node machines"
+  default = {
+    "purpose" = "cloud_systems_solutioning"
+  }
+}
