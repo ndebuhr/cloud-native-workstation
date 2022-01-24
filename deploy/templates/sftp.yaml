@@ -10,7 +10,6 @@ spec:
   ports:
   - name: sftp
     port: 22
-    targetPort: 22
   selector:
     app: sftp
 ---

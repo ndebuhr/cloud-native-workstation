@@ -10,19 +10,15 @@ spec:
     app: selenium-hub
   ports:
   - name: web
-    protocol: TCP
     port: 80
     targetPort: 4444
   - name: tests
-    protocol: TCP
     port: 4444
     targetPort: 4444
   - name: event-bus-publish
-    protocol: TCP
     port: 4442
     targetPort: 4442
   - name: event-bus-subscribe
-    protocol: TCP
     port: 4443
     targetPort: 4443
 ---

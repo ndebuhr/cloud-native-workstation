@@ -382,7 +382,6 @@ spec:
         - "--redis-connection-url=redis://{{ .Release.Name }}-redis-master:6379"
         ports:
         - containerPort: 4180
-          protocol: TCP
         resources: {{ toYaml .Values.oauth2Proxy.resources | nindent 10 }}
         env:
           # OIDC Config
@@ -444,13 +443,11 @@ metadata:
   labels:
     app: oauth2-proxy
 spec:
+  selector:
+    app: oauth2-proxy
   ports:
   - name: http
     port: 4180
-    protocol: TCP
-    targetPort: 4180
-  selector:
-    app: oauth2-proxy
 {{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
