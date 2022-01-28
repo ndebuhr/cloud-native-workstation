@@ -38,29 +38,42 @@ jobs:
         gcloud container clusters get-credentials cloud-native-workstation-$GITHUB_RUN_NUMBER --zone us-central1-a
         alias helm="docker run -ti --rm -v $(pwd):/apps -v ~/.kube:/root/.kube -v ~/.helm:/root/.helm alpine/helm:3.5.4"
 
-    - name: Setup kubeconfig
-      run: |
-        kubectl create namespace cloud-native-workstation
-        kubectl config set-context --current --namespace cloud-native-workstation
-
     - name: Install workstation prerequisites
       working-directory: ./prepare/chart/
       run: |
         helm dep update
-        helm install workstation-prerequisites . -n kube-system
+        helm install workstation-prerequisites . \
+            --namespace kube-system \
+            --wait
 
-    - name: Install CRDs
+    - name: Install Keycloak CRDs
       working-directory: ./prepare/crds/
       run: |
         ./keycloak.sh
+
+    - name: Install OPA CRDs
+      working-directory: ./prepare/crds/
+      run: |
         ./opa.sh
+
+    - name: Setup namespaces
+      run: |
+        kubectl create namespace workstation-one
+        kubectl create namespace workstation-two
+
+    - name: Update Helm dependencies
+      working-directory: ./deploy/
+      run: |
+        helm dep update
 
     - name: Deploy a workstation
       working-directory: ./deploy/
       run: |
-        helm dep update
         helm install workstation . \
+            --namespace workstation-one \
             --set domain=a.example.com \
+            --set certbot.enabled=false \
+            --set oauth2Proxy.enabled=false \
             --set pgweb.enabled=true \
             --set sftp.enabled=true \
             --set selenium.enabled=true \
@@ -73,16 +86,18 @@ jobs:
             --set guacamole.enabled=true \
             --set kanboard.enabled=true \
             --set prometheus.enabled=true \
-            --set grafana.enabled=true
+            --set grafana.enabled=true \
+            --timeout 10m0s \
+            --wait
 
-    - name: Deploy a second workstation
+    - name: Deploy another workstation
       working-directory: ./deploy/
       run: |
-        kubectl create namespace second-workstation-test
-        kubectl config set-context --current --namespace second-workstation-test
-        helm dep update
         helm install workstation . \
+            --namespace workstation-two \
             --set domain=b.example.com \
+            --set certbot.enabled=false \
+            --set oauth2Proxy.enabled=false \
             --set pgweb.enabled=true \
             --set sftp.enabled=true \
             --set selenium.enabled=true \
@@ -95,11 +110,27 @@ jobs:
             --set guacamole.enabled=true \
             --set kanboard.enabled=true \
             --set prometheus.enabled=true \
-            --set grafana.enabled=true
+            --set grafana.enabled=true \
+            --timeout 10m0s \
+            --wait
 
-    - name: Undeploy
+    - name: Undeploy the first workstation
       run: |
-        helm uninstall workstation
+        helm uninstall workstation \
+            --namespace workstation-one \
+            --wait
+
+    - name: Undeploy the second workstation
+      run: |
+        helm uninstall workstation \
+            --namespace workstation-two \
+            --wait
+
+    - name: Undeploy the workstation prerequisites
+      run: |
+        helm uninstall workstation-prerequisites \
+            --namespace kube-system \
+            --wait
 
     - name: Deprovision
       working-directory: ./provision/gke/
