@@ -44,6 +44,7 @@ keycloak:
 
 # For protecting oauth2 proxied subsystems
 oauth2Proxy:
+  enabled: true
   image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.1
   resources: {}
 

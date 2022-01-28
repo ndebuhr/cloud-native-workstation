@@ -1,5 +1,6 @@
 {{- $clientSecret := include "rand32" . }}
 {{- $cookieSecret := include "rand16" . }}
+{{ if eq .Values.oauth2Proxy.enabled true }}
 apiVersion: keycloak.org/v1alpha1
 kind: Keycloak
 metadata:
@@ -478,4 +479,5 @@ spec:
         matchLabels:
           app: keycloak
           component: keycloak
+{{ end }}
 {{ end }}

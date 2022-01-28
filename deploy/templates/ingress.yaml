@@ -5,8 +5,10 @@ kind: Ingress
 metadata:
   name: main
   annotations:
+    {{ if eq .Values.oauth2Proxy.enabled true }}
     nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.{{ .Values.domain }}/oauth2/auth
     nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.{{ .Values.domain }}/oauth2/start?rd=$scheme://$best_http_host$request_uri
+    {{ end }}
     nginx.ingress.kubernetes.io/proxy-body-size: 16m
 spec:
   ingressClassName: workstation-nginx
@@ -29,6 +31,7 @@ spec:
             port:
               number: 80
   {{ end }}
+{{ if eq .Values.oauth2Proxy.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -76,6 +79,7 @@ spec:
             name: oauth2-proxy
             port:
               number: 4180
+{{ end }}
 {{ if eq .Values.policies.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
