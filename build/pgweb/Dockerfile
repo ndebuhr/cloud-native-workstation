@@ -1,4 +1,4 @@
-FROM sosedoff/pgweb:0.11.9
+FROM sosedoff/pgweb:0.11.10
 
 # install apk packages
 RUN apk add openvpn --no-cache && \
