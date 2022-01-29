@@ -4,9 +4,9 @@ version: 0.14.1
 icon: https://raw.githubusercontent.com/ndebuhr/cloud-native-workstation/master/images/cnw.png
 dependencies:
 - name: sonarqube
-  version: 9.9.0
+  version: 9.9.2
   repository: https://oteemo.github.io/charts/
   condition: sonarqube.enabled
 - name: redis
-  version: 15.6.8
+  version: 16.2.0
   repository: https://charts.bitnami.com/bitnami/
