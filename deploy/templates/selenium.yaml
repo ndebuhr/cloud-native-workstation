@@ -110,6 +110,13 @@ spec:
         - name: VNC_NO_PASSWORD
           value: "1"
         resources: {{ toYaml .Values.selenium.chrome.resources | nindent 10 }}
+        volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
 ---
 apiVersion: v1
 kind: Service
@@ -182,6 +189,13 @@ spec:
         - name: VNC_NO_PASSWORD
           value: "1"
         resources: {{ toYaml .Values.selenium.firefox.resources | nindent 10 }}
+        volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
 ---
 apiVersion: v1
 kind: Service
