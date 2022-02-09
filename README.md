@@ -372,7 +372,16 @@ Access the components that you've enabled in the Helm values (after authenticati
 
 ## Contributing
 
-If you fork this and add something cool, please let me know or contribute it back.
+If you fork this project and add something cool, please let me know or contribute it back.
+
+### Development
+
+[Skaffold](https://skaffold.dev/) is the recommended tool for developing Cloud Native Workstation.  A [configuration for development on Google Cloud Platform](skaffold.yaml) is provided for reference.  A service account key is required to leverage the required Google Cloud Platform services (e.g., create a `build.json`, and use it for `GOOGLE_APPLICATION_CREDENTIALS`).
+```bash
+export GOOGLE_PROJECT={YOUR PROJECT}
+export GOOGLE_APPLICATION_CREDENTIALS=build.json
+skaffold dev
+```
 
 ## License
 

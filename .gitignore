@@ -16,6 +16,7 @@ provision/**/kubeconfig*
 
 # Key files
 google.json
+build.json
 cloudflare.ini
 config
 client.ovpn

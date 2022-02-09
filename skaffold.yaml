@@ -1,0 +1,34 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: dev
+build:
+  artifacts:
+  - image: us.gcr.io/{{.GOOGLE_PROJECT}}/cloud-native-workstation/code
+    context: build/code-server
+  - image: us.gcr.io/{{.GOOGLE_PROJECT}}/cloud-native-workstation/initializers
+    context: build/initializers
+  - image: us.gcr.io/{{.GOOGLE_PROJECT}}/cloud-native-workstation/jupyter
+    context: build/jupyter
+  - image: us.gcr.io/{{.GOOGLE_PROJECT}}/cloud-native-workstation/pgweb
+    context: build/pgweb
+  googleCloudBuild:
+    timeout: 3600s
+deploy:
+  helm:
+    releases:
+    - name: workstation-prereqs
+      chartPath: prepare/chart
+      namespace: kube-system
+    - name: workstation
+      chartPath: deploy
+      namespace: default
+      setValues:
+        policies.enabled: false
+      artifactOverrides:
+        code.image: us.gcr.io/{{.GOOGLE_PROJECT}}/cloud-native-workstation/code
+        initializers.image: us.gcr.io/{{.GOOGLE_PROJECT}}/cloud-native-workstation/initializers
+        jupyter.image: us.gcr.io/{{.GOOGLE_PROJECT}}/cloud-native-workstation/jupyter
+        pgweb.image: us.gcr.io/{{.GOOGLE_PROJECT}}/cloud-native-workstation/pgweb
+      imageStrategy:
+        helm: {}
