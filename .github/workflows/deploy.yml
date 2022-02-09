@@ -46,10 +46,6 @@ jobs:
             --namespace kube-system \
             --wait
 
-    - name: Install Keycloak CRDs
-      run: |
-        kubectl apply -f keycloak-operator/deploy/crds/ --wait
-
     - name: Install OPA CRDs
       run: |
         kubectl apply -f prepare/crds/constraint-templates.yaml --wait
