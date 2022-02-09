@@ -315,7 +315,7 @@ _If you have already installed a workstation on the cluster, create a namespace 
 
 ### Workstation prerequisites installation
 
-The following commands install the Nginx Ingress Controller and Open Policy Agent Gatekeeper.  If you would like the ability (but not the obligation) to use EFS-backed persistent volume claims on Elastic Kubernetes Serice (AWS), update the [cluster preparation chart values](prepare/chart/values.yaml) before running the Helm install.  Specifically, set `aws-efs-csi-driver.enabled` to `true`, `aws-efs-csi-driver.controller.serviceAccount.annotations.eks.amazonaws.com/role-arn` to the provisioning output value that you noted earlier, and `aws-efs-csi-driver.storageClasses[0].parameters.fileSystemId` to the provisioning output value that you noted earlier.
+The following commands install the Nginx Ingress Controller, Open Policy Agent Gatekeeper, and Keycloak CRDs.  If you would like the ability (but not the obligation) to use EFS-backed persistent volume claims on Elastic Kubernetes Serice (AWS), update the [cluster preparation chart values](prepare/chart/values.yaml) before running the Helm install.  Specifically, set `aws-efs-csi-driver.enabled` to `true`, `aws-efs-csi-driver.controller.serviceAccount.annotations.eks.amazonaws.com/role-arn` to the provisioning output value that you noted earlier, and `aws-efs-csi-driver.storageClasses[0].parameters.fileSystemId` to the provisioning output value that you noted earlier.
 ```bash
 cd prepare/chart
 helm dependency update
@@ -325,12 +325,7 @@ cd ../..
 
 ### CRDs installation
 
-The Keycloak operator underpins OAuth2/OIDC systems.  Install with:
-```bash
-kubectl apply -f keycloak-operator/deploy/crds/ --wait
-```
-
-Constraint templates provide policy-based workstation controls and security.  Install with:
+Constraint templates provide policy-based workstation controls and security.  If you choose not to install these constraint templates, ensure `policies.enabled` is set to `false` in the [helm values](deploy/values.yaml).  Install with:
 ```bash
 kubectl apply -f prepare/crds/constraint-templates.yaml --wait
 ```
