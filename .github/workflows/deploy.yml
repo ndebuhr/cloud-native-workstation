@@ -47,14 +47,12 @@ jobs:
             --wait
 
     - name: Install Keycloak CRDs
-      working-directory: ./prepare/crds/
       run: |
-        ./keycloak.sh
+        kubectl apply -f keycloak-operator/deploy/crds/ --wait
 
     - name: Install OPA CRDs
-      working-directory: ./prepare/crds/
       run: |
-        ./opa.sh
+        kubectl apply -f prepare/crds/constraint-templates.yaml --wait
 
     - name: Setup namespaces
       run: |

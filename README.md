@@ -327,12 +327,12 @@ cd ../..
 
 The Keycloak operator underpins OAuth2/OIDC systems.  Install with:
 ```bash
-./prepare/crds/keycloak.sh
+kubectl apply -f keycloak-operator/deploy/crds/ --wait
 ```
 
 Constraint templates provide policy-based workstation controls and security.  Install with:
 ```bash
-./prepare/crds/opa.sh
+kubectl apply -f prepare/crds/constraint-templates.yaml --wait
 ```
 
 ### Workstation installation
