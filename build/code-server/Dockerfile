@@ -61,6 +61,15 @@ RUN RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)" && \
     install kubelet /usr/local/bin/ && \
     install kubectl /usr/local/bin/
 
+# install skaffold
+RUN curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && \
+    install skaffold /usr/local/bin/
+
+# install helm
+RUN wget https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz && \
+    tar xfvz helm-v3.7.1-linux-amd64.tar.gz linux-amd64/helm && \
+    install linux-amd64/helm /usr/local/bin/
+
 # install hugo extended
 RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     grep "browser_download_url" | grep "hugo_extended" | grep "Linux-64bit.tar.gz" | \
@@ -73,11 +82,6 @@ RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
 RUN wget https://releases.hashicorp.com/terraform/1.1.2/terraform_1.1.2_linux_amd64.zip && \
     unzip terraform_1.1.2_linux_amd64.zip && \
     install terraform /usr/local/bin/
-
-# install helm
-RUN wget https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz && \
-    tar xfvz helm-v3.7.1-linux-amd64.tar.gz linux-amd64/helm && \
-    install linux-amd64/helm /usr/local/bin/
 
 # install aws cli
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
