@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cloud-native-workstation
-version: 0.15.0
+version: 0.16.0
 icon: https://raw.githubusercontent.com/ndebuhr/cloud-native-workstation/master/images/cnw.png
 dependencies:
 - name: sonarqube
