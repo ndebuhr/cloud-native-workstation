@@ -95,7 +95,7 @@ spec:
           claimName: code-dind-pvc
       - name: coder-profile
         configMap:
-          name: coder-profile-v1
+          name: coder-profile-v2
           defaultMode: 0644
 {{ if eq .Values.policies.enabled true }}
 ---
@@ -161,9 +161,9 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: coder-profile-v1
+  name: coder-profile-v2
 data:
-  .profile:
+  .profile: |
     . "$HOME/.bashrc"
     PATH="$HOME/bin:$PATH"
     PATH="$HOME/.local/bin:$PATH"
