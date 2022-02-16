@@ -380,6 +380,11 @@ If you fork this project and add something cool, please let me know or contribut
 ```bash
 export GOOGLE_PROJECT={YOUR PROJECT}
 export GOOGLE_APPLICATION_CREDENTIALS=build.json
+cp skaffold.dev.yaml skaffold.yaml
+sed -i "s|CODE_IMAGE|us.gcr.io/$GOOGLE_PROJECT/cloud-native-workstation/code|g" skaffold.yaml
+sed -i "s|INITIALIZERS_IMAGE|us.gcr.io/$GOOGLE_PROJECT/cloud-native-workstation/initializers|g" skaffold.yaml
+sed -i "s|JUPYTER_IMAGE|us.gcr.io/$GOOGLE_PROJECT/cloud-native-workstation/jupyter|g" skaffold.yaml
+sed -i "s|PGWEB_IMAGE|us.gcr.io/$GOOGLE_PROJECT/cloud-native-workstation/pgweb|g" skaffold.yaml
 skaffold dev
 ```
 

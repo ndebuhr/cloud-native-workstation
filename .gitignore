@@ -2,6 +2,9 @@
 .idea/
 *.lock
 
+# Hydrated skaffold development configuration
+skaffold.yaml
+
 # Chart dependencies
 **/charts/*.tgz
 
