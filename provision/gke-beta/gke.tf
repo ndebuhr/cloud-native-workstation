@@ -27,6 +27,13 @@ resource "google_container_cluster" "primary" {
       minimum       = 4
       maximum       = 32
     }
+    auto_provisioning_defaults {
+      oauth_scopes = [
+        "https://www.googleapis.com/auth/logging.write",
+        "https://www.googleapis.com/auth/monitoring",
+        "https://www.googleapis.com/auth/devstorage.read_only"
+      ]
+    }
   }
   network_policy {
     enabled = true
