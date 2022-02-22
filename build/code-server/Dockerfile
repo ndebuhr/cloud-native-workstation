@@ -22,6 +22,12 @@ RUN apt-get update -qqy && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# install nodejs and npm using apt
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # install Docker using apt (docker daemon runs in sidecar)
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
@@ -119,8 +125,6 @@ RUN apt-get update -qqy && \
         lcdf-typetools \
         lldb \
         nmap \
-        nodejs \
-        npm \
         openjdk-11-jdk \
         openvpn \
         ruby-dev \
