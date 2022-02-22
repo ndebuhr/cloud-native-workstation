@@ -356,7 +356,7 @@ Access the components that you've enabled in the Helm values (after authenticati
 
 * code.YOUR_DOMAIN for Code Server IDE
 * code-dev-server.YOUR_DOMAIN for a development web server
-    * e.g. `hugo serve -D --bind=0.0.0.0 --baseUrl=hugo.YOUR_DOMAIN --appendPort=false` in Code Server
+    * e.g. `hugo serve -D --bind=0.0.0.0 --baseUrl=code-dev-server.YOUR_DOMAIN --appendPort=false` in Code Server
 * pgweb.YOUR_DOMAIN for Pgweb
 * selenium-hub.YOUR_DOMAIN for Selenium Grid hub
 * selenium-chrome.YOUR_DOMAIN for Selenium node (Chrome)
