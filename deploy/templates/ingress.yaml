@@ -9,6 +9,9 @@ metadata:
     nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.{{ .Values.domain }}/oauth2/auth
     nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.{{ .Values.domain }}/oauth2/start?rd=$scheme://$best_http_host$request_uri
     {{ end }}
+    {{ if eq .Values.selenium.enabled true }}
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    {{ end }}
     nginx.ingress.kubernetes.io/proxy-body-size: 16m
 spec:
   ingressClassName: workstation-nginx
