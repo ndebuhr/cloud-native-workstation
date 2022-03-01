@@ -40,6 +40,11 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     rm -rf /var/lib/apt/lists/* && \
     usermod -aG docker coder
 
+# install mongodb tools
+RUN wget https://fastdl.mongodb.org/tools/db/mongodb-database-tools-debian10-x86_64-100.5.2.tgz && \
+    tar xzf mongodb-database-tools-debian10-x86_64-100.5.2.tgz && \
+    install mongodb-database-tools-debian10-x86_64-100.5.2/bin/* /usr/local/bin/
+
 # install conftest
 RUN wget https://github.com/open-policy-agent/conftest/releases/download/v0.28.3/conftest_0.28.3_Linux_x86_64.tar.gz && \
     tar xzf conftest_0.28.3_Linux_x86_64.tar.gz && \
