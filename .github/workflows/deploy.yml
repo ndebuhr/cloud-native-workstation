@@ -31,7 +31,7 @@ jobs:
       working-directory: ./provision/gke/
       run: |
         terraform init
-        terraform apply -auto-approve -var gke_cluster_name=cloud-native-workstation-$GITHUB_RUN_NUMBER
+        terraform apply -auto-approve -var cluster_name=cloud-native-workstation-$GITHUB_RUN_NUMBER
 
     - name: Install helm
       run: |
