@@ -19,6 +19,12 @@ spec:
         app: jupyter
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.jupyter.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       {{ if eq .Values.jupyter.gpu.enabled true }}
       tolerations:
       - key: nvidia.com/gpu

@@ -26,6 +26,7 @@ certbot:
   # Valid types are "google", "aws", and "cloudflare"
   type: google
   email: admin@example.com
+  preemptible: false
   resources: {}
 
 # For various seeding and initialization jobs
@@ -38,6 +39,7 @@ keycloak:
   resources: {}
   operator:
     image: quay.io/keycloak/keycloak-operator:16.1.0
+    preemptible: false
     resources: {}
   postgres:
     resources: {}
@@ -46,12 +48,14 @@ keycloak:
 oauth2Proxy:
   enabled: true
   image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.1
+  preemptible: false
   resources: {}
 
 # Code Server
 code:
   enabled: true
   image: ndebuhr/cloud-native-workstation-code-server:v0.16.1
+  preemptible: false
   storage: 32Gi
   resources: {}
   dind:
@@ -63,12 +67,14 @@ code:
 pgweb:
   enabled: false
   image: ndebuhr/cloud-native-workstation-pgweb:v0.16.1
+  preemptible: false
   resources: {}
 
 # SFTP server
 sftp:
   enabled: false
   image: atmoz/sftp:debian
+  preemptible: false
   storage: 32Gi
   resources: {}
 
@@ -77,24 +83,29 @@ selenium:
   enabled: false
   hub:
     image: selenium/hub:4.1
+    preemptible: true
     resources: {}
   chrome:
     enabled: false
     image: selenium/node-chrome:4.1
+    preemptible: true
     resources: {}
   firefox:
     enabled: false
     image: selenium/node-firefox:4.1
+    preemptible: true
     resources: {}
   edge:
     enabled: false
     image: selenium/node-edge:4.1
+    preemptible: true
     resources: {}
 
 # Jupyter notebook
 jupyter:
   enabled: false
   image: ndebuhr/cloud-native-workstation-jupyter:v0.16.1
+  preemptible: false
   storage: 32Gi
   gpu:
     enabled: false
@@ -116,6 +127,7 @@ landing:
   enabled: false
   image: gcr.io/google-samples/hello-app:2.0
   targetPort: 8080
+  preemptible: true
   resources: {}
 
 # SonarQube
@@ -131,6 +143,7 @@ sonarqube:
 guacamole:
   enabled: false
   image: guacamole/guacamole:1.3.0
+  preemptible: false
   resources: {}
   guacd:
     image: guacamole/guacd:1.3.0
@@ -144,6 +157,7 @@ guacamole:
 kanboard:
   enabled: false
   image: kanboard/kanboard:v1.2.21
+  preemptible: false
   storage: 128Gi
   resources: {}
 
@@ -151,11 +165,13 @@ kanboard:
 prometheus:
   enabled: false
   image: prom/prometheus:v2.32.1
+  preemptible: true
   storage: 16Gi
   resources: {}
   kubeStateMetrics:
     enabled: false
     image: quay.io/coreos/kube-state-metrics:v1.9.8
+    preemptible: true
     resources: {}
 
 # Grafana
@@ -170,6 +186,7 @@ grafana:
       - dashboards/grafana_stats.json
       community:
       - 13332
+  preemptible: true
   storage: 8Gi
   resources: {}
 

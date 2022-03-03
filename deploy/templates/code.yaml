@@ -48,6 +48,12 @@ spec:
         app: code
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.code.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       securityContext:
         fsGroup: 1000
       containers:

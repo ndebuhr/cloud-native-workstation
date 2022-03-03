@@ -11,6 +11,12 @@ spec:
         app: certbot
     spec:
       serviceAccountName: sa-ssl
+      nodeSelector:
+        {{ if eq .Values.certbot.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       initContainers:
       - name: certbot
         image: certbot/dns-google:v1.22.0
@@ -69,6 +75,12 @@ spec:
             app: certbot
         spec:
           serviceAccountName: sa-ssl
+          nodeSelector:
+            {{ if eq .Values.certbot.preemptible true }}
+            preemptibility: "spot"
+            {{ else }}
+            preemptibility: "none"
+            {{ end }}
           initContainers:
           - name: certbot
             image: certbot/dns-google:v1.22.0
@@ -124,6 +136,12 @@ spec:
         app: certbot
     spec:
       serviceAccountName: sa-ssl
+      nodeSelector:
+        {{ if eq .Values.certbot.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       initContainers:
       - name: certbot
         image: certbot/dns-cloudflare:v1.22.0
@@ -182,6 +200,12 @@ spec:
             app: certbot
         spec:
           serviceAccountName: sa-ssl
+          nodeSelector:
+            {{ if eq .Values.certbot.preemptible true }}
+            preemptibility: "spot"
+            {{ else }}
+            preemptibility: "none"
+            {{ end }}
           initContainers:
           - name: certbot
             image: certbot/dns-cloudflare:v1.22.0
@@ -237,6 +261,12 @@ spec:
         app: certbot
     spec:
       serviceAccountName: sa-ssl
+      nodeSelector:
+        {{ if eq .Values.certbot.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       initContainers:
       - name: certbot
         image: certbot/dns-route53:v1.22.0
@@ -298,6 +328,12 @@ spec:
             app: certbot
         spec:
           serviceAccountName: sa-ssl
+          nodeSelector:
+            {{ if eq .Values.certbot.preemptible true }}
+            preemptibility: "spot"
+            {{ else }}
+            preemptibility: "none"
+            {{ end }}
           initContainers:
           - name: certbot
             image: certbot/dns-route53:v1.22.0

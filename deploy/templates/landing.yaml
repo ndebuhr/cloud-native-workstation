@@ -31,6 +31,12 @@ spec:
         app: landing
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.landing.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       containers:
       - name: landing
         image: {{ .Values.landing.image }}

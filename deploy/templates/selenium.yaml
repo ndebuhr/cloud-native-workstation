@@ -40,6 +40,12 @@ spec:
         app: selenium-hub
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.selenium.hub.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       containers:
       - name: selenium-hub
         image: {{ .Values.selenium.hub.image }}
@@ -109,6 +115,12 @@ spec:
         app: selenium-chrome
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.selenium.chrome.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       containers:
       - name: selenium-chrome
         image: {{ .Values.selenium.chrome.image }}
@@ -188,6 +200,12 @@ spec:
         app: selenium-firefox
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.selenium.firefox.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       containers:
       - name: selenium-firefox
         image: {{ .Values.selenium.firefox.image }}
@@ -267,6 +285,12 @@ spec:
         app: selenium-edge
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.selenium.edge.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       containers:
       - name: selenium-edge
         image: {{ .Values.selenium.edge.image }}

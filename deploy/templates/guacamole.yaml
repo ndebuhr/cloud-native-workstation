@@ -32,6 +32,12 @@ spec:
         app: guacd
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.guacamole.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       containers:
       - image: {{ .Values.guacamole.guacd.image }}
         name: guacd
@@ -73,6 +79,12 @@ spec:
         app: guacamole
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.guacamole.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       containers:
       - image: {{ .Values.guacamole.image }}
         name: guacamole
@@ -135,6 +147,12 @@ spec:
         app: guacamole-postgresql
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.guacamole.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       containers:
       - image: {{ .Values.guacamole.postgres.image }}
         name: postgresql

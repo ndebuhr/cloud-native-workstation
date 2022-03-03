@@ -19,6 +19,12 @@ spec:
         app: prometheus
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
+      nodeSelector:
+        {{ if eq .Values.prometheus.preemptible true }}
+        preemptibility: "spot"
+        {{ else }}
+        preemptibility: "none"
+        {{ end }}
       securityContext:
         fsGroup: 65534
       containers:
