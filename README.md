@@ -108,7 +108,7 @@ If you would like to provision a new Kubernetes cluster on Google Kubernetes Eng
         Or, with a custom zone or custom cluster name:
         ```
         terraform init
-        terraform apply -var gcp_zone=YOUR_REGION -var gke_cluster_name=YOUR_CLUSTER_NAME
+        terraform apply -var compute_zone=YOUR_REGION -var cluster_name=YOUR_CLUSTER_NAME
         ```
 1. Return to the repository root directory
     ```bash
