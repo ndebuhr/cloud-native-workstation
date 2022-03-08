@@ -17,12 +17,8 @@ spec:
         app: grafana
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      nodeSelector:
-        {{ if eq .Values.grafana.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.grafana | indent 6 }}
+      {{ include "tolerations" .Values.grafana | indent 6 }}
       securityContext:
         fsGroup: 472
       containers:
@@ -107,12 +103,8 @@ spec:
         app: grafana-init
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      nodeSelector:
-        {{ if eq .Values.grafana.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.grafana | indent 6 }}
+      {{ include "tolerations" .Values.grafana | indent 6 }}
       containers:
       - name: seed
         image: {{ .Values.initializers.image }}

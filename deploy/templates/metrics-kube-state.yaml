@@ -33,12 +33,8 @@ spec:
         app: prometheus-kube-state-metrics
     spec:
       serviceAccountName: prometheus-kube-state-metrics
-      nodeSelector:
-        {{ if eq .Values.prometheus.kubeStateMetrics.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.prometheus.kubeStateMetrics | indent 6 }}
+      {{ include "tolerations" .Values.prometheus.kubeStateMetrics | indent 6 }}
       containers:
       - name: kube-state-metrics
         image: {{ .Values.prometheus.kubeStateMetrics.image }}

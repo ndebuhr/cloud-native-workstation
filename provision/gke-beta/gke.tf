@@ -31,9 +31,45 @@ resource "google_container_node_pool" "spot" {
     machine_type = "e2-standard-8"
     spot         = true
     disk_size_gb = 64
-    labels = {
-      preemptibility = "spot"
+    taint = [{
+      key    = "cloud.google.com/gke-spot"
+      value  = "true"
+      effect = "NO_SCHEDULE"
+    }]
+    metadata = {
+      disable-legacy-endpoints = "true"
     }
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/devstorage.read_only"
+    ]
+    workload_metadata_config {
+      mode = "MODE_UNSPECIFIED"
+    }
+  }
+}
+
+resource "google_container_node_pool" "preemptible" {
+  provider   = google-beta
+  name       = "preemptible"
+  location   = var.compute_zone
+  cluster    = google_container_cluster.primary.name
+  node_count = 1
+  autoscaling {
+    min_node_count = 0
+    max_node_count = 4
+  }
+  node_config {
+    image_type   = "COS_CONTAINERD"
+    machine_type = "e2-standard-8"
+    preemptible  = true
+    disk_size_gb = 64
+    taint = [{
+      key    = "cloud.google.com/gke-preemptible"
+      value  = "true"
+      effect = "NO_SCHEDULE"
+    }]
     metadata = {
       disable-legacy-endpoints = "true"
     }
@@ -62,9 +98,6 @@ resource "google_container_node_pool" "core" {
     image_type   = "COS_CONTAINERD"
     machine_type = "e2-standard-8"
     disk_size_gb = 64
-    labels = {
-      preemptibility = "none"
-    }
     metadata = {
       disable-legacy-endpoints = "true"
     }

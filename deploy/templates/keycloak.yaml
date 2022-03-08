@@ -123,12 +123,8 @@ spec:
         app: keycloak-operator
     spec:
       serviceAccountName: keycloak-operator
-      nodeSelector:
-        {{ if eq .Values.keycloak.operator.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.keycloak.operator | indent 6 }}
+      {{ include "tolerations" .Values.keycloak.operator | indent 6 }}
       containers:
       - name: keycloak-operator
         image: {{ .Values.keycloak.operator.image }}
@@ -380,12 +376,8 @@ spec:
         app: oauth2-proxy
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      nodeSelector:
-        {{ if eq .Values.oauth2Proxy.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.oauth2Proxy | indent 6 }}
+      {{ include "tolerations" .Values.oauth2Proxy | indent 6 }}
       containers:
       - name: oauth2-proxy
         image: {{ .Values.oauth2Proxy.image }}

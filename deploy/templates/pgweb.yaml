@@ -31,12 +31,8 @@ spec:
         app: pgweb
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      nodeSelector:
-        {{ if eq .Values.pgweb.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.pgweb | indent 6 }}
+      {{ include "tolerations" .Values.pgweb | indent 6 }}
       containers:
       - name: pgweb
         image: {{ .Values.pgweb.image }}

@@ -30,12 +30,8 @@ spec:
         app: sftp
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      nodeSelector:
-        {{ if eq .Values.sftp.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.sftp | indent 6 }}
+      {{ include "tolerations" .Values.sftp | indent 6 }}
       securityContext:
         fsGroup: 100
       containers:

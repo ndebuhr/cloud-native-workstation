@@ -19,12 +19,8 @@ spec:
         app: kanboard
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      nodeSelector:
-        {{ if eq .Values.kanboard.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.kanboard | indent 6 }}
+      {{ include "tolerations" .Values.kanboard | indent 6 }}
       containers:
       - name: kanboard
         image: {{ .Values.kanboard.image }}

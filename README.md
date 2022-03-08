@@ -57,10 +57,11 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
     - [Bring your own SSL certificate](#bring-your-own-ssl-certificate)
 - [Build (Optional)](#build-optional)
 - [Configuration](#configuration)
-    - [Docker Registry](#docker-registry)
     - [Domain](#domain)
     - [Certbot](#certbot)
     - [Resource requests](#resource-requests)
+    - [GPU capabilities](#gpu-capabilities)
+    - [VM types](#vm-types)
 - [Installation](#installation)
     - [Workstation prerequisites installation](#workstation-prerequisites-installation)
     - [CRDs installation](#crds-installation)
@@ -306,6 +307,10 @@ For portability to low-resource environments like minikube, resource requests ar
 ### GPU capabilities
 
 If you provisioned the cluster using the [gke-with-gpu](provision/gke-with-gpu) specification, ensure `jupyter.enabled` is `true`, set `jupyter.gpu.enabled` to `true`, and uncomment the two `nvidia.com/gpu: 1` resource specification lines.
+
+### VM types
+
+For GKE installations using the [gke-beta provisioning specification](provision/gke-beta) (or similar), workloads can be configured to run on any combination of standard, spot, and/or preemptive VMs.  If multiple VM types are enabled, no scheduling preference will be given to any one option.  Any workload ran without node selectors or node affinities will be scheduled on standard VMs.
 
 ## Installation
 

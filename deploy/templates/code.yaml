@@ -48,12 +48,8 @@ spec:
         app: code
     spec:
       {{ toYaml .Values.podDefaults | nindent 6 }}
-      nodeSelector:
-        {{ if eq .Values.code.preemptible true }}
-        preemptibility: "spot"
-        {{ else }}
-        preemptibility: "none"
-        {{ end }}
+      {{ include "affinity" .Values.code | indent 6 }}
+      {{ include "tolerations" .Values.code | indent 6 }}
       securityContext:
         fsGroup: 1000
       containers:
