@@ -305,7 +305,7 @@ The `certbot.email` should be configured if you are using the Certbot option for
 
 ### Resource requests
 
-For portability to low-resource environments like minikube, resource requests are zeroed for all components.  This is just the default configuration.  For production environments, set resource requests equal to approximately one-half of the resource limits.
+For portability to low-resource environments like minikube, resource requests are zeroed for all components.  This is just the default configuration.
 
 ### GPU capabilities
 
