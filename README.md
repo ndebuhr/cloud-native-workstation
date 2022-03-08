@@ -67,6 +67,9 @@ My own use and testing is with Google Kubernetes Engine, but folks should find t
     - [CRDs installation](#crds-installation)
     - [Workstation installation](#workstation-installation)
 - [Usage](#usage)
+- [Deprovisioning](#deprovisioning)
+    - [Helm uninstall](#helm-uninstall)
+    - [Terraform destory](#terraform-destroy)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -374,6 +377,23 @@ Access the components that you've enabled in the Helm values (after authenticati
 * prometheus.YOUR_DOMAIN for Prometheus monitoring
 * grafana.YOUR_DOMAIN for Grafana visualization
 * keycloak.YOUR_DOMAIN for Keycloak administration
+
+## Deprovisioning
+
+### Helm uninstall
+
+Uninstall both helm charts with:
+```bash
+helm uninstall workstation --wait
+helm uninstall workstation-prerequisites --namespace kube-system --wait
+```
+
+### Terraform destroy
+
+If a Terraform [provisioning specification](provision/) was used to create the cloud resources, navigate to the provisioning directory and delete with:
+```bash
+terraform destroy
+```
 
 ## Contributing
 
