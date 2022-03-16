@@ -137,6 +137,7 @@ RUN apt-get update -qqy && \
         openjdk-11-jdk \
         openvpn \
         ruby-dev \
+        siege \
         texlive-latex-base \
         texlive-xetex && \
     apt-get clean && \
