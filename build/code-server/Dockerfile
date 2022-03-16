@@ -81,6 +81,10 @@ RUN wget https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz && \
     tar xfvz helm-v3.7.1-linux-amd64.tar.gz linux-amd64/helm && \
     install linux-amd64/helm /usr/local/bin/
 
+# install istioctl
+RUN curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.2 sh - && \
+    install istio-1.13.2/bin/istioctl /usr/local/bin/
+
 # install hugo extended
 RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     grep "browser_download_url" | grep "hugo_extended" | grep "Linux-64bit.tar.gz" | \
