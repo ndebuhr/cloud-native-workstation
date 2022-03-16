@@ -33,7 +33,7 @@ certbot:
 
 # For various seeding and initialization jobs
 initializers:
-  image: ndebuhr/cloud-native-workstation-initializers:v0.16.1
+  image: ndebuhr/cloud-native-workstation-initializers:v0.17.0
   resources: {}
 
 # Keycloak
@@ -60,7 +60,7 @@ oauth2Proxy:
 # Code Server
 code:
   enabled: true
-  image: ndebuhr/cloud-native-workstation-code-server:v0.16.1
+  image: ndebuhr/cloud-native-workstation-code-server:v0.17.0
   runsOnStandardVMs: true
   runsOnSpotVMs: true
   runsOnPreemptibleVMs: true
@@ -74,7 +74,7 @@ code:
 # PgWeb
 pgweb:
   enabled: false
-  image: ndebuhr/cloud-native-workstation-pgweb:v0.16.1
+  image: ndebuhr/cloud-native-workstation-pgweb:v0.17.0
   runsOnStandardVMs: true
   runsOnSpotVMs: true
   runsOnPreemptibleVMs: true
@@ -124,7 +124,7 @@ selenium:
 # Jupyter notebook
 jupyter:
   enabled: false
-  image: ndebuhr/cloud-native-workstation-jupyter:v0.16.1
+  image: ndebuhr/cloud-native-workstation-jupyter:v0.17.0
   storage: 32Gi
   gpu:
     enabled: false
