@@ -46,8 +46,8 @@ RUN wget https://fastdl.mongodb.org/tools/db/mongodb-database-tools-debian10-x86
     install mongodb-database-tools-debian10-x86_64-100.5.2/bin/* /usr/local/bin/
 
 # install conftest
-RUN wget https://github.com/open-policy-agent/conftest/releases/download/v0.28.3/conftest_0.28.3_Linux_x86_64.tar.gz && \
-    tar xzf conftest_0.28.3_Linux_x86_64.tar.gz && \
+RUN wget https://github.com/open-policy-agent/conftest/releases/download/v0.32.1/conftest_0.32.1_Linux_x86_64.tar.gz && \
+    tar xzf conftest_0.32.1_Linux_x86_64.tar.gz && \
     install conftest /usr/local/bin
 
 # apt install git lfs
@@ -79,13 +79,13 @@ RUN curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/sk
     install skaffold /usr/local/bin/
 
 # install helm
-RUN wget https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz && \
-    tar xfvz helm-v3.7.1-linux-amd64.tar.gz linux-amd64/helm && \
+RUN wget https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz && \
+    tar xfvz helm-v3.9.0-linux-amd64.tar.gz linux-amd64/helm && \
     install linux-amd64/helm /usr/local/bin/
 
 # install istioctl
-RUN curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.2 sh - && \
-    install istio-1.13.2/bin/istioctl /usr/local/bin/
+RUN curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.14.1 sh - && \
+    install istio-1.14.1/bin/istioctl /usr/local/bin/
 
 # install hugo extended
 RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
@@ -96,8 +96,8 @@ RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     install hugo /usr/local/bin/
 
 # install terraform
-RUN wget https://releases.hashicorp.com/terraform/1.1.2/terraform_1.1.2_linux_amd64.zip && \
-    unzip terraform_1.1.2_linux_amd64.zip && \
+RUN wget https://releases.hashicorp.com/terraform/1.2.3/terraform_1.2.3_linux_amd64.zip && \
+    unzip terraform_1.2.3_linux_amd64.zip && \
     install terraform /usr/local/bin/
 
 # install aws cli
@@ -121,8 +121,8 @@ RUN find . -type f -exec install {} /usr/local/bin/ \; && \
     cargo install --git https://github.com/rustwasm/wasm-pack.git
 
 # install golang
-RUN wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
+RUN wget https://golang.org/dl/go1.18.3.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
 
 # apt install utility packages
 RUN apt-get update -qqy && \
