@@ -4,5 +4,7 @@ docker-compose~=1.29
 google-cloud-pubsub~=2.9
 google-cloud-vision~=2.6
 numpy~=1.21
+pytest~=7.1.2
+pytest-xdist~=2.5.0
 requests~=2.26
 selenium~=4.0
