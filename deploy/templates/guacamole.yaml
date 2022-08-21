@@ -38,8 +38,6 @@ spec:
       - image: {{ .Values.guacamole.guacd.image }}
         name: guacd
         resources: {{ toYaml .Values.guacamole.guacd.resources | nindent 10 }}
-        securityContext:
-          readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: Service
@@ -987,10 +985,7 @@ spec:
         matchLabels:
           app: guacamole
   egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: guacamole
+  - {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -1025,11 +1020,6 @@ spec:
   - Ingress
   ingress:
   - from:
-    - podSelector:
-        matchLabels:
-          app: guacamole
-  egress:
-  - to:
     - podSelector:
         matchLabels:
           app: guacamole
