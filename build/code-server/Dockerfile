@@ -67,6 +67,18 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# install the mc cli
+RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o mc && \
+    install mc /usr/local/bin/
+
+# install stripe cli
+RUN curl https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list && \
+    sudo apt update && \
+    sudo apt install stripe && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # install kubectl, kubeadm, and kubelet
 RUN RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)" && \
     curl -L --remote-name-all "https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl}" && \
@@ -167,4 +179,5 @@ RUN code-server --install-extension bungcip.better-toml && \
     code-server --install-extension angular.ng-template && \
     code-server --install-extension ms-python.python && \
     code-server --install-extension waderyan.gitblame && \
-    code-server --install-extension ms-toolsai.jupyter
+    code-server --install-extension ms-toolsai.jupyter && \
+    code-server --install-extension SonarSource.sonarlint-vscode
