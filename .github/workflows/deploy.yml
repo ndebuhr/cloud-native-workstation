@@ -21,6 +21,7 @@ jobs:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
+        install_components: 'gke-gcloud-auth-plugin'
 
     - name: Install terraform cli
       uses: hashicorp/setup-terraform@v1
@@ -34,6 +35,8 @@ jobs:
         terraform apply -auto-approve -var cluster_name=cloud-native-workstation-$GITHUB_RUN_NUMBER
 
     - name: Install helm
+      env:
+        USE_GKE_GCLOUD_AUTH_PLUGIN: True
       run: |
         gcloud container clusters get-credentials cloud-native-workstation-$GITHUB_RUN_NUMBER --zone us-central1-a
         alias helm="docker run -ti --rm -v $(pwd):/apps -v ~/.kube:/root/.kube -v ~/.helm:/root/.helm alpine/helm:3.5.4"
