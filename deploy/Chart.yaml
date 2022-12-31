@@ -8,6 +8,6 @@ dependencies:
   repository: https://oteemo.github.io/charts/
   condition: sonarqube.enabled
 - name: redis
-  version: 16.2.0
+  version: 17.4.0
   repository: https://charts.bitnami.com/bitnami/
   condition: oauth2Proxy.enabled
