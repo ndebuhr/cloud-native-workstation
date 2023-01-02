@@ -63,6 +63,7 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s
     apt-get update -qqy && \
     apt-get install -qqy --no-install-recommends \
         google-cloud-sdk \
+        google-cloud-sdk-gke-gcloud-auth-plugin \
         google-cloud-sdk-kpt && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
