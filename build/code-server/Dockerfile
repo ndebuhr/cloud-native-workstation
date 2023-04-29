@@ -1,4 +1,4 @@
-FROM codercom/code-server:4.9.1
+FROM codercom/code-server:4.12.0
 
 USER root
 ENV DEBIAN_FRONTEND noninteractive
@@ -92,8 +92,8 @@ RUN curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/sk
     install skaffold /usr/local/bin/
 
 # install helm
-RUN wget https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz && \
-    tar xfvz helm-v3.9.0-linux-amd64.tar.gz linux-amd64/helm && \
+RUN wget https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz && \
+    tar xfvz helm-v3.11.3-linux-amd64.tar.gz linux-amd64/helm && \
     install linux-amd64/helm /usr/local/bin/
 
 # install istioctl
@@ -109,23 +109,14 @@ RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | \
     install hugo /usr/local/bin/
 
 # install terraform
-RUN wget https://releases.hashicorp.com/terraform/1.2.3/terraform_1.2.3_linux_amd64.zip && \
-    unzip terraform_1.2.3_linux_amd64.zip && \
+RUN wget https://releases.hashicorp.com/terraform/1.4.6/terraform_1.4.6_linux_amd64.zip && \
+    unzip terraform_1.4.6_linux_amd64.zip && \
     install terraform /usr/local/bin/
 
 # install aws cli
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install
-
-# install eksctl
-RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
-    mv /tmp/eksctl /usr/local/bin
-
-# install saml2aws
-RUN wget https://github.com/Versent/saml2aws/releases/download/v2.33.0/saml2aws_2.33.0_linux_amd64.tar.gz && \
-    tar -xvzf saml2aws_2.33.0_linux_amd64.tar.gz && \
-    mv saml2aws /usr/local/bin
 
 # install rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -134,8 +125,8 @@ RUN find . -type f -exec install {} /usr/local/bin/ \; && \
     cargo install --git https://github.com/rustwasm/wasm-pack.git
 
 # install golang
-RUN wget https://golang.org/dl/go1.18.3.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
+RUN wget https://golang.org/dl/go1.20.3.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.20.3.linux-amd64.tar.gz
 
 # apt install utility packages
 RUN apt-get update -qqy && \
@@ -149,9 +140,7 @@ RUN apt-get update -qqy && \
         lcdf-typetools \
         lldb \
         nmap \
-        openjdk-11-jdk \
         openvpn \
-        ruby-dev \
         siege \
         texlive-latex-base \
         texlive-xetex && \
