@@ -150,6 +150,8 @@ RUN apt-get update -qqy && \
 # install key python packages
 COPY requirements.txt requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install -U jaxlib==0.4.7+cuda11.cudnn86 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+RUN pip install -U jax==0.4.7
 
 USER coder
 
