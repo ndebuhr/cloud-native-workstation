@@ -1,4 +1,4 @@
-FROM codercom/code-server:4.19.1
+FROM codercom/code-server:4.89.1
 
 USER root
 ENV DEBIAN_FRONTEND noninteractive
