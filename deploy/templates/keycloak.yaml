@@ -194,6 +194,7 @@ rules:
   - create
   - update
   - watch
+  - delete
 - apiGroups:
   - batch
   resources:
@@ -417,30 +418,6 @@ spec:
           - name: "OAUTH2_PROXY_UPSTREAMS"
             value: "file:///dev/null"
 ---
-apiVersion: autoscaling/v2beta2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: oauth2-proxy
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: oauth2-proxy
-  minReplicas: 1
-  maxReplicas: 3
-  metrics:
-  - type: Object
-    object:
-      metric:
-        name: requests-per-second
-      describedObject:
-        apiVersion: networking.k8s.io/v1
-        kind: Ingress
-        name: oauth2-proxy
-      target:
-        type: Value
-        value: 5k
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -473,15 +450,6 @@ spec:
           app: ingress-nginx
     - namespaceSelector: {}
   egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: ingress-nginx
-    - namespaceSelector: {}
-  - to:
-    - podSelector:
-        matchLabels:
-          app: keycloak
-          component: keycloak
+  - {}
 {{ end }}
 {{ end }}

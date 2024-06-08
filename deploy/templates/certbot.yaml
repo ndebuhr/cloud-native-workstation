@@ -15,7 +15,7 @@ spec:
       {{ include "tolerations" .Values.certbot | indent 6 }}
       initContainers:
       - name: certbot
-        image: certbot/dns-google:v1.22.0
+        image: certbot/dns-google:v2.10.0
         command: ["/bin/sh", "-c"]
         args:
         - |
@@ -56,7 +56,7 @@ spec:
         emptyDir: {}
       restartPolicy: OnFailure
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: certbot
@@ -419,4 +419,38 @@ rules:
   - create
   - apply
   - patch
+{{ if eq .Values.certbot.type "cert-manager-google" }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cloud-dns-issuer
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: cloud-dns-issuer-key
+    solvers:
+    - dns01:
+        cloudDNS:
+          project: {{ .Values.certbot.project }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: workstation
+spec:
+  secretName: workstation-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: cloud-dns-issuer
+  dnsNames:
+  - keycloak.{{ .Values.domain }}
+  - oauth2-proxy.{{ .Values.domain }}
+  {{ $root := . }}
+  {{ $backends := include "backends" . | split "," }}
+  {{ range $backend := $backends }}
+  - "{{ $backend }}.{{ $root.Values.domain }}"
+  {{ end }}
+{{ end }}
 {{ end }}

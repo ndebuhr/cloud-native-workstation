@@ -1,3 +1,8 @@
+# Cert Manager for management of TLS certificates (only used if certbot.enabled and certbot.type == google)
+cert-manager:
+  enabled: false
+  installCRDs: true
+# Elastic file storage driver
 aws-efs-csi-driver:
   enabled: false
   controller:
@@ -10,6 +15,7 @@ aws-efs-csi-driver:
       provisioningMode: efs-ap
       fileSystemId: fs-00000000000000000
       directoryPerms: "777"
+# Nginx ingress system
 ingress-nginx:
   controller:
     ingressClassResource:

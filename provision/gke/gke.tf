@@ -6,6 +6,9 @@ resource "google_container_cluster" "primary" {
   initial_node_count       = 1
   enable_shielded_nodes    = true
   resource_labels          = var.labels
+  workload_identity_config {
+    workload_pool = "${data.google_project.project.project_id}.svc.id.goog"
+  }
   network_policy {
     enabled = true
   }

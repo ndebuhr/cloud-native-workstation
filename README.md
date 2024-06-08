@@ -7,7 +7,6 @@
 
 [![Build Workflow](https://github.com/ndebuhr/cloud-native-workstation/workflows/build/badge.svg)](https://github.com/ndebuhr/sim/actions)
 [![Deploy Workflow](https://github.com/ndebuhr/cloud-native-workstation/workflows/deploy/badge.svg)](https://github.com/ndebuhr/sim/actions)
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=cloud-native-workstation&metric=alert_status)](https://sonarcloud.io/dashboard?id=cloud-native-workstation)
 [![Readme Standard](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![MIT License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -85,25 +84,25 @@ git submodule update
 
 ### Google Kubernetes Service
 
-If you would like to provision a new Kubernetes cluster on Google Kubernetes Engine to run your workstation, follow the steps below.
-1. Create a Cloud Native Workstation role in Google Cloud Platform with the following permissions:
-    1. compute.instanceGroupManagers.get
-    1. container.clusters.create
-    1. container.clusters.delete
-    1. container.clusters.get
-    1. container.clusters.update
-    1. container.operations.get
-1. Create a new service account and assign the Cloud Native Workstation and Service Account User roles
-1. Generate a service account key
-1. Set the GCP authentication environment variable
-    ```bash
-    export GOOGLE_APPLICATION_CREDENTIALS=YOUR_KEY_FILE.json
-    ```
-1. Set the GCP project environment variable
-    ```bash
-    export GOOGLE_PROJECT=YOUR_PROJECT
-    ```
-1. Navigate to the desired provisioning directory - either [provision/gke](provision/gke) or [provision/gke-with-gpu](provision/gke-with-gpu).  The [gke](provision/gke) specification creates a "normal" cluster with a single node pool.  The [gke-with-gpu](provision/gke-with-gpu) specification adds Nvidia T4 GPU capabilities to the Jupyter component, for AI/ML/GPU workloads.  If you do not want to enable the Jupyter component, or want it but for non-AI/ML/GPU workloads, then use the [gke](provision/gke) specification.  The [gke](provision/gke) specification is recommended for most users.  Once you've navigated to the desired infrastructure specification directory, provision with:
+If you would like to provision a new Kubernetes cluster on Google Kubernetes Engine to run your workstation, set the `GOOGLE_PROJECT` environment variable, then follow the steps below:
+```bash
+gcloud iam roles create workstation_provisioner \
+    --project=$GOOGLE_PROJECT \
+    --file=roles/provisioner.yaml
+gcloud iam service-accounts create workstation-provisioner \
+    --display-name="Workstation Provisioner"
+gcloud projects add-iam-policy-binding $GOOGLE_PROJECT \
+    --member="serviceAccount:workstation-provisioner@$GOOGLE_PROJECT.iam.gserviceaccount.com" \
+    --role="projects/$GOOGLE_PROJECT/roles/workstation_provisioner"
+gcloud projects add-iam-policy-binding $GOOGLE_PROJECT \
+    --member="serviceAccount:workstation-provisioner@$GOOGLE_PROJECT.iam.gserviceaccount.com" \
+    --role="roles/iam.serviceAccountUser"
+gcloud iam service-accounts keys create workstation-provisioner.json \
+    --iam-account="workstation-provisioner@$GOOGLE_PROJECT.iam.gserviceaccount.com"
+```
+Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to the path of the newly created key.
+
+Navigate to the desired provisioning directory - either [provision/gke](provision/gke) or [provision/gke-with-gpu](provision/gke-with-gpu).  The [gke](provision/gke) specification creates a "normal" cluster with a single node pool.  The [gke-with-gpu](provision/gke-with-gpu) specification adds Nvidia T4 GPU capabilities to the Jupyter component, for AI/ML/GPU workloads.  If you do not want to enable the Jupyter component, or want it but for non-AI/ML/GPU workloads, then use the [gke](provision/gke) specification.  The [gke](provision/gke) specification is recommended for most users.  Once you've navigated to the desired infrastructure specification directory, provision with:
     1. Using the default zone (us-central1-a) and cluster name (cloud-native-workstation):
         ```
         terraform init
@@ -190,9 +189,16 @@ kubectl config set-context --current --namespace cloud-native-workstation
 
 ## Prepare SSL
 
-Secure SSL setup is required.  There are two options for SSL certificates:
-1. Automated SSL certificate generation using Let's Encrypt, Certbot, and the DNS01 challenge with Google Cloud DNS
+Secure SSL setup is required.  There are three options for SSL certificates:
+1. Cert Manager certificate provisioning and management, on top of Google Kubernetes Engine
+1. Automated SSL certificate generation using Let's Encrypt, Certbot, and the DNS01 challenge
 1. Bring your own certificate
+
+### Cert Manager with GKE
+
+1. Use Terraform to provision the resources in [provision/cert-manager](provision/cert-manager)
+
+Later, during the helm installation, be sure `certbot.enabled` is `true`, `certbot.type` is `cert-manager-google` in the [deployment Helm values](deploy/values.yaml), and make sure `certManager.enabled` is `true` in the [preparation Helm values](prepare/values.yaml).
 
 ### Certbot with Google Cloud Platform DNS
 
@@ -329,6 +335,14 @@ cd prepare/chart
 helm dependency update
 helm install workstation-prerequisites . -n kube-system
 cd ../..
+```
+
+If using Cert Manager for TLS certificates:
+```bash
+kubectl annotate serviceaccount workstation-prerequisites-cert-manager \
+    --namespace=kube-system \
+    --overwrite \
+    "iam.gke.io/gcp-service-account=workstation-cert-manager@$GOOGLE_PROJECT.iam.gserviceaccount.com"
 ```
 
 ### CRDs installation
