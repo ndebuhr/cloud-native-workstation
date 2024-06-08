@@ -40,7 +40,7 @@ initializers:
 keycloak:
   resources: {}
   operator:
-    image: quay.io/keycloak/keycloak-operator:18.0.0
+    image: quay.io/keycloak/keycloak-operator:24.0.5
     runsOnStandardVMs: true
     runsOnSpotVMs: false
     runsOnPreemptibleVMs: false
@@ -51,7 +51,7 @@ keycloak:
 # For protecting oauth2 proxied subsystems
 oauth2Proxy:
   enabled: true
-  image: quay.io/oauth2-proxy/oauth2-proxy:v7.3.0
+  image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
   runsOnStandardVMs: true
   runsOnSpotVMs: false
   runsOnPreemptibleVMs: false
@@ -94,28 +94,28 @@ sftp:
 selenium:
   enabled: false
   hub:
-    image: selenium/hub:4.2
+    image: selenium/hub:4.21
     runsOnStandardVMs: true
     runsOnSpotVMs: true
     runsOnPreemptibleVMs: true
     resources: {}
   chrome:
     enabled: false
-    image: selenium/node-chrome:4.2
+    image: selenium/node-chrome:4.21
     runsOnStandardVMs: true
     runsOnSpotVMs: true
     runsOnPreemptibleVMs: true
     resources: {}
   firefox:
     enabled: false
-    image: selenium/node-firefox:4.2
+    image: selenium/node-firefox:4.21
     runsOnStandardVMs: true
     runsOnSpotVMs: true
     runsOnPreemptibleVMs: true
     resources: {}
   edge:
     enabled: false
-    image: selenium/node-edge:4.2
+    image: selenium/node-edge:4.21
     runsOnStandardVMs: true
     runsOnSpotVMs: true
     runsOnPreemptibleVMs: true
@@ -163,13 +163,13 @@ sonarqube:
 # Apache Guacamole
 guacamole:
   enabled: false
-  image: guacamole/guacamole:1.4.0
+  image: guacamole/guacamole:1.5.5
   runsOnStandardVMs: true
   runsOnSpotVMs: true
   runsOnPreemptibleVMs: true
   resources: {}
   guacd:
-    image: guacamole/guacd:1.4.0
+    image: guacamole/guacd:1.5.5
     resources: {}
   postgres:
     image: postgres:9.6
@@ -179,7 +179,7 @@ guacamole:
 # Kanboard
 kanboard:
   enabled: false
-  image: kanboard/kanboard:v1.2.22
+  image: kanboard/kanboard:v1.2.37
   runsOnStandardVMs: true
   runsOnSpotVMs: true
   runsOnPreemptibleVMs: true
@@ -189,7 +189,7 @@ kanboard:
 # Prometheus
 prometheus:
   enabled: false
-  image: prom/prometheus:v2.36.1
+  image: prom/prometheus:v2.53.0
   runsOnStandardVMs: true
   runsOnSpotVMs: true
   runsOnPreemptibleVMs: true
@@ -206,7 +206,7 @@ prometheus:
 # Grafana
 grafana:
   enabled: false
-  image: grafana/grafana:8.5.6
+  image: grafana/grafana:11.0.0
   dashboards:
     prometheus:
       plugin:
