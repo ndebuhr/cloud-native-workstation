@@ -84,7 +84,7 @@ jobs:
             --set kanboard.enabled=true \
             --set prometheus.enabled=true \
             --set grafana.enabled=true \
-            --timeout 10m0s \
+            --timeout 20m0s \
             --wait
 
     - name: Deploy another workstation
