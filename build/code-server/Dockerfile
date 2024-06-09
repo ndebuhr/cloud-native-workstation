@@ -14,7 +14,6 @@ RUN apt-get update -qqy && \
         libssl-dev \
         lsb-release \
         pkg-config \
-        python3 \
         python3-pip \
         software-properties-common \
         unzip \
@@ -51,7 +50,7 @@ RUN wget https://github.com/open-policy-agent/conftest/releases/download/v0.32.1
     install conftest /usr/local/bin
 
 # apt install git lfs
-RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash && \
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && \
     apt-get update -qqy && \
     apt-get install -qqy --no-install-recommends git-lfs && \
     apt-get clean && \
@@ -73,10 +72,10 @@ RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o mc && \
     install mc /usr/local/bin/
 
 # install stripe cli
-RUN curl https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list && \
-    sudo apt update && \
-    sudo apt install stripe && \
+RUN curl https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | tee /usr/share/keyrings/stripe.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | tee -a /etc/apt/sources.list.d/stripe.list && \
+    apt update && \
+    apt install stripe && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -149,9 +148,9 @@ RUN apt-get update -qqy && \
 
 # install key python packages
 COPY requirements.txt requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
-RUN pip install -U jaxlib==0.4.7+cuda11.cudnn86 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-RUN pip install -U jax==0.4.7
+RUN pip install --no-cache-dir --break-system-packages -r requirements.txt
+RUN pip install --break-system-packages -U jaxlib==0.4.7+cuda11.cudnn86 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+RUN pip install --break-system-packages -U jax==0.4.7
 
 USER coder
 
