@@ -189,7 +189,7 @@ kanboard:
 # Prometheus
 prometheus:
   enabled: false
-  image: prom/prometheus:v2.53.0
+  image: prom/prometheus:v2.52.0
   runsOnStandardVMs: true
   runsOnSpotVMs: true
   runsOnPreemptibleVMs: true
